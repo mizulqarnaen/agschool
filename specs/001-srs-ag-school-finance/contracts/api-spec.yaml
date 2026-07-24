@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: AG School Finance API Specification
+  description: OpenAPI REST contracts for AG School Finance (Public Transparency & Internal Operations)
+  version: 1.0.0
+
+servers:
+  - url: http://localhost/agschool/api
+    description: Local Laragon Server
+
+paths:
+  # -------------------------------------------------------------
+  # PUBLIC TRANSPARENCY ENDPOINTS (Unauthenticated)
+  # -------------------------------------------------------------
+  /public/events:
+    get:
+      summary: Get public list of events
+      tags:
+        - Public Portal
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Upcoming, Ongoing, Completed]
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of public events (excludes internal financial details)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicEvent'
+
+  /public/events/{id}:
+    get:
+      summary: Get public event details including winners & prize payment statuses
+      tags:
+        - Public Portal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detailed public event view with winners & prize statuses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicEventDetail'
+        '404':
+          description: Event not found
+
+  # -------------------------------------------------------------
+  # AUTHENTICATION ENDPOINTS
+  # -------------------------------------------------------------
+  /auth/login:
+    post:
+      summary: User login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string }
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      summary: User logout
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Logged out successfully
+
+  # -------------------------------------------------------------
+  # INTERNAL MANAGEMENT ENDPOINTS (Authenticated)
+  # -------------------------------------------------------------
+  /internal/dashboard:
+    get:
+      summary: Get internal dashboard metrics & financial summary
+      tags:
+        - Internal Dashboard
+      responses:
+        '200':
+          description: Total income, expenses, internal payments, net balance, and recent logs
+
+  /internal/incomes:
+    get:
+      summary: List income records
+      tags: [Income Management]
+    post:
+      summary: Create new income entry
+      tags: [Income Management]
+
+  /internal/expenses:
+    get:
+      summary: List operational expenses
+      tags: [Expense Management]
+    post:
+      summary: Create new expense entry
+      tags: [Expense Management]
+
+  /internal/payments:
+    get:
+      summary: List internal member payments (BA, Caster, Maintainer, Secretary)
+      tags: [Internal Payments]
+    post:
+      summary: Record new member payment
+      tags: [Internal Payments]
+
+  /internal/events:
+    get:
+      summary: List internal events
+      tags: [Event Management]
+    post:
+      summary: Create event
+      tags: [Event Management]
+
+  /internal/reports/export:
+    get:
+      summary: Export financial/event report to Excel or CSV
+      tags: [Reports & Export]
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [income, expense, payment, event]
+        - name: format
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [excel, csv]
+
+components:
+  schemas:
+    PublicEvent:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        poster_url: { type: string }
+        event_type: { type: string }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        event_status: { type: string }
+        total_prize_pool: { type: number }
+
+    PublicEventDetail:
+      allOf:
+        - $ref: '#/components/schemas/PublicEvent'
+        - type: object
+          properties:
+            prizes:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicPrize'
+
+    PublicPrize:
+      type: object
+      properties:
+        id: { type: integer }
+        prize_title: { type: string }
+        winner_name: { type: string }
+        reward_description: { type: string }
+        payment_status: { type: string }
+        payment_date: { type: string, format: date }

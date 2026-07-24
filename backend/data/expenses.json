@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "transaction_date": "2026-07-12",
+    "category": "Logistics",
+    "description": "Stage rental & lighting setup",
+    "amount": 1200,
+    "currency": "SGD",
+    "related_event_id": 1,
+    "notes": "Invoice #8841",
+    "recorded_by_user_id": 2,
+    "created_at": "2026-07-24T03:31:15.803Z",
+    "updated_at": "2026-07-24T03:51:36.048Z",
+    "deleted_at": "2026-07-24T03:51:36.048Z"
+  },
+  {
+    "id": 2,
+    "auto_prize_id": 3,
+    "transaction_date": "2026-07-03",
+    "category": "Event Prize Payout",
+    "description": "Prize Payout: Best Presenter Award - Brenda Lim (AI & Esports Workshop)",
+    "amount": 500,
+    "currency": "SGD",
+    "exchange_rate_used": 13907,
+    "base_amount_idr": 6953500,
+    "related_event_id": 2,
+    "notes": "Auto-generated from Event Prize Payout #3",
+    "recorded_by_user_id": 1,
+    "created_at": "2026-07-24T11:45:00.000Z",
+    "updated_at": "2026-07-24T06:06:10.809Z",
+    "deleted_at": "2026-07-24T06:06:10.809Z"
+  }
+]

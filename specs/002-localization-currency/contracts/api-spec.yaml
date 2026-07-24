@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: AG School Finance API - Localization & Currency Extensions
+  version: 1.1.0
+
+paths:
+  /public/settings:
+    get:
+      summary: Get public app settings including default language and active exchange rate
+      tags: [Public Portal]
+      responses:
+        '200':
+          description: Public configuration settings
+
+  /internal/admin/settings/sync-rate:
+    post:
+      summary: Trigger manual refresh of automatic exchange rate sync
+      tags: [Admin Settings]
+      responses:
+        '200':
+          description: Sync completed or fallback applied

@@ -1,0 +1,55 @@
+[
+  {
+    "id": 1,
+    "full_name": "Alex Tan",
+    "email": "alex@agschool.com",
+    "phone": "+65 9123 4567",
+    "category": "BA",
+    "status": "active",
+    "joined_date": "2025-01-15",
+    "created_at": "2026-07-24T03:31:15.797Z",
+    "updated_at": "2026-07-24T04:41:16.409Z",
+    "deleted_at": "2026-07-24T04:41:16.409Z"
+  },
+  {
+    "id": 2,
+    "full_name": "Brenda Lim",
+    "email": "brenda@agschool.com",
+    "phone": "+65 9234 5678",
+    "category": "Caster",
+    "status": "active",
+    "joined_date": "2025-02-01",
+    "created_at": "2026-07-24T03:31:15.797Z",
+    "updated_at": "2026-07-24T04:41:18.516Z",
+    "deleted_at": "2026-07-24T04:41:18.516Z"
+  },
+  {
+    "id": 3,
+    "full_name": "Charlie Wong",
+    "email": "charlie@agschool.com",
+    "phone": "+65 9345 6789",
+    "category": "Maintainer",
+    "status": "active",
+    "joined_date": "2025-03-10",
+    "created_at": "2026-07-24T03:31:15.797Z",
+    "updated_at": "2026-07-24T04:41:20.759Z",
+    "deleted_at": "2026-07-24T04:41:20.759Z"
+  },
+  {
+    "id": 4,
+    "full_name": "Kang Iqbal",
+    "email": "",
+    "phone": "",
+    "roblox_username": "mizulqarnaen",
+    "roblox_nickname": "KangIqbalFALL_MKJZT",
+    "tiktok_handle": "@mizulqarnaen",
+    "category": "Caster",
+    "status": "active",
+    "joined_date": "2026-07-24",
+    "created_at": "2026-07-24T04:41:46.053Z",
+    "updated_at": "2026-07-24T07:08:30.268Z",
+    "deleted_at": null,
+    "monthly_salary": 1200000,
+    "salary_currency": "IDR"
+  }
+]

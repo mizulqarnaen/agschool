@@ -1,24 +1,27 @@
 # CLAUDE.md
 
-Project context for AI agents (Claude Code reads this automatically). Fill in the
-sections below — human-written context is more reliable than auto-generated.
+Project context for AI agents working on AG School Finance.
 
 ## Overview
-<!-- What this project/app is and its purpose. -->
+AG School Finance is a lightweight web application designed to manage operational finances for AG School while maintaining a public transparency portal for event-related information.
 
-## Architecture
-<!-- Key modules, how they fit together, important data/execution flows. -->
+## Core Constitution & Principles
+The project is governed by the Constitution at [.rudis/memory/constitution.md](file:///c:/laragon/www/agschool/.rudis/memory/constitution.md) (Version 1.0.0).
+- **Simplicity**: Avoid unnecessary complexity & dependencies.
+- **Privacy-First**: Sensitive financial data, operational expenses, and member payments require mandatory authentication and authorization.
+- **Controlled Transparency**: Public access is strictly limited to event information, posters, winners, and prize payment statuses.
 
-## Conventions
-<!-- Naming, structure, patterns to follow; libraries/frameworks in use. -->
+## Target Users
+- **Internal**: Administrator, Finance Team, Secretary
+- **Public**: Public Visitors / Community
 
-## Build, run, test
-<!-- Exact commands to build, run, and test. -->
-
-## Risky / sensitive areas
-<!-- Fragile code, hidden business rules, things to be careful with (esp. legacy). -->
+## Scope & Out-of-Scope
+- **In Scope**: Operational income/expense tracking, member payments, event management, prize tracking, reporting, data exports, public event portal.
+- **Out of Scope**: Public financial reports, public operational expense views, multi-tenant/multi-org, marketplace, chat/social features.
 
 ## How agents should work here
 - Discovery-first: read and confirm understanding before changing code.
+- Always check compliance with [.rudis/memory/constitution.md](file:///c:/laragon/www/agschool/.rudis/memory/constitution.md).
 - Keep changes in scope; state what is OUT OF SCOPE; verify end-to-end.
 - Prefer the smallest viable change; ask for approval on the diff.
+

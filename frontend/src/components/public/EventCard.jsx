@@ -1,0 +1,87 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Calendar, Trophy, CheckCircle2, Clock, Image as ImageIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { formatDateDisplay } from '../../utils/dateFormatter';
+
+export const EventCard = ({ event }) => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'Ongoing':
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">● {t('ongoing')}</span>;
+      case 'Completed':
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">{t('completed')}</span>;
+      default:
+        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">{t('scheduled')}</span>;
+    }
+  };
+
+  const formattedDateRange = event.end_date && event.end_date !== event.start_date
+    ? `${formatDateDisplay(event.start_date, lang)} - ${formatDateDisplay(event.end_date, lang)}`
+    : formatDateDisplay(event.start_date, lang);
+
+  return (
+    <div className="glass-card rounded-2xl overflow-hidden hover:border-cyan-500/40 transition-all duration-300 flex flex-col group hover:-translate-y-1">
+      {/* Poster Image Header */}
+      <div className="h-48 bg-slate-900/80 relative overflow-hidden flex items-center justify-center border-b border-slate-800">
+        {event.poster_url ? (
+          <img
+            src={event.poster_url}
+            alt={event.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center text-slate-600 gap-2">
+            <ImageIcon className="w-12 h-12 stroke-[1.5]" />
+            <span className="text-xs font-medium text-slate-500">Official Poster Artwork</span>
+          </div>
+        )}
+        <div className="absolute top-3 right-3">
+          {getStatusBadge(event.event_status)}
+        </div>
+      </div>
+
+      {/* Card Content */}
+      <div className="p-6 flex-1 flex flex-col justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-2">
+            <span>{event.event_type}</span>
+          </div>
+
+          <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-1 mb-2">
+            {event.title}
+          </h3>
+
+          <p className="text-sm text-slate-400 line-clamp-2 whitespace-pre-line mb-4">
+            {event.description}
+          </p>
+        </div>
+
+        <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl mb-4 border border-slate-800">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-cyan-400 shrink-0" />
+              <span className="font-semibold text-slate-200">{formattedDateRange}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="font-semibold text-amber-300">
+                {event.currency || 'IDR'} {Number(event.total_prize_pool).toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          <Link
+            to={`/events/${event.id}`}
+            className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 border border-slate-700 hover:border-cyan-500/40 text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+          >
+            {t('view_details')} &rarr;
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
