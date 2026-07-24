@@ -1,0 +1,113 @@
+description = "Reverse-engineer a per-module Business Requirements Document breakdown from an existing/brownfield codebase, to seed context for future /rudis.specify, /rudis.constitution, or /rudis.redesign work."
+
+prompt = """
+---
+description: Reverse-engineer a per-module Business Requirements Document breakdown from an existing/brownfield codebase, to seed context for future /rudis.specify, /rudis.constitution, or /rudis.redesign work.
+handoffs:
+  - label: Derive Project Principles
+    agent: rudis.constitution
+    prompt: Derive project principles from the current system described in docs/brd/00-overview.md
+  - label: Specify a New Feature
+    agent: rudis.specify
+    prompt: Using docs/brd/00-overview.md as background context, build a new feature that...
+  - label: Revamp a Module
+    agent: rudis.redesign
+    prompt: Using docs/brd/modules/<module-slug>/ as background context (brd.md for capabilities/screens to preserve, technical.md for architecture/test-coverage/dependencies, flow.md for existing processes), redesign...
+---
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty). If non-empty, treat it as a scope/focus hint (e.g. "only the billing module", "focus on the API layer") rather than a feature description — this command documents what already exists, it does not propose new work. A module-name hint scopes the whole run to that module: only that module's folder and its row in the Module Index are touched; every other module is left untouched.
+
+## Outline
+
+This command is for **existing/brownfield** codebases: it reads the repository and drafts a per-module Business Requirements Document (BRD) breakdown describing what the system currently does, in business language, plus the process flows and technical detail (including test coverage and dependency versions) behind each module. The resulting `docs/brd/` directory becomes the background context that `/rudis.specify` and `/rudis.constitution` can build on for this project going forward — and, for a revamp of something that already exists, what `/rudis.redesign` reads as its boundary context when there's no prior plan.md/data-model.md to fall back on.
+
+Do not use this command to describe a feature that doesn't exist yet — that's `/rudis.specify`.
+
+### Output structure
+
+```text
+docs/brd/
+├── 00-overview.md              # system-wide: exec summary, objectives, stakeholders,
+│                                #   module index, high-level architecture,
+│                                #   constraints, glossary, change log
+└── modules/
+    └── <module-slug>/
+        ├── brd.md               # business: capabilities, entities & rules — this module only
+        ├── flow.md              # mermaid flowcharts/sequence diagrams for this module
+        └── technical.md         # low-level → high-level technical detail
+```
+
+One file, one concern: an agent reading only the technical side of one module doesn't have to load business prose or other modules' content. This always applies — small apps just end up with fewer module folders, not a different structure.
+
+A **module** is a top-level business/domain folder in the source code (e.g. `auth/`, `billing/`, `order/`) — not entry-point-level (too granular) and not freeform (not predictable enough for repeat runs). Capability/entity IDs are prefixed per module (`AUTH-CAP-001`, `BILLING-ENT-002`) so they stay unique and citable from `00-overview.md`.
+
+1. **Determine scope**: If `$ARGUMENTS` names a module/area, limit discovery and writes to it and note the scope at the top of `00-overview.md`. Otherwise, scope is the whole repository.
+
+2. **Legacy migration**: if a single-file `docs/brd.md` (the old format) exists, read it fully first as reference context — it captures previously-answered business questions that discovery shouldn't re-ask. After the new structure is written (step 8), copy it to `docs/brd.legacy.md` (backup, do not delete the original content) and note the migration in `00-overview.md`'s Change Log.
+
+3. **Check for an existing per-module breakdown**: if `docs/brd/` already exists, this is an **update**, not a fresh overwrite:
+   - Existing module folders: preserve sections/wording that still hold; revise what the current code contradicts; prepend a new entry to that file's own Change Log.
+   - Newly-discovered modules: create fresh folders for them.
+   - If `$ARGUMENTS` scopes this run to one module: touch only that module's folder and its row in `00-overview.md`'s Module Index — leave every other module and `00-overview.md`'s other sections untouched.
+   - If neither `docs/brd.md` nor `docs/brd/` exists, create `docs/brd/` and draft fresh from the templates.
+
+4. **Discovery** — survey top-down; sample representative files rather than reading everything, especially in large repos:
+   - Read root-level docs first: `README.md`, the agent context file (`CLAUDE.md` or equivalent), `CHANGELOG.md`, and anything under `docs/` — these are the most reliable source of stated intent.
+   - Map the directory structure to identify modules/domains (see the module definition above).
+   - Per module, identify entry points (HTTP routes/controllers, CLI commands, UI pages/screens, message consumers) and treat each as a candidate business capability.
+   - Per module, identify data models, schema, or migrations and treat each as a candidate Key Entity, and note the underlying files/classes/tables for that module's technical detail.
+   - Identify auth/permissions/role code and treat each distinct role as a Business Actor (system-wide, unless an interaction is truly confined to one module).
+   - Identify external integrations (third-party APIs, queues, payment/identity providers, etc.) and cross-module calls — both as business dependencies (system-wide constraints/module notes) and as technical high-level detail (APIs/events exposed/consumed) for the modules involved.
+   - Skim `git log --oneline` and `CHANGELOG.md` for capability history, if useful for the Executive Summary.
+   - Read `.rudis/memory/constitution.md` if it exists, for constraints that should carry into "Constraints & Non-Functional Notes".
+   - **Test coverage** (per module, for revamp safety): using the same detection approach as `/rudis.test`'s Discovery Phase (test frameworks, locations, naming conventions), check whether each module's source files have a corresponding test file. Record a plain observation per module — which files/areas have tests, which don't — not a numeric estimate.
+   - **Dependency inventory** (system-wide): read the manifest file(s) at repo root (`package.json`, `pyproject.toml`/`requirements.txt`, `pom.xml`/`build.gradle`, `go.mod`, `Gemfile`, `*.csproj`, etc.) and record direct/major dependencies with the version actually pinned. If a module has its own separate manifest or a dependency no other module uses, note that as module-specific instead of system-wide.
+   - **Screens/pages** (per UI module): enumerate routes/pages from the routing config or page/screen directory — this is a literal inventory (name, route, entry file), not a business description.
+
+5. **Load templates**: `.rudis/templates/brd-overview-template.md`, `.rudis/templates/brd-module-brd-template.md`, `.rudis/templates/brd-module-flow-template.md`, `.rudis/templates/brd-module-technical-template.md` — to understand required sections for each output file.
+
+6. **Draft**, in business language for `brd.md` files (no framework, library, database, or API-shape details — same discipline as `/rudis.specify`'s Quick Guidelines) and in technical language for `technical.md` files:
+   - **`00-overview.md` first** — it needs the full module picture: Executive Summary, Business Objectives, Stakeholders & Business Actors (system-wide), Module Index (one row per module, with links to its three files), System Architecture (high-level, mermaid), Technology & Dependency Inventory (system-wide manifest survey), Constraints & Non-Functional Notes (system-wide), Out of Scope/Known Gaps (system-wide), Glossary, Assumptions & Open Questions, Change Log.
+   - **Then, per module** — `brd.md` (module summary, capabilities, key entities & rules, actors if not already covered system-wide, Screens/Pages if this module has a UI, module-specific constraints and gaps, own change log), then `flow.md` (one Mermaid flowchart per major business process discernible for that module, plus a sequence diagram section for cross-module/external integration flows — omit either if no flow is discernible), then `technical.md` (Low-level: key files/classes, data model/schema, and test coverage; Mid-level: internal architecture/pattern, e.g. controller-service-repository; High-level: APIs exposed/consumed, events published/subscribed, dependencies on other modules, external integrations, module-specific stack with pinned versions; Known Technical Debt/Risks; own change log).
+   - Where code cannot reveal the "why" (original business driver, target user segment, priority, success metric, or intended scope boundary), mark it inline with `[NEEDS CLARIFICATION: specific question]` instead of guessing confidently. Unlike `/rudis.specify`, do not silently default on business-intent questions — the whole point of this document is to surface what the code can't tell you.
+   - **LIMIT: Maximum 5 [NEEDS CLARIFICATION] markers across the entire run** (not per module). Prioritize by business impact: objectives/intent > scope boundaries > actor/permission ambiguity > minor detail. If more than 5 genuine unknowns exist across all files, keep the 5 most impactful and record the rest as open items directly in the relevant "Out of Scope / Known Gaps" section instead of blocking on them.
+
+7. **Resolve clarifications with the user**: if any `[NEEDS CLARIFICATION]` markers remain, present them together before finalizing, in this format:
+
+   ```markdown
+   ## Question [N]: [Topic]
+
+   **Context**: [Quote the relevant section/finding, and which file it's in]
+
+   **What we need to know**: [The specific question from the marker]
+
+   **Suggested Answers**:
+
+   | Option | Answer | Implications |
+   |--------|--------|--------------|
+   | A      | [First plausible answer, based on what the code suggests] | [What this means] |
+   | B      | [Second plausible answer] | [What this means] |
+   | Custom | Provide your own answer | [How to respond] |
+
+   **Your choice**: _[Wait for user response]_
+   ```
+
+   Number questions sequentially, present them all together, then wait for the user's answers. Replace each marker with the resolved answer and add a corresponding line to `00-overview.md`'s "Assumptions & Open Questions". Any marker the user can't resolve stays listed there as an open question rather than blocking the document.
+
+8. **Write** all files under `docs/brd/` (and, if step 2 applies, the `docs/brd.legacy.md` backup).
+
+9. **Report** completion with: paths written/updated, module count, rough capability/entity/flow counts per module, how many `[NEEDS CLARIFICATION]` items were resolved vs. remain open, and a suggested next step — typically `/rudis.constitution` (if principles should be derived from what already exists), `/rudis.specify` (to build a new feature with `docs/brd/00-overview.md` as background context), or `/rudis.redesign` (to revamp a specific module/screen, using that module's `brd.md`/`technical.md`/`flow.md` as boundary context — flag modules with no test coverage found in Step 4 as higher-risk to redesign without first adding tests).
+
+## Guidelines
+
+- Written for business stakeholders, not developers, in `brd.md` and `flow.md` files — same target audience as `spec.md`. `technical.md` files are the exception: they're written for engineers/AI agents and are the one place framework, library, schema, and API-shape detail belongs.
+- `brd.md`/`flow.md` describe what the module **does**, not how it's built. `technical.md` describes how it's built, ordered low-level (files/schema) → high-level (module's role in the system).
+- Prefer evidence from docs/comments/tests over guessing from code structure alone; when both are silent, mark `[NEEDS CLARIFICATION]` rather than inventing intent.
+- This command never modifies application source code — it only reads the repository and writes under `docs/brd/` (plus the optional `docs/brd.legacy.md` backup).
+"""
