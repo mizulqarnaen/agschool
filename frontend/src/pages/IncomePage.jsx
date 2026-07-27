@@ -19,6 +19,7 @@ export const IncomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [datePeriod, setDatePeriod] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -148,6 +149,8 @@ export const IncomePage = () => {
       const startM = `${y}-${m}-01`;
       const endM = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
       if (itemDate < startM || itemDate > endM) return false;
+    } else if (datePeriod === 'month_select') {
+      if (selectedMonth && !itemDate.startsWith(selectedMonth)) return false;
     } else if (datePeriod === 'year') {
       const y = now.getFullYear();
       if (itemDate < `${y}-01-01` || itemDate > `${y}-12-31`) return false;
@@ -268,15 +271,29 @@ export const IncomePage = () => {
               <select
                 value={datePeriod}
                 onChange={(e) => setDatePeriod(e.target.value)}
-                className="bg-transparent text-xs text-white focus:outline-none font-medium"
+                className="bg-transparent text-xs text-white focus:outline-none font-medium cursor-pointer"
               >
                 <option value="all">Semua Tanggal</option>
                 <option value="today">Hari Ini</option>
                 <option value="month">Bulan Ini</option>
+                <option value="month_select">Pilih Bulan Spesifik...</option>
                 <option value="year">Tahun Ini</option>
-                <option value="custom">Rentang Tanggal Custom</option>
+                <option value="custom">Rentang Tanggal Custom...</option>
               </select>
             </div>
+
+            {datePeriod === 'month_select' && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-slate-400 font-medium">Bulan:</span>
+                <input
+                  type="month"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-emerald-400 font-bold focus:outline-none focus:border-cyan-500 cursor-pointer"
+                />
+              </div>
+            )}
 
             {datePeriod === 'custom' && (
               <div className="flex items-center gap-2">
@@ -284,14 +301,16 @@ export const IncomePage = () => {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
                 />
-                <span className="text-xs text-slate-500">s/d</span>
+                <span className="text-xs text-slate-500 font-bold">s/d</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
                 />
               </div>
             )}
@@ -309,7 +328,8 @@ export const IncomePage = () => {
                 required
                 value={formData.transaction_date}
                 onChange={(e) => setFormData({ ...formData, transaction_date: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
+                onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
               />
             </div>
 
