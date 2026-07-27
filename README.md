@@ -86,6 +86,10 @@
   3. 💸 Kategori Pembayaran Staff (*Staff Payment Categories*)
   4. 👥 Kategori Anggota Staff (*Staff Member Roles*)
 
+### 11. System-Wide Table Pagination & Advanced Date Filtering
+- **System-Wide Pagination ([Table.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/Table.jsx))**: All tables across the application now feature responsive pagination footers with page size selectors (10, 25, 50, 100 per page), previous/next navigation, and data count summary.
+- **Date & Category Filter Toolbar ([IncomePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/IncomePage.jsx) & [ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Includes real-time search box, category dropdown filter, and date period presets (`Semua Tanggal`, `Hari Ini`, `Bulan Ini`, `Tahun Ini`, and `Rentang Tanggal Custom`).
+
 ---
 
 ## API Endpoints Summary

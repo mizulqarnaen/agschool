@@ -49,6 +49,7 @@ frontend/
 2. **Immutable Financial Snapshots**: Recorded transactions (Incomes, Expenses, Payments, Logs) store exact snapshot values (`exchange_rate_used`, `base_amount_idr`, `amount`, `currency`, `member_name`) captured at the transaction time. Subsequent changes to settings, exchange rates, or member profiles MUST NEVER retroactively modify historical financial entries.
 
 ## Recent Changes
+- 007-system-wide-pagination-and-date-filters: Implemented responsive pagination into `Table.jsx` (10, 25, 50, 100 per page, page navigation, data count summary) and added Date Filter Toolbars (today, month, year, custom range) & search boxes to `IncomePage.jsx` and `ExpensePage.jsx`.
 - 006-updatable-income-expense-categories: Implemented dynamic endpoints (`/internal/finance/incomes/categories` and `/expenses/categories`), dynamic form dropdowns on `IncomePage.jsx` and `ExpensePage.jsx`, and a comprehensive Category Management Panel on `SettingsPage.jsx`.
 - 005-prize-modal-and-public-portal-enhancements: Redesigned PrizeModal into 2-column layout with real-time winner search, added real-time participant search to LeagueStandingsModal, enabled dynamic placement rank counts & presets, updated public portal wording, and added dual status badges (Registration & Execution) to Event Cards.
 - 004-league-points-system: Implemented Dual Event Formats (Standard vs League), dynamic match counts, custom placement point schemas, match placement matrix, automatic best-finish tie-breaker engine, 1-click sync to prize winners, and public leaderboard transparency portal.

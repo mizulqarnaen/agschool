@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingUp } from 'lucide-react';
+import { Plus, Trash2, Edit, TrendingUp, Search, Filter, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -14,6 +14,13 @@ export const IncomePage = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+
+  // Filters state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [datePeriod, setDatePeriod] = useState('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const [formData, setFormData] = useState({
     transaction_date: new Date().toISOString().split('T')[0],
@@ -69,7 +76,7 @@ export const IncomePage = () => {
       setEditingId(null);
       setFormData({
         transaction_date: new Date().toISOString().split('T')[0],
-        category: 'Sponsorship',
+        category: categories[0] || 'Sponsorship',
         source: '',
         description: '',
         amount: '',
@@ -90,54 +97,93 @@ export const IncomePage = () => {
     try {
       if (editingId) {
         await api.put(`/internal/finance/incomes/${editingId}`, formData);
-        toast.success('Income updated successfully');
+        toast.success('Pencatatan pendapatan diperbarui');
       } else {
         await api.post('/internal/finance/incomes', formData);
-        toast.success('Income recorded successfully');
+        toast.success('Pendapatan baru berhasil dicatat');
       }
       setModalOpen(false);
       fetchIncomes();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Operation failed');
+      toast.error(err.response?.data?.message || 'Gagal menyimpan data');
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this income record?')) return;
+    if (!window.confirm('Hapus pencatatan pendapatan ini?')) return;
     try {
       await api.delete(`/internal/finance/incomes/${id}`);
-      toast.success('Income record deleted');
+      toast.success('Pendapatan dihapus');
       fetchIncomes();
     } catch (_) {
-      toast.error('Failed to delete income record');
+      toast.error('Gagal menghapus pendapatan');
     }
   };
+
+  // Filter logic
+  const filteredIncomes = incomes.filter(item => {
+    // Search query filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchDesc = (item.description || '').toLowerCase().includes(q);
+      const matchSource = (item.source || '').toLowerCase().includes(q);
+      const matchCategory = (item.category || '').toLowerCase().includes(q);
+      if (!matchDesc && !matchSource && !matchCategory) return false;
+    }
+
+    // Category filter
+    if (categoryFilter && item.category !== categoryFilter) return false;
+
+    // Date Period filter
+    const itemDate = item.transaction_date || (item.created_at ? item.created_at.split('T')[0] : '');
+    if (!itemDate) return true;
+
+    const now = new Date();
+    if (datePeriod === 'today') {
+      const todayStr = now.toISOString().split('T')[0];
+      if (itemDate !== todayStr) return false;
+    } else if (datePeriod === 'month') {
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const startM = `${y}-${m}-01`;
+      const endM = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
+      if (itemDate < startM || itemDate > endM) return false;
+    } else if (datePeriod === 'year') {
+      const y = now.getFullYear();
+      if (itemDate < `${y}-01-01` || itemDate > `${y}-12-31`) return false;
+    } else if (datePeriod === 'custom') {
+      if (startDate && itemDate < startDate) return false;
+      if (endDate && itemDate > endDate) return false;
+    }
+
+    return true;
+  });
 
   const columns = [
     { header: t('date'), accessor: 'transaction_date' },
     {
       header: t('category'),
       render: (row) => (
-        <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
           {row.category}
         </span>
       )
     },
-    { header: t('income_source'), accessor: 'source', cellClassName: 'font-semibold text-white' },
+    { header: t('income_source'), accessor: 'source' },
     { header: t('description'), accessor: 'description' },
     {
-      header: `${t('amount')} (${t('currency')})`,
+      header: 'Nominal / Jumlah',
       render: (row) => (
-        <span className="font-bold text-white">
-          {row.currency || 'IDR'} {Number(row.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+        <span className="font-semibold text-emerald-400 font-mono">
+          {row.currency || 'IDR'} {Number(row.amount).toLocaleString()}
         </span>
       )
     },
     {
       header: 'Konversi Base (IDR)',
       render: (row) => (
-        <span className="font-extrabold text-emerald-400">
-          IDR {Number(row.base_amount_idr || row.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+        <span className="font-bold text-white font-mono">
+          IDR {Number(row.base_amount_idr || row.amount).toLocaleString()}
         </span>
       )
     },
@@ -167,13 +213,13 @@ export const IncomePage = () => {
       <Sidebar />
 
       <main className="flex-1 lg:ml-64 p-6 sm:p-8 lg:p-10 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-3">
               <TrendingUp className="w-7 h-7 text-emerald-400" />
               {t('incomes')}
             </h1>
-            <p className="text-xs text-slate-400 mt-1">Record operational income in original transaction currency (IDR / SGD)</p>
+            <p className="text-xs text-slate-400 mt-1">Pencatatan pendapatan operasional dalam mata uang transaksi (IDR / SGD)</p>
           </div>
           <button
             onClick={() => handleOpenModal()}
@@ -184,9 +230,77 @@ export const IncomePage = () => {
           </button>
         </div>
 
-        <Table columns={columns} data={incomes} loading={loading} emptyMessage="No income records found." />
+        {/* Filter & Search Toolbar */}
+        <div className="glass-panel p-4 rounded-2xl mb-6 border border-slate-800 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Cari deskripsi / sumber pendapatan..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-8 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-2 text-slate-400 hover:text-white text-xs font-bold">
+                ✕
+              </button>
+            )}
+          </div>
 
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? 'Edit Income Record' : t('record_income')}>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700">
+              <Filter className="w-3.5 h-3.5 text-slate-400" />
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="bg-transparent text-xs text-white focus:outline-none font-medium"
+              >
+                <option value="">Semua Kategori</option>
+                {categories.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700">
+              <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+              <select
+                value={datePeriod}
+                onChange={(e) => setDatePeriod(e.target.value)}
+                className="bg-transparent text-xs text-white focus:outline-none font-medium"
+              >
+                <option value="all">Semua Tanggal</option>
+                <option value="today">Hari Ini</option>
+                <option value="month">Bulan Ini</option>
+                <option value="year">Tahun Ini</option>
+                <option value="custom">Rentang Tanggal Custom</option>
+              </select>
+            </div>
+
+            {datePeriod === 'custom' && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                />
+                <span className="text-xs text-slate-500">s/d</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <Table columns={columns} data={filteredIncomes} loading={loading} emptyMessage="Tidak ada data pendapatan ditemukan." />
+
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? 'Edit Catatan Pendapatan' : t('record_income')}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('date')} *</label>
@@ -217,7 +331,7 @@ export const IncomePage = () => {
               <input
                 type="text"
                 required
-                placeholder="e.g. Tech Sponsor Corp"
+                placeholder="contoh: PT Sponsor Utama / Donatur"
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
@@ -229,7 +343,7 @@ export const IncomePage = () => {
               <input
                 type="text"
                 required
-                placeholder="Summary of income"
+                placeholder="Ringkasan pendapatan"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
@@ -247,18 +361,19 @@ export const IncomePage = () => {
                   placeholder="0.00"
                   value={formData.amount}
                   onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white font-mono font-bold focus:outline-none focus:border-cyan-500"
                 />
               </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('currency')}</label>
                 <select
                   value={formData.currency}
                   onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 font-bold text-cyan-400"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-cyan-400 font-bold focus:outline-none focus:border-cyan-500"
                 >
-                  <option value="IDR">IDR (Rupiah)</option>
-                  <option value="SGD">SGD (Dollar)</option>
+                  <option value="IDR">IDR</option>
+                  <option value="SGD">SGD</option>
                 </select>
               </div>
             </div>
@@ -267,26 +382,26 @@ export const IncomePage = () => {
               <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('notes')}</label>
               <textarea
                 rows="2"
-                placeholder="Optional internal notes"
+                placeholder="Catatan tambahan (opsional)"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
               />
             </div>
 
-            <div className="pt-4 flex justify-end gap-3 border-t border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm font-semibold hover:bg-slate-700"
+                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 transition-colors"
               >
                 {t('cancel')}
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded-xl bg-cyan-500 text-white text-sm font-semibold hover:bg-cyan-400 shadow-md glow-cyan"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-md glow-cyan transition-all"
               >
-                {t('save')}
+                {editingId ? t('save') : t('add')}
               </button>
             </div>
           </form>
