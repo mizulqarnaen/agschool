@@ -694,5 +694,17 @@
     "created_at": "2026-07-27T07:34:05.264Z",
     "updated_at": "2026-07-27T07:34:05.264Z",
     "deleted_at": null
+  },
+  {
+    "id": 59,
+    "user_id": 1,
+    "action": "DELETE_EXPENSE",
+    "module": "Expense",
+    "entity_id": 3,
+    "details_json": null,
+    "timestamp": "2026-07-27T09:04:28.817Z",
+    "created_at": "2026-07-27T09:04:28.819Z",
+    "updated_at": "2026-07-27T09:04:28.819Z",
+    "deleted_at": null
   }
 ]

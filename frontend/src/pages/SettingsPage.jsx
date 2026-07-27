@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
-import { Settings, Save, RefreshCw, DollarSign, Wallet } from 'lucide-react';
+import { Settings, Save, RefreshCw, DollarSign, Wallet, Plus, Trash2, Tag, TrendingUp, TrendingDown, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -19,6 +19,16 @@ export const SettingsPage = () => {
     auto_sync_interval_hours: '24'
   });
 
+  const [incomeCategories, setIncomeCategories] = useState([]);
+  const [expenseCategories, setExpenseCategories] = useState([]);
+  const [paymentCategories, setPaymentCategories] = useState([]);
+  const [memberCategories, setMemberCategories] = useState([]);
+
+  const [newIncomeCat, setNewIncomeCat] = useState('');
+  const [newExpenseCat, setNewExpenseCat] = useState('');
+  const [newPaymentCat, setNewPaymentCat] = useState('');
+  const [newMemberCat, setNewMemberCat] = useState('');
+
   const [rateInfo, setRateInfo] = useState(null);
   const [calcAmount, setCalcAmount] = useState('100');
   const [calcCurrency, setCalcCurrency] = useState('SGD');
@@ -27,6 +37,7 @@ export const SettingsPage = () => {
 
   useEffect(() => {
     fetchSettings();
+    fetchAllCategories();
   }, []);
 
   const fetchSettings = async () => {
@@ -40,22 +51,36 @@ export const SettingsPage = () => {
         }
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to load settings';
-      toast.error(msg);
+      toast.error(err.response?.data?.message || 'Gagal memuat pengaturan sistem');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const fetchAllCategories = async () => {
+    try {
+      const [incRes, expRes, payRes, memRes] = await Promise.all([
+        api.get('/internal/finance/incomes/categories'),
+        api.get('/internal/finance/expenses/categories'),
+        api.get('/internal/finance/payments/categories'),
+        api.get('/internal/finance/members/categories')
+      ]);
+
+      if (incRes.data.success) setIncomeCategories(incRes.data.data);
+      if (expRes.data.success) setExpenseCategories(expRes.data.data);
+      if (payRes.data.success) setPaymentCategories(payRes.data.data);
+      if (memRes.data.success) setMemberCategories(memRes.data.data);
+    } catch (_) {}
+  };
+
+  const handleSaveSettings = async (e) => {
     e.preventDefault();
     try {
       await api.post('/internal/admin/settings', settings);
-      toast.success('System settings updated');
+      toast.success('Pengaturan sistem berhasil disimpan');
       fetchSettings();
     } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to save settings';
-      toast.error(msg);
+      toast.error(err.response?.data?.message || 'Gagal menyimpan pengaturan');
     }
   };
 
@@ -64,16 +89,48 @@ export const SettingsPage = () => {
     try {
       const response = await api.post('/internal/admin/settings/sync-rate');
       if (response.data.success) {
-        toast.success(response.data.data.message || 'Exchange rate synced');
+        toast.success(response.data.data.message || 'Kurs berhasil diperbarui');
         fetchSettings();
       } else {
-        toast.error('Sync failed; retained fallback rate');
+        toast.error('Gagal memperbarui kurs');
       }
     } catch (_) {
-      toast.error('Failed to trigger rate sync');
+      toast.error('Gagal memicu sinkronisasi kurs');
     } finally {
       setSyncing(false);
     }
+  };
+
+  // Category Save Handlers
+  const saveCategoryList = async (endpoint, categoriesArray, typeName) => {
+    try {
+      await api.post(endpoint, { categories: categoriesArray });
+      toast.success(`Kategori ${typeName} diperbarui`);
+      fetchAllCategories();
+    } catch (_) {
+      toast.error(`Gagal memperbarui kategori ${typeName}`);
+    }
+  };
+
+  const addCategoryItem = (currentList, newItem, setInput, endpoint, typeName) => {
+    const trimmed = newItem.trim();
+    if (!trimmed) return;
+    if (currentList.includes(trimmed)) {
+      toast.error('Kategori sudah ada dalam daftar');
+      return;
+    }
+    const updated = [...currentList, trimmed];
+    saveCategoryList(endpoint, updated, typeName);
+    setInput('');
+  };
+
+  const removeCategoryItem = (currentList, targetItem, endpoint, typeName) => {
+    if (currentList.length <= 1) {
+      toast.error('Minimal harus ada 1 kategori');
+      return;
+    }
+    const updated = currentList.filter(item => item !== targetItem);
+    saveCategoryList(endpoint, updated, typeName);
   };
 
   const currentRate = Number(settings.exchange_rate_sgd_idr || 11800);
@@ -85,24 +142,24 @@ export const SettingsPage = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex">
       <Sidebar />
 
-      <main className="flex-1 lg:ml-64 p-6 sm:p-8 lg:p-10 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
+      <main className="flex-1 lg:ml-64 p-6 sm:p-8 lg:p-10 w-full space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-3">
               <Settings className="w-7 h-7 text-cyan-400" />
-              {t('settings')} & Financial Config
+              {t('settings')} & Konfigurasi Sistem
             </h1>
-            <p className="text-xs text-slate-400 mt-1">Configure Organization Profile, Initial Cash Balance, Languages, and Exchange Rate Sync</p>
+            <p className="text-xs text-slate-400 mt-1">Kelola Profil Organisasi, Saldo Awal, Kategori Keuangan, dan Kurs Nilai Tukar</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Settings Form */}
-          <form onSubmit={handleSubmit} className="glass-panel p-8 rounded-3xl space-y-6 border border-slate-800">
-            <h3 className="text-lg font-bold text-white mb-2">Global System Parameters</h3>
+          {/* Main Settings Form */}
+          <form onSubmit={handleSaveSettings} className="glass-panel p-8 rounded-3xl space-y-6 border border-slate-800">
+            <h3 className="text-lg font-bold text-white mb-2">Parameter Sistem Utama</h3>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Organization Name</label>
+              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Nama Organisasi</label>
               <input
                 type="text"
                 required
@@ -113,7 +170,7 @@ export const SettingsPage = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Contact Email</label>
+              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Email Kontak</label>
               <input
                 type="email"
                 required
@@ -123,102 +180,58 @@ export const SettingsPage = () => {
               />
             </div>
 
-            {/* Opening Cash Balance */}
-            <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800">
-              <div className="flex items-center gap-2 mb-2">
-                <Wallet className="w-4 h-4 text-emerald-400" />
-                <label className="block text-xs font-bold text-white uppercase">{t('initial_balance')} (IDR)</label>
-              </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
+                Saldo Kas Awal Sistem (IDR)
+              </label>
               <input
                 type="number"
-                step="1"
+                step="0.01"
                 min="0"
-                placeholder="0"
-                value={settings.initial_balance_idr || ''}
+                value={settings.initial_balance_idr || '0'}
                 onChange={(e) => setSettings({ ...settings, initial_balance_idr: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm font-mono font-bold text-emerald-400 focus:outline-none focus:border-cyan-500"
               />
-              <p className="text-[11px] text-slate-400 mt-1">Starting cash balance of the organization before system records</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('language')}</label>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Mata Uang Default</label>
                 <select
-                  value={settings.default_language || 'id'}
-                  onChange={(e) => setSettings({ ...settings, default_language: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
+                  value={settings.default_currency || 'IDR'}
+                  onChange={(e) => setSettings({ ...settings, default_currency: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-cyan-400 font-bold focus:outline-none focus:border-cyan-500"
                 >
-                  <option value="id">Indonesian ({t('indonesian')})</option>
-                  <option value="en">English ({t('english')})</option>
+                  <option value="IDR">IDR (Rupiah)</option>
+                  <option value="SGD">SGD (Dollar Singapura)</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('currency')}</label>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Mode Nilai Tukar</label>
                 <select
-                  value={settings.default_currency || 'IDR'}
-                  onChange={(e) => setSettings({ ...settings, default_currency: e.target.value })}
+                  value={settings.exchange_rate_mode || 'manual'}
+                  onChange={(e) => setSettings({ ...settings, exchange_rate_mode: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
                 >
-                  <option value="IDR">IDR (Rupiah)</option>
-                  <option value="SGD">SGD (Dollar)</option>
+                  <option value="manual">Manual Input</option>
+                  <option value="auto">Auto ExchangeRate-API</option>
                 </select>
               </div>
             </div>
 
-            {/* Exchange Rate Mode Section */}
-            <div className="pt-4 border-t border-slate-800 space-y-4">
-              <h4 className="text-sm font-bold text-cyan-400 uppercase tracking-wider">{t('exchange_rate')} Mode & Sync</h4>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Mode Selection</label>
-                  <select
-                    value={settings.exchange_rate_mode || 'manual'}
-                    onChange={(e) => setSettings({ ...settings, exchange_rate_mode: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
-                  >
-                    <option value="manual">Manual Mode (Admin Input)</option>
-                    <option value="auto">Automatic Mode (Live Provider Sync)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
-                    {t('exchange_rate')}: 1 SGD = X IDR
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    disabled={settings.exchange_rate_mode === 'auto'}
-                    value={settings.exchange_rate_sgd_idr || ''}
-                    onChange={(e) => setSettings({ ...settings, exchange_rate_sgd_idr: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 disabled:opacity-50"
-                  />
-                </div>
-              </div>
-
-              {settings.exchange_rate_mode === 'auto' && (
-                <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs font-semibold text-slate-300 block">Auto Sync Status</span>
-                    <span className="text-[11px] text-slate-400">
-                      Provider: {rateInfo?.provider_name || 'ExchangeRate-API'} | Status: {rateInfo?.last_sync_status || 'Active'}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleSyncRateNow}
-                    disabled={syncing}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 text-xs font-semibold border border-cyan-500/30 transition-all disabled:opacity-50"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
-                    Sync Now
-                  </button>
-                </div>
-              )}
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
+                Nilai Kurs SGD ke IDR
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="1"
+                value={settings.exchange_rate_sgd_idr || '11800.00'}
+                onChange={(e) => setSettings({ ...settings, exchange_rate_sgd_idr: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white font-mono font-bold focus:outline-none focus:border-cyan-500"
+              />
             </div>
 
             <div className="pt-4 border-t border-slate-800">
@@ -241,7 +254,7 @@ export const SettingsPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Kalkulator Konversi Mata Uang</h3>
-                  <p className="text-xs text-slate-400">Instant test based on current active rate</p>
+                  <p className="text-xs text-slate-400">Pengujian instan berdasarkan kurs aktif</p>
                 </div>
               </div>
 
@@ -285,6 +298,189 @@ export const SettingsPage = () => {
               <span className="px-2 py-0.5 rounded bg-slate-800 text-cyan-400 font-bold uppercase text-[10px]">
                 {settings.exchange_rate_mode} Mode
               </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic Category Management Panel Section */}
+        <div className="glass-panel p-8 rounded-3xl border border-slate-800 space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-slate-800">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+              <Tag className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white">Kelola Kategori Keuangan & Anggota</h3>
+              <p className="text-xs text-slate-400">Tambah, hapus, atau atur daftar kategori operasional pendapatan, pengeluaran, pembayaran staff, dan anggota</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 1. Operational Income Categories */}
+            <div className="p-5 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <TrendingUp className="w-4 h-4" /> Kategori Pendapatan Operasional
+                </h4>
+                <span className="text-[10px] text-slate-400">{incomeCategories.length} Kategori</span>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Kategori pendapatan baru..."
+                  value={newIncomeCat}
+                  onChange={(e) => setNewIncomeCat(e.target.value)}
+                  className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => addCategoryItem(incomeCategories, newIncomeCat, setNewIncomeCat, '/internal/finance/incomes/categories', 'Pendapatan')}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Tambah
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pt-1">
+                {incomeCategories.map(cat => (
+                  <span key={cat} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-xs font-medium">
+                    {cat}
+                    <button
+                      type="button"
+                      onClick={() => removeCategoryItem(incomeCategories, cat, '/internal/finance/incomes/categories', 'Pendapatan')}
+                      className="text-slate-400 hover:text-rose-400 font-bold"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 2. Operational Expense Categories */}
+            <div className="p-5 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <TrendingDown className="w-4 h-4" /> Kategori Pengeluaran Operasional
+                </h4>
+                <span className="text-[10px] text-slate-400">{expenseCategories.length} Kategori</span>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Kategori pengeluaran baru..."
+                  value={newExpenseCat}
+                  onChange={(e) => setNewExpenseCat(e.target.value)}
+                  className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-rose-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => addCategoryItem(expenseCategories, newExpenseCat, setNewExpenseCat, '/internal/finance/expenses/categories', 'Pengeluaran')}
+                  className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Tambah
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pt-1">
+                {expenseCategories.map(cat => (
+                  <span key={cat} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/20 text-xs font-medium">
+                    {cat}
+                    <button
+                      type="button"
+                      onClick={() => removeCategoryItem(expenseCategories, cat, '/internal/finance/expenses/categories', 'Pengeluaran')}
+                      className="text-slate-400 hover:text-rose-400 font-bold"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Staff Payment Categories */}
+            <div className="p-5 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Wallet className="w-4 h-4" /> Kategori Pembayaran Staff
+                </h4>
+                <span className="text-[10px] text-slate-400">{paymentCategories.length} Kategori</span>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Kategori pembayaran staff baru..."
+                  value={newPaymentCat}
+                  onChange={(e) => setNewPaymentCat(e.target.value)}
+                  className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => addCategoryItem(paymentCategories, newPaymentCat, setNewPaymentCat, '/internal/finance/payments/categories', 'Pembayaran Staff')}
+                  className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Tambah
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pt-1">
+                {paymentCategories.map(cat => (
+                  <span key={cat} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 text-xs font-medium">
+                    {cat}
+                    <button
+                      type="button"
+                      onClick={() => removeCategoryItem(paymentCategories, cat, '/internal/finance/payments/categories', 'Pembayaran Staff')}
+                      className="text-slate-400 hover:text-rose-400 font-bold"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. Staff Member Roles/Categories */}
+            <div className="p-5 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Users className="w-4 h-4" /> Peran / Kategori Anggota Staff
+                </h4>
+                <span className="text-[10px] text-slate-400">{memberCategories.length} Kategori</span>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Role / kategori anggota baru..."
+                  value={newMemberCat}
+                  onChange={(e) => setNewMemberCat(e.target.value)}
+                  className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => addCategoryItem(memberCategories, newMemberCat, setNewMemberCat, '/internal/finance/members/categories', 'Anggota Staff')}
+                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Tambah
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pt-1">
+                {memberCategories.map(cat => (
+                  <span key={cat} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-300 border border-purple-500/20 text-xs font-medium">
+                    {cat}
+                    <button
+                      type="button"
+                      onClick={() => removeCategoryItem(memberCategories, cat, '/internal/finance/members/categories', 'Anggota Staff')}
+                      className="text-slate-400 hover:text-rose-400 font-bold"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>

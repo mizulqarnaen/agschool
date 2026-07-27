@@ -448,3 +448,53 @@ export const updatePaymentCategories = (req, res) => {
   loggerService.logActivity(req.user.id, 'UPDATE_PAYMENT_CATEGORIES', 'Settings', null, { categories });
   res.json({ success: true, data: categories });
 };
+
+// --- Operational Income Categories Management ---
+export const getIncomeCategories = (req, res) => {
+  const settings = settingRepository.getSettingsMap();
+  const defaultCategories = ['Sponsorship', 'Donation', 'Registration Fee', 'School Allocation', 'Merchandise Sales', 'Other Income'];
+  let categories = defaultCategories;
+  if (settings.income_categories) {
+    try {
+      categories = JSON.parse(settings.income_categories);
+    } catch (_) {
+      categories = defaultCategories;
+    }
+  }
+  res.json({ success: true, data: categories });
+};
+
+export const updateIncomeCategories = (req, res) => {
+  const { categories } = req.body;
+  if (!Array.isArray(categories)) {
+    return res.status(400).json({ success: false, message: 'Categories must be an array.' });
+  }
+  settingRepository.updateSettingsMap({ income_categories: JSON.stringify(categories) });
+  loggerService.logActivity(req.user.id, 'UPDATE_INCOME_CATEGORIES', 'Settings', null, { categories });
+  res.json({ success: true, data: categories });
+};
+
+// --- Operational Expense Categories Management ---
+export const getExpenseCategories = (req, res) => {
+  const settings = settingRepository.getSettingsMap();
+  const defaultCategories = ['Equipment', 'Logistics', 'Server/Domain', 'Refreshments', 'Operations', 'Event Prize Payout', 'Marketing', 'Other Expense'];
+  let categories = defaultCategories;
+  if (settings.expense_categories) {
+    try {
+      categories = JSON.parse(settings.expense_categories);
+    } catch (_) {
+      categories = defaultCategories;
+    }
+  }
+  res.json({ success: true, data: categories });
+};
+
+export const updateExpenseCategories = (req, res) => {
+  const { categories } = req.body;
+  if (!Array.isArray(categories)) {
+    return res.status(400).json({ success: false, message: 'Categories must be an array.' });
+  }
+  settingRepository.updateSettingsMap({ expense_categories: JSON.stringify(categories) });
+  loggerService.logActivity(req.user.id, 'UPDATE_EXPENSE_CATEGORIES', 'Settings', null, { categories });
+  res.json({ success: true, data: categories });
+};

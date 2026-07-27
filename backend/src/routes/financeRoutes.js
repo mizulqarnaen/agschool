@@ -6,7 +6,9 @@ import {
   getPayments, createPayment, updatePayment, deletePayment,
   getMembers, createMember, updateMember, deleteMember,
   getMemberCategories, updateMemberCategories,
-  getPaymentCategories, updatePaymentCategories
+  getPaymentCategories, updatePaymentCategories,
+  getIncomeCategories, updateIncomeCategories,
+  getExpenseCategories, updateExpenseCategories
 } from '../controllers/financeController.js';
 import { authorizeRoles } from '../middleware/roleMiddleware.js';
 import { validateIncome, validateExpense, validatePayment } from '../middleware/validationMiddleware.js';
@@ -19,12 +21,16 @@ router.use(authorizeRoles('administrator', 'finance'));
 router.get('/dashboard', getDashboardSummary);
 
 // Incomes
+router.get('/incomes/categories', getIncomeCategories);
+router.post('/incomes/categories', updateIncomeCategories);
 router.get('/incomes', getIncomes);
 router.post('/incomes', validateIncome, createIncome);
 router.put('/incomes/:id', validateIncome, updateIncome);
 router.delete('/incomes/:id', deleteIncome);
 
 // Expenses
+router.get('/expenses/categories', getExpenseCategories);
+router.post('/expenses/categories', updateExpenseCategories);
 router.get('/expenses', getExpenses);
 router.post('/expenses', validateExpense, createExpense);
 router.put('/expenses/:id', validateExpense, updateExpense);

@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 export const IncomePage = () => {
   const { t } = useTranslation();
   const [incomes, setIncomes] = useState([]);
+  const [categories, setCategories] = useState(['Sponsorship', 'Donation', 'Registration Fee', 'School Allocation', 'Merchandise Sales', 'Other Income']);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -26,7 +27,17 @@ export const IncomePage = () => {
 
   useEffect(() => {
     fetchIncomes();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/internal/finance/incomes/categories');
+      if (response.data.success && response.data.data?.length > 0) {
+        setCategories(response.data.data);
+      }
+    } catch (_) {}
+  };
 
   const fetchIncomes = async () => {
     setLoading(true);
@@ -195,11 +206,9 @@ export const IncomePage = () => {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
               >
-                <option value="Sponsorship">Sponsorship</option>
-                <option value="Donation">Donation</option>
-                <option value="Registration Fee">Registration Fee</option>
-                <option value="School Allocation">School Allocation</option>
-                <option value="Other Income">Other Income</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
 

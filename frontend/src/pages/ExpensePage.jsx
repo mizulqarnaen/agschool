@@ -11,6 +11,7 @@ export const ExpensePage = () => {
   const { t } = useTranslation();
   const [expenses, setExpenses] = useState([]);
   const [events, setEvents] = useState([]);
+  const [categories, setCategories] = useState(['Equipment', 'Logistics', 'Server/Domain', 'Refreshments', 'Operations', 'Event Prize Payout', 'Marketing', 'Other Expense']);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -28,7 +29,17 @@ export const ExpensePage = () => {
   useEffect(() => {
     fetchExpenses();
     fetchEvents();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/internal/finance/expenses/categories');
+      if (response.data.success && response.data.data?.length > 0) {
+        setCategories(response.data.data);
+      }
+    } catch (_) {}
+  };
 
   const fetchExpenses = async () => {
     setLoading(true);
@@ -212,13 +223,9 @@ export const ExpensePage = () => {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
               >
-                <option value="Equipment">Equipment</option>
-                <option value="Logistics">Logistics</option>
-                <option value="Server/Domain">Server / Domain</option>
-                <option value="Refreshments">Refreshments</option>
-                <option value="Operations">Operations</option>
-                <option value="Event Prize Payout">Event Prize Payout</option>
-                <option value="Other Expense">Other Expense</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
 

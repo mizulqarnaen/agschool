@@ -77,6 +77,15 @@
 - **Refactored Public Portal**: Cleaned up branding and wording across Public Portal pages.
 - **Dual Status Badges on Public Event Cards ([EventCard.jsx](file:///c:/laragon/www/agschool/frontend/src/components/public/EventCard.jsx))**: Every event card displays both **Registration Status** (`🟢 Pendaftaran Buka`, `🔒 Pendaftaran Ditutup`, `⏳ Segera Dibuka`) and **Execution Status** (`● Berlangsung`, `✓ Selesai`, `📅 Dijadwalkan`, `✕ Dibatalkan`).
 
+### 10. Dynamic Updatable Categories for Operational Incomes & Expenses
+- **Dynamic Endpoints**: Added `/internal/finance/incomes/categories` and `/internal/finance/expenses/categories` endpoints.
+- **Form Select Integration**: Form modal dropdowns on `IncomePage.jsx` and `ExpensePage.jsx` load active custom category options dynamically.
+- **Settings Category Management Panel ([SettingsPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/SettingsPage.jsx))**: Includes dedicated category configuration cards allowing admins to add, edit, and remove categories for:
+  1. 📈 Kategori Pendapatan Operasional (*Operational Income Categories*)
+  2. 📉 Kategori Pengeluaran Operasional (*Operational Expense Categories*)
+  3. 💸 Kategori Pembayaran Staff (*Staff Payment Categories*)
+  4. 👥 Kategori Anggota Staff (*Staff Member Roles*)
+
 ---
 
 ## API Endpoints Summary
