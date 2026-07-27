@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingUp, Search, Filter, Calendar, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { Plus, Trash2, Edit, TrendingUp, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -169,6 +169,33 @@ export const IncomePage = () => {
 
     return true;
   });
+
+  // Computed Totals based on Filtered Incomes
+  const totalFilteredBaseIDR = filteredIncomes.reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+
+  const totalPaidBaseIDR = filteredIncomes
+    .filter(item => (!item.payment_status || item.payment_status === 'Paid'))
+    .reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+
+  const totalUnpaidBaseIDR = filteredIncomes
+    .filter(item => item.payment_status === 'Unpaid')
+    .reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+
+  const totalCancelledBaseIDR = filteredIncomes
+    .filter(item => item.payment_status === 'Cancelled')
+    .reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+
+  // Grouped Category Breakdown
+  const categoryBreakdown = filteredIncomes.reduce((acc, item) => {
+    const cat = item.category || 'Lainnya';
+    const amt = Number(item.base_amount_idr || item.amount || 0);
+    if (!acc[cat]) {
+      acc[cat] = { count: 0, totalIDR: 0 };
+    }
+    acc[cat].count += 1;
+    acc[cat].totalIDR += amt;
+    return acc;
+  }, {});
 
   const columns = [
     { header: t('date'), accessor: 'transaction_date' },
@@ -366,6 +393,89 @@ export const IncomePage = () => {
             )}
           </div>
         </div>
+
+        {/* Financial Summary Cards (Filtered) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="glass-panel p-4 rounded-2xl border-l-4 border-l-emerald-500 bg-emerald-500/5">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Total Lunas (Paid)
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                {filteredIncomes.filter(i => (!i.payment_status || i.payment_status === 'Paid')).length} Item
+              </span>
+            </div>
+            <div className="text-lg font-extrabold text-white font-mono">
+              IDR {totalPaidBaseIDR.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+          </div>
+
+          <div className="glass-panel p-4 rounded-2xl border-l-4 border-l-amber-500 bg-amber-500/5">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" /> Pending (Unpaid)
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">
+                {filteredIncomes.filter(i => i.payment_status === 'Unpaid').length} Item
+              </span>
+            </div>
+            <div className="text-lg font-extrabold text-amber-300 font-mono">
+              IDR {totalUnpaidBaseIDR.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+          </div>
+
+          <div className="glass-panel p-4 rounded-2xl border-l-4 border-l-rose-500 bg-rose-500/5">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                <XCircle className="w-3.5 h-3.5" /> Dibatalkan (Cancelled)
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold">
+                {filteredIncomes.filter(i => i.payment_status === 'Cancelled').length} Item
+              </span>
+            </div>
+            <div className="text-lg font-extrabold text-rose-400 font-mono">
+              IDR {totalCancelledBaseIDR.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+          </div>
+
+          <div className="glass-panel p-4 rounded-2xl border-l-4 border-l-cyan-500 bg-cyan-500/5">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5" /> Total Pendapatan Filtered
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">
+                {filteredIncomes.length} Item
+              </span>
+            </div>
+            <div className="text-lg font-extrabold text-cyan-300 font-mono">
+              IDR {totalFilteredBaseIDR.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+          </div>
+        </div>
+
+        {/* Category Breakdown Badges Container */}
+        {Object.keys(categoryBreakdown).length > 0 && (
+          <div className="glass-panel p-4 rounded-2xl mb-6 border border-slate-800 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-cyan-400" /> Ringkasan Pendapatan Per Kategori (Terfilter)
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {Object.entries(categoryBreakdown).map(([catName, info]) => (
+                <div key={catName} className="flex items-center gap-2 px-3 py-1.5 bg-slate-900/90 rounded-xl border border-slate-700/80 text-xs">
+                  <span className="font-semibold text-slate-300">{catName}:</span>
+                  <span className="font-extrabold text-emerald-400 font-mono">
+                    IDR {info.totalIDR.toLocaleString()}
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold">
+                    ({info.count} data)
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <Table columns={columns} data={filteredIncomes} loading={loading} emptyMessage="Tidak ada data pendapatan ditemukan." />
 

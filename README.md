@@ -92,7 +92,9 @@
 ### 12. Payment Status Management for Operational Incomes & Expenses
 - **Payment Status Field**: Added `payment_status` (`Paid` 🟢, `Unpaid` 🟡, `Cancelled` 🔴) to modal forms and backend endpoints on `IncomePage.jsx` and `ExpensePage.jsx`.
 - **Status Badges & Status Filter**: Tables display interactive status badges (`Paid`, `Unpaid`, `Cancelled`) and filter toolbars include status filters (`Semua Status`, `Paid`, `Unpaid`, `Cancelled`).
-- **Dashboard Net Balance Accuracy**: Dashboard metrics automatically filter net cash balance computations to count transactions with `payment_status === 'Paid'`.
+### 13. Dynamic Financial Summary Cards & Category Breakdown Panels
+- **Filtered Financial Summary Cards ([IncomePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/IncomePage.jsx) & [ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Displays 4 reactive glassmorphic metric cards above the table showing Total Paid (Lunas), Total Unpaid (Pending), Total Cancelled (Dibatalkan), and Total Filtered.
+- **Grouped Category Breakdown**: Renders category summary pills displaying total nominal sums in IDR and item counts for each active category, dynamically updated by date and search filters.
 
 ---
 

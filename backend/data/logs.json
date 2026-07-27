@@ -1054,5 +1054,53 @@
     "created_at": "2026-07-27T09:30:54.750Z",
     "updated_at": "2026-07-27T09:30:54.750Z",
     "deleted_at": null
+  },
+  {
+    "id": 89,
+    "user_id": 1,
+    "action": "UPDATE_EXPENSE_CATEGORIES",
+    "module": "Settings",
+    "entity_id": null,
+    "details_json": "{\"categories\":[\"Pembuatan Map\",\"Biaya Operasional\",\"Event Prize Payout\",\"Biaya Promosi\",\"Tidak Terduga\",\"Biaya Maintenance\"]}",
+    "timestamp": "2026-07-27T09:53:04.988Z",
+    "created_at": "2026-07-27T09:53:04.989Z",
+    "updated_at": "2026-07-27T09:53:04.989Z",
+    "deleted_at": null
+  },
+  {
+    "id": 90,
+    "user_id": 1,
+    "action": "UPDATE_EXPENSE_CATEGORIES",
+    "module": "Settings",
+    "entity_id": null,
+    "details_json": "{\"categories\":[\"Pembuatan Map\",\"Biaya Operasional\",\"Event Prize Payout\",\"Biaya Promosi\",\"Biaya Maintenance\"]}",
+    "timestamp": "2026-07-27T09:53:06.667Z",
+    "created_at": "2026-07-27T09:53:06.668Z",
+    "updated_at": "2026-07-27T09:53:06.668Z",
+    "deleted_at": null
+  },
+  {
+    "id": 91,
+    "user_id": 1,
+    "action": "UPDATE_EXPENSE_CATEGORIES",
+    "module": "Settings",
+    "entity_id": null,
+    "details_json": "{\"categories\":[\"Pembuatan Map\",\"Biaya Operasional\",\"Event Prize Payout\",\"Biaya Promosi\",\"Biaya Maintenance\",\"Reward Anggota\"]}",
+    "timestamp": "2026-07-27T09:53:11.279Z",
+    "created_at": "2026-07-27T09:53:11.280Z",
+    "updated_at": "2026-07-27T09:53:11.280Z",
+    "deleted_at": null
+  },
+  {
+    "id": 92,
+    "user_id": 1,
+    "action": "UPDATE_EXPENSE_CATEGORIES",
+    "module": "Settings",
+    "entity_id": null,
+    "details_json": "{\"categories\":[\"Pembuatan Map\",\"Biaya Operasional\",\"Event Prize Payout\",\"Biaya Promosi\",\"Biaya Maintenance\",\"Reward Anggota\",\"Tidak Terduga\"]}",
+    "timestamp": "2026-07-27T09:53:16.016Z",
+    "created_at": "2026-07-27T09:53:16.016Z",
+    "updated_at": "2026-07-27T09:53:16.016Z",
+    "deleted_at": null
   }
 ]
