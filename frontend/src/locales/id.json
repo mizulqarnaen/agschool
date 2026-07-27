@@ -1,8 +1,8 @@
 {
   "app_title": "AG School Finance",
-  "transparency_portal": "Portal Transparansi Publik",
-  "hero_title": "Transparansi Acara & Hadiah AG School",
-  "hero_subtitle": "Selamat datang di portal transparansi publik. Jelajahi acara komunitas, lihat poster turnamen, daftar pemenang resmi, dan status pembayaran hadiah.",
+  "transparency_portal": "Portal Resmi Acara",
+  "hero_title": "Portal Acara & Turnamen AG School",
+  "hero_subtitle": "Selamat datang di portal resmi acara AG School. Jelajahi acara komunitas, lihat poster turnamen, daftar pemenang resmi, dan informasi total hadiah.",
   "search_placeholder": "Cari judul atau jenis acara...",
   "all_statuses": "Semua Status Acara",
   "scheduled": "Tersedia",
@@ -89,6 +89,7 @@
   "roblox_username": "Roblox Username",
   "roblox_nickname": "Roblox Nickname",
   "tiktok_handle": "TikTok Handle",
+  "discord_username": "Discord Username",
   "config_payment_categories": "Pengaturan Kategori Pembayaran",
   "config_member_categories": "Pengaturan Kategori Anggota",
   "create_user": "Tambah Pengguna Baru",
@@ -100,5 +101,8 @@
   "generate_report": "Buat Laporan",
   "export_csv": "Ekspor CSV",
   "export_pdf": "Ekspor PDF",
-  "activity_logs": "Log Audit Aktivitas"
+  "activity_logs": "Log Audit Aktivitas",
+  "bank_name": "Nama Bank / E-Wallet",
+  "bank_account_number": "Nomor Rekening",
+  "bank_account_name": "Nama Pemilik Rekening"
 }

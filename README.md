@@ -40,15 +40,14 @@
 - **Member Categories**: Dynamic admin management of staff roles (`BA`, `Caster`, `Maintainer`, `Secretary`, `Staff`, `Content Creator`, etc.) via API `/internal/finance/members/categories`.
 - **Payment Categories**: Dynamic admin management of payout categories (`BA payment`, `Caster payment`, `Maintainer fee`, `Secretary stipend`, `Other payout`, etc.) via API `/internal/finance/payments/categories`.
 
-### 4. Member Management & Monthly Salary Benchmarks
-- **Member Roster & Spacious 2-Column Modal**: Real-time search bar (by Name, Roblox ID, TikTok, Phone, Email) and category filter pills.
-- **Optional Social & Benchmark Fields**:
-  - Roblox Username & Nickname
-  - TikTok Handle
-  - Email & Phone
-  - **Monthly Salary Benchmark (Gaji / Honor Bulanan Acuan)**: Optional nominal + currency (`monthly_salary` & `salary_currency`).
-- **Auto-Populate Salary on Payout**: When selecting a staff member in the Member Payment modal (`PaymentPage.jsx`), the amount and currency fields automatically pre-fill with that member's configured benchmark salary.
-- **Full Editability**: Complete edit capability confirmed via edit button (pencil icon) populating all profile and salary data.
+### 4. Member Management, Multi-Role, Per-Role Salary Benchmarks & Bank Details
+- **Member Roster & Spacious 2-Column Modal**: Real-time search bar (by Name, Roblox ID, TikTok, Discord, Bank Name, Account Number, Phone, Email) and category filter pills.
+- **Social Handles**: Support for Roblox Username & Nickname, TikTok Handle, and Discord Username (`discord_username`).
+- **Multi-Role Support**: Members can hold multiple roles simultaneously (e.g. `["Caster", "Content Creator"]`).
+- **Per-Role Benchmark Salary (`role_salaries`)**: Optional nominal + currency configured per role (e.g. Caster: IDR 500,000, Content Creator: IDR 700,000). Total combined salary is automatically computed.
+- **Bank & Financial Details**: Storage of Bank/E-Wallet Name (`bank_name`), Account Number (`bank_account_number`), and Account Holder Name (`bank_account_name`).
+- **Role-Aware Auto-Populate Salary on Payout**: When selecting a staff member and payout category in `PaymentPage.jsx`, the amount and currency fields automatically pre-fill with that member's specific benchmark salary for that matching role.
+- **Full Editability**: Complete edit capability confirmed via edit button (pencil icon) populating all multi-role, bank, and salary data.
 
 ### 5. Automatic Event Prize Expense Sync
 - When an event winner prize payment status is set to `Paid`, the backend automatically generates a corresponding expense entry in `expenses.json` under category `Event Prize Payout`.
@@ -60,6 +59,23 @@
 - **Public Landing Page Date Formatting ([dateFormatter.js](file:///c:/laragon/www/agschool/frontend/src/utils/dateFormatter.js))**: All raw ISO dates (e.g. `2026-07-24`) displayed on public event cards and event detail pages are formatted into human-readable locale strings based on the active language:
   - **Bahasa Indonesia (`id`)**: `24 Juli 2026`
   - **English (`en`)**: `24 July 2026`
+
+### 7. League Points System & Dynamic Standings Leaderboard
+- **Dual Event Format Support**: Supports both Standard 1-Match Direct events and Multi-Match League Points events.
+- **Dynamic Mid-Event Adjustments**: Total match counts (e.g. 3 matches adjusted to 2 matches mid-event), point distribution schemes (Rank #1 = 10pt, Rank #2 = 9pt, etc.), and custom podium winner counts (Top 3, Top 5, Top 10) can be edited at any time during an event.
+- **Match-by-Match Placement Matrix**: Admin inputs match placements for finalists; total points are calculated automatically.
+- **Automatic Tie-Breaker Engine**: If total points are tied, players are ranked by their single best match placement finish (e.g. `[5, 9]` ranks above `[7, 8]` because finish #5 is superior to #7).
+- **1-Click Sync to Prize Winners**: Pushes top N podium winners into the event's official Prize Winner roster with a single click.
+- **Public Leaderboard Transparency**: Displays live Standings Table and tie-breaker rationale on the Public Event Details page for community verification.
+
+### 8. Dynamic Placement Schema & Real-Time Participant Search
+- **Participant Search**: Standings modal includes a real-time search bar (`Search`) to instantly filter participants by name or team.
+- **Dynamic Placement Point Schema Editor**: Custom placement rank counts (e.g. 5, 10, 20, or custom rank count) with instant `Top 5`, `Top 10`, `Top 20` preset buttons.
+
+### 9. Redesigned Prize Management Modal & Public Portal Status Badges
+- **2-Column Prize Management Modal ([PrizeModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/events/PrizeModal.jsx))**: Redesigned into a spacious 2-column layout with real-time search bar for winner names and cleanly grouped payment/currency inputs.
+- **Refactored Public Portal**: Cleaned up branding and wording across Public Portal pages.
+- **Dual Status Badges on Public Event Cards ([EventCard.jsx](file:///c:/laragon/www/agschool/frontend/src/components/public/EventCard.jsx))**: Every event card displays both **Registration Status** (`🟢 Pendaftaran Buka`, `🔒 Pendaftaran Ditutup`, `⏳ Segera Dibuka`) and **Execution Status** (`● Berlangsung`, `✓ Selesai`, `📅 Dijadwalkan`, `✕ Dibatalkan`).
 
 ---
 

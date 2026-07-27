@@ -44,6 +44,10 @@ All implementations MUST follow the project owner's mandated technology stack wi
 - **Backend**: Node.js (LTS), Express.js, JWT, bcrypt, Multer, REST API, Express Validator.
 - **Storage**: Structured JSON Files in local filesystem (`backend/data/*.json`). NO SQLite, MySQL, PostgreSQL, MongoDB, Firebase, or Supabase allowed in current version.
 
+### Principle VIII: Immutable Snapshot Integrity & Non-Destructive Storage
+- **Data Preservation**: Existing stored records in JSON files (`backend/data/*.json`) MUST NEVER be overwritten, cleared, or lost during schema migrations or feature additions. All schema changes MUST provide default fallback values when reading legacy records.
+- **Historical Snapshots**: Recorded transactions (Incomes, Expenses, Payments, Logs) store exact snapshot values (`amount`, `currency`, `exchange_rate_used`, `base_amount_idr`, `member_name`) captured at transaction time. Subsequent changes to organization settings, exchange rates, or member profiles MUST NEVER retroactively alter existing saved transaction data.
+
 ---
 
 ## Official Technology Stack & Implementation Constraints

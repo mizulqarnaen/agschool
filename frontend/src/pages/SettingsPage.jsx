@@ -39,8 +39,9 @@ export const SettingsPage = () => {
           setRateInfo(response.data.data.rate_info);
         }
       }
-    } catch (_) {
-      toast.error('Failed to load settings');
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to load settings';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -52,8 +53,9 @@ export const SettingsPage = () => {
       await api.post('/internal/admin/settings', settings);
       toast.success('System settings updated');
       fetchSettings();
-    } catch (_) {
-      toast.error('Failed to save settings');
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to save settings';
+      toast.error(msg);
     }
   };
 

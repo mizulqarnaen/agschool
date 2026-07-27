@@ -306,6 +306,24 @@ export const getMembers = (req, res) => {
 };
 
 export const createMember = (req, res) => {
+  let categories = req.body.categories;
+  if (!Array.isArray(categories) || categories.length === 0) {
+    categories = req.body.category ? [req.body.category] : ['BA'];
+  }
+  const categoryStr = categories.join(', ');
+  const role_salaries = req.body.role_salaries || {};
+
+  let monthly_salary = req.body.monthly_salary !== undefined && req.body.monthly_salary !== '' && req.body.monthly_salary !== null
+    ? Number(req.body.monthly_salary)
+    : null;
+
+  if ((monthly_salary === null || monthly_salary === 0) && Object.keys(role_salaries).length > 0) {
+    monthly_salary = Object.values(role_salaries).reduce((acc, val) => {
+      const amt = typeof val === 'object' ? Number(val.amount || 0) : Number(val || 0);
+      return acc + amt;
+    }, 0);
+  }
+
   const newMember = memberRepository.create({
     full_name: req.body.full_name,
     email: req.body.email || '',
@@ -313,9 +331,15 @@ export const createMember = (req, res) => {
     roblox_username: req.body.roblox_username || '',
     roblox_nickname: req.body.roblox_nickname || '',
     tiktok_handle: req.body.tiktok_handle || '',
-    monthly_salary: req.body.monthly_salary !== undefined && req.body.monthly_salary !== '' ? Number(req.body.monthly_salary) : null,
+    discord_username: req.body.discord_username || '',
+    bank_name: req.body.bank_name || '',
+    bank_account_number: req.body.bank_account_number || '',
+    bank_account_name: req.body.bank_account_name || '',
+    monthly_salary,
     salary_currency: req.body.salary_currency || 'IDR',
-    category: req.body.category || 'BA',
+    category: categoryStr,
+    categories,
+    role_salaries,
     status: req.body.status || 'active',
     joined_date: req.body.joined_date || new Date().toISOString().split('T')[0]
   });
@@ -325,6 +349,24 @@ export const createMember = (req, res) => {
 
 export const updateMember = (req, res) => {
   const { id } = req.params;
+  let categories = req.body.categories;
+  if (!Array.isArray(categories) || categories.length === 0) {
+    categories = req.body.category ? [req.body.category] : ['BA'];
+  }
+  const categoryStr = categories.join(', ');
+  const role_salaries = req.body.role_salaries || {};
+
+  let monthly_salary = req.body.monthly_salary !== undefined && req.body.monthly_salary !== '' && req.body.monthly_salary !== null
+    ? Number(req.body.monthly_salary)
+    : null;
+
+  if ((monthly_salary === null || monthly_salary === 0) && Object.keys(role_salaries).length > 0) {
+    monthly_salary = Object.values(role_salaries).reduce((acc, val) => {
+      const amt = typeof val === 'object' ? Number(val.amount || 0) : Number(val || 0);
+      return acc + amt;
+    }, 0);
+  }
+
   const updated = memberRepository.update(id, {
     full_name: req.body.full_name,
     email: req.body.email || '',
@@ -332,9 +374,15 @@ export const updateMember = (req, res) => {
     roblox_username: req.body.roblox_username || '',
     roblox_nickname: req.body.roblox_nickname || '',
     tiktok_handle: req.body.tiktok_handle || '',
-    monthly_salary: req.body.monthly_salary !== undefined && req.body.monthly_salary !== '' ? Number(req.body.monthly_salary) : null,
+    discord_username: req.body.discord_username || '',
+    bank_name: req.body.bank_name || '',
+    bank_account_number: req.body.bank_account_number || '',
+    bank_account_name: req.body.bank_account_name || '',
+    monthly_salary,
     salary_currency: req.body.salary_currency || 'IDR',
-    category: req.body.category || 'BA',
+    category: categoryStr,
+    categories,
+    role_salaries,
     status: req.body.status || 'active',
     joined_date: req.body.joined_date
   });

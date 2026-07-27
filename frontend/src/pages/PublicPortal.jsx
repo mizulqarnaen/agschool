@@ -41,15 +41,15 @@ export const PublicPortal = () => {
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold mb-6">
             <ShieldCheck className="w-4 h-4" />
-            <span>Official Community Transparency Portal</span>
+            <span>Portal Resmi Acara AG School</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent mb-6">
-            AG School Event
+            AG School Event & Turnamen
           </h1>
 
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Welcome to the public transparency portal. Here you can explore community events, view tournament posters, check official winner rosters, and inspect real-time prize payment statuses.
+            Selamat datang di Portal Resmi Acara AG School. Temukan informasi acara komunitas, poster turnamen, status pendaftaran, klasemen poin liga, dan daftar pemenang resmi.
           </p>
         </div>
       </section>

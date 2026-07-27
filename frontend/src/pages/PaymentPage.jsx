@@ -4,7 +4,7 @@ import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
 import { MemberModal } from '../components/common/MemberModal';
-import { Plus, Trash2, Edit, Users, UserPlus, Settings, X } from 'lucide-react';
+import { Plus, Trash2, Edit, Users, UserPlus, Settings, X, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -107,15 +107,57 @@ export const PaymentPage = () => {
     }
   };
 
+  const findRoleBenchmark = (member, paymentCategory) => {
+    if (!member) return null;
+    const payCatLower = (paymentCategory || '').toLowerCase();
+
+    if (member.role_salaries && Object.keys(member.role_salaries).length > 0) {
+      for (const [role, sal] of Object.entries(member.role_salaries)) {
+        const roleLower = role.toLowerCase();
+        const cleanPayCat = payCatLower.replace('payment', '').replace('fee', '').replace('stipend', '').replace('payout', '').trim();
+        if (payCatLower.includes(roleLower) || roleLower.includes(cleanPayCat)) {
+          const amt = typeof sal === 'object' ? sal.amount : sal;
+          const curr = typeof sal === 'object' ? sal.currency || member.salary_currency || 'IDR' : member.salary_currency || 'IDR';
+          if (amt > 0) {
+            return { role, amount: amt, currency: curr };
+          }
+        }
+      }
+    }
+
+    if (member.monthly_salary > 0) {
+      return { role: 'General', amount: member.monthly_salary, currency: member.salary_currency || 'IDR' };
+    }
+
+    return null;
+  };
+
   const handleMemberSelect = (memberId) => {
     const selectedMember = members.find(m => m.id === Number(memberId));
     setFormData(prev => {
+      const benchmark = findRoleBenchmark(selectedMember, prev.payment_category);
       const updated = { ...prev, member_id: memberId };
-      if (selectedMember && selectedMember.monthly_salary > 0) {
+      if (benchmark) {
+        updated.amount = benchmark.amount;
+        updated.currency = benchmark.currency;
+      } else if (selectedMember && selectedMember.monthly_salary > 0) {
         updated.amount = selectedMember.monthly_salary;
         if (selectedMember.salary_currency) {
           updated.currency = selectedMember.salary_currency;
         }
+      }
+      return updated;
+    });
+  };
+
+  const handlePaymentCategorySelect = (categoryName) => {
+    setFormData(prev => {
+      const selectedMember = members.find(m => m.id === Number(prev.member_id));
+      const benchmark = findRoleBenchmark(selectedMember, categoryName);
+      const updated = { ...prev, payment_category: categoryName };
+      if (benchmark) {
+        updated.amount = benchmark.amount;
+        updated.currency = benchmark.currency;
       }
       return updated;
     });
@@ -135,12 +177,15 @@ export const PaymentPage = () => {
       });
     } else {
       const firstMember = members.length > 0 ? members[0] : null;
+      const initialPayCat = paymentCategories[0] || 'BA payment';
+      const benchmark = findRoleBenchmark(firstMember, initialPayCat);
+
       setEditingId(null);
       setFormData({
         member_id: firstMember ? firstMember.id : '',
-        payment_category: paymentCategories[0] || 'BA payment',
-        amount: firstMember && firstMember.monthly_salary > 0 ? firstMember.monthly_salary : '',
-        currency: firstMember && firstMember.salary_currency ? firstMember.salary_currency : 'IDR',
+        payment_category: initialPayCat,
+        amount: benchmark ? benchmark.amount : (firstMember && firstMember.monthly_salary > 0 ? firstMember.monthly_salary : ''),
+        currency: benchmark ? benchmark.currency : (firstMember && firstMember.salary_currency ? firstMember.salary_currency : 'IDR'),
         status: 'Pending',
         payment_date: '',
         notes: ''
@@ -185,7 +230,23 @@ export const PaymentPage = () => {
   };
 
   const columns = [
-    { header: t('select_member'), accessor: 'member_name', cellClassName: 'font-semibold text-white' },
+    {
+      header: t('select_member'),
+      render: (row) => {
+        const memberObj = members.find(m => m.id === Number(row.member_id));
+        return (
+          <div>
+            <div className="font-semibold text-white">{row.member_name || 'Member'}</div>
+            {memberObj && (memberObj.bank_name || memberObj.bank_account_number) && (
+              <div className="text-[10px] text-amber-300 font-mono flex items-center gap-1 mt-0.5">
+                <CreditCard className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>{memberObj.bank_name ? `${memberObj.bank_name}: ` : ''}{memberObj.bank_account_number}</span>
+              </div>
+            )}
+          </div>
+        );
+      }
+    },
     {
       header: t('payment_category'),
       render: (row) => (
@@ -345,13 +406,29 @@ export const PaymentPage = () => {
                   </option>
                 ))}
               </select>
+              {(() => {
+                const selectedMember = members.find(m => m.id === Number(formData.member_id));
+                if (!selectedMember || (!selectedMember.bank_name && !selectedMember.bank_account_number)) return null;
+                return (
+                  <div className="mt-2 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center gap-2 text-xs text-amber-300">
+                    <CreditCard className="w-4 h-4 text-amber-400 shrink-0" />
+                    <div>
+                      <span className="font-bold">{selectedMember.bank_name || 'Bank'}:</span>{' '}
+                      <span className="font-mono text-amber-200">{selectedMember.bank_account_number}</span>
+                      {selectedMember.bank_account_name && (
+                        <span className="text-slate-400 ml-1">(a.n {selectedMember.bank_account_name})</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('payment_category')} *</label>
               <select
                 value={formData.payment_category}
-                onChange={(e) => setFormData({ ...formData, payment_category: e.target.value })}
+                onChange={(e) => handlePaymentCategorySelect(e.target.value)}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 font-semibold text-purple-300"
               >
                 {paymentCategories.map((cat) => (
@@ -360,6 +437,16 @@ export const PaymentPage = () => {
                   </option>
                 ))}
               </select>
+              {(() => {
+                const selectedMember = members.find(m => m.id === Number(formData.member_id));
+                const benchmark = findRoleBenchmark(selectedMember, formData.payment_category);
+                if (!benchmark) return null;
+                return (
+                  <div className="mt-1.5 text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                    <span>⚡ Terisi otomatis dari acuan honor {benchmark.role}: {benchmark.currency} {Number(benchmark.amount).toLocaleString()}</span>
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="grid grid-cols-3 gap-3">

@@ -1,8 +1,8 @@
 {
   "app_title": "AG School Finance",
-  "transparency_portal": "Public Transparency Portal",
-  "hero_title": "AG School Events & Prize Transparency",
-  "hero_subtitle": "Welcome to our public transparency portal. Explore community events, view tournament posters, official winners list, and prize payment statuses.",
+  "transparency_portal": "Official Event Portal",
+  "hero_title": "AG School Events & Tournaments",
+  "hero_subtitle": "Welcome to the official AG School event portal. Explore community events, view tournament posters, official winners roster, and total prize details.",
   "search_placeholder": "Search event title or type...",
   "all_statuses": "All Event Statuses",
   "scheduled": "Scheduled",
@@ -89,6 +89,7 @@
   "roblox_username": "Roblox Username",
   "roblox_nickname": "Roblox Nickname",
   "tiktok_handle": "TikTok Handle",
+  "discord_username": "Discord Username",
   "config_payment_categories": "Config Payment Categories",
   "config_member_categories": "Config Member Categories",
   "create_user": "Create New User",
@@ -100,5 +101,8 @@
   "generate_report": "Generate Report",
   "export_csv": "Export CSV",
   "export_pdf": "Export PDF",
-  "activity_logs": "Activity Audit Logs"
+  "activity_logs": "Activity Audit Logs",
+  "bank_name": "Bank Name / E-Wallet",
+  "bank_account_number": "Account Number",
+  "bank_account_name": "Account Holder Name"
 }

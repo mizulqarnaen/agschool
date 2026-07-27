@@ -4,7 +4,8 @@ import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { EventFormModal } from '../components/events/EventFormModal';
 import { PrizeModal } from '../components/events/PrizeModal';
-import { Plus, Calendar, Trophy, Trash2, Edit, Award, Image as ImageIcon } from 'lucide-react';
+import { LeagueStandingsModal } from '../components/events/LeagueStandingsModal';
+import { Plus, Calendar, Trophy, Trash2, Edit, Award, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -14,6 +15,7 @@ export const EventManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [prizeModalOpen, setPrizeModalOpen] = useState(false);
+  const [standingsModalOpen, setStandingsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -49,11 +51,16 @@ export const EventManagementPage = () => {
     setPrizeModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this event?')) return;
+  const handleManageStandings = (event) => {
+    setSelectedEvent(event);
+    setStandingsModalOpen(true);
+  };
+
+  const handleDelete = async (eventId) => {
+    if (!window.confirm('Delete this event record?')) return;
     try {
-      await api.delete(`/internal/events/${id}`);
-      toast.success('Event soft-deleted');
+      await api.delete(`/internal/events/${eventId}`);
+      toast.success('Event deleted successfully');
       fetchEvents();
     } catch (err) {
       toast.error('Failed to delete event');
@@ -65,14 +72,33 @@ export const EventManagementPage = () => {
       header: t('event_title'),
       render: (row) => (
         <div>
-          <span className="font-bold text-white block">{row.title}</span>
-          <span className="text-xs text-slate-400">{row.event_type}</span>
+          <div className="font-bold text-white text-sm flex items-center gap-2">
+            <span>{row.title}</span>
+            {row.is_league && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                ⚡ Sistem Poin Liga
+              </span>
+            )}
+          </div>
+          <div className="text-xs text-slate-400 truncate max-w-xs">{row.description}</div>
         </div>
       )
     },
     {
-      header: t('date'),
-      render: (row) => <span className="text-xs text-slate-300">{row.start_date} s/d {row.end_date}</span>
+      header: t('event_type'),
+      render: (row) => (
+        <span className="px-2 py-1 bg-slate-800 text-slate-300 rounded-md text-xs font-semibold">
+          {row.event_type}
+        </span>
+      )
+    },
+    {
+      header: 'Dates',
+      render: (row) => (
+        <div className="text-xs text-slate-300 font-mono">
+          {row.start_date} <span className="text-slate-500">to</span> {row.end_date}
+        </div>
+      )
     },
     {
       header: t('status'),
@@ -108,6 +134,15 @@ export const EventManagementPage = () => {
       header: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
+          {row.is_league && (
+            <button
+              onClick={() => handleManageStandings(row)}
+              className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 rounded-lg border border-purple-500/30 transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              Poin Liga
+            </button>
+          )}
           <button
             onClick={() => handleManagePrizes(row)}
             className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg border border-amber-500/30 transition-colors"
@@ -167,6 +202,13 @@ export const EventManagementPage = () => {
           isOpen={prizeModalOpen}
           onClose={() => setPrizeModalOpen(false)}
           event={selectedEvent}
+        />
+
+        <LeagueStandingsModal
+          isOpen={standingsModalOpen}
+          onClose={() => setStandingsModalOpen(false)}
+          event={selectedEvent}
+          onStandingsUpdated={fetchEvents}
         />
       </main>
     </div>

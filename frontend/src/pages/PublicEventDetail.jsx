@@ -13,6 +13,7 @@ export const PublicEventDetail = () => {
   const lang = i18n.language;
 
   const [event, setEvent] = useState(null);
+  const [standingsData, setStandingsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageModalOpen, setImageModalOpen] = useState(false);
@@ -27,6 +28,14 @@ export const PublicEventDetail = () => {
       const response = await api.get(`/public/events/${id}`);
       if (response.data.success) {
         setEvent(response.data.data);
+        if (response.data.data.is_league) {
+          try {
+            const stRes = await api.get(`/public/events/${id}/standings`);
+            if (stRes.data.success) {
+              setStandingsData(stRes.data.data);
+            }
+          } catch (_) {}
+        }
       } else {
         setError('Event not found.');
       }
@@ -162,6 +171,107 @@ export const PublicEventDetail = () => {
                 </div>
               </div>
             </div>
+
+            {/* Public League Standings Section (If is_league event) */}
+            {event.is_league && standingsData && standingsData.standings && (
+              <div className="glass-panel p-8 rounded-3xl space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                      <Trophy className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <span>Papan Skor & Klasemen Poin Liga</span>
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                          Official Standings
+                        </span>
+                      </h2>
+                      <p className="text-xs text-slate-400">
+                        Akumulasi poin {standingsData.league_config?.total_matches || 3} match finalis dengan tie-breaker posisi terbaik
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
+                  <table className="w-full text-left text-sm text-slate-300">
+                    <thead className="text-xs font-semibold uppercase text-slate-400 bg-slate-900 border-b border-slate-800">
+                      <tr>
+                        <th className="px-4 py-3.5 text-center w-12">Rank</th>
+                        <th className="px-6 py-3.5">Nama Peserta / Tim</th>
+                        {Array.from({ length: Number(standingsData.league_config?.total_matches || 3) }, (_, i) => i + 1).map(mNum => (
+                          <th key={mNum} className="px-4 py-3.5 text-center">
+                            Match {mNum}
+                          </th>
+                        ))}
+                        <th className="px-6 py-3.5 text-center font-bold text-emerald-400">Total Poin</th>
+                        <th className="px-6 py-3.5">Aturan Tie-Breaker</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60">
+                      {standingsData.standings.map((item) => {
+                        const isPodium = item.rank <= (standingsData.league_config?.podium_count || 3);
+                        return (
+                          <tr key={item.id} className={`hover:bg-slate-900/40 transition-colors ${isPodium ? 'bg-amber-500/5' : ''}`}>
+                            <td className="px-4 py-3 text-center font-bold">
+                              <span className={`inline-flex items-center justify-center w-6 h-6 rounded-lg font-mono text-xs ${
+                                item.rank === 1
+                                  ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30'
+                                  : item.rank === 2
+                                  ? 'bg-slate-300 text-slate-950 font-black'
+                                  : item.rank === 3
+                                  ? 'bg-amber-700 text-white font-black'
+                                  : isPodium
+                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                  : 'bg-slate-800 text-slate-400'
+                              }`}>
+                                {item.rank}
+                              </span>
+                            </td>
+                            <td className="px-6 py-3 font-bold text-white flex items-center gap-2">
+                              <span>{item.player_name}</span>
+                              {isPodium && (
+                                <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                                  Podium #{item.rank}
+                                </span>
+                              )}
+                            </td>
+                            {Array.from({ length: Number(standingsData.league_config?.total_matches || 3) }, (_, i) => i + 1).map(mNum => {
+                              const val = item.matches?.[mNum];
+                              const pts = val ? standingsData.league_config?.point_schema?.[val] || 0 : null;
+                              return (
+                                <td key={mNum} className="px-4 py-3 text-center font-mono text-xs">
+                                  {val ? (
+                                    <span className="text-cyan-300 font-bold">
+                                      #{val} <span className="text-[10px] text-emerald-400 font-semibold">(+{pts}pt)</span>
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-600">-</span>
+                                  )}
+                                </td>
+                              );
+                            })}
+                            <td className="px-6 py-3 text-center font-bold text-emerald-400 font-mono text-base">
+                              {item.total_points} pts
+                            </td>
+                            <td className="px-6 py-3 text-xs text-slate-400">
+                              {item.tie_note ? (
+                                <span className="inline-flex items-center gap-1 text-[11px] text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-md border border-purple-500/20">
+                                  ⚡ {item.tie_note}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-slate-500">Posisi Terbaik #{item.best_placement}</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
 
             {/* Prize & Winner Transparency Section */}
             <div className="glass-panel p-8 rounded-3xl">

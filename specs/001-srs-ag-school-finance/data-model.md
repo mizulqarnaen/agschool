@@ -21,6 +21,7 @@ This document specifies the JSON file structures and repository access layer for
 | `backend/data/payments.json` | Internal Payment | Internal / Confidential | Payouts to members (BA, Caster, Maintainer, etc.) |
 | `backend/data/events.json` | Event | Public / Internal | Event details, status, posters, prize pool |
 | `backend/data/prizes.json` | Prize | Public / Internal | Event prizes, winners, public payment status |
+| `backend/data/event_standings.json` | Event Standings | Public / Internal | League points matrix, match placements, tie-breaker calculation |
 | `backend/data/logs.json` | Activity Log | Admin Only | Security audit logs |
 | `backend/data/settings.json` | System Setting | Admin Only | Exchange rates (SGD/IDR), organization profile |
 
@@ -217,6 +218,38 @@ erDiagram
     "recorded_by_user_id": 1,
     "created_at": "2026-08-04T15:00:00.000Z",
     "updated_at": "2026-08-04T15:00:00.000Z",
+    "deleted_at": null
+  }
+]
+```
+
+### 7. `backend/data/members.json`
+```json
+[
+  {
+    "id": 4,
+    "full_name": "Kang Iqbal",
+    "email": "iqbal@agschool.com",
+    "phone": "081234567890",
+    "roblox_username": "mizulqarnaen",
+    "roblox_nickname": "KangIqbalFALL_MKJZT",
+    "tiktok_handle": "@mizulqarnaen",
+    "discord_username": "@kangiqbal_dc",
+    "bank_name": "BCA",
+    "bank_account_number": "8830192831",
+    "bank_account_name": "Iqbal Mizulqarnaen",
+    "category": "Caster, Content Creator",
+    "categories": ["Caster", "Content Creator"],
+    "role_salaries": {
+      "Caster": { "amount": 500000, "currency": "IDR" },
+      "Content Creator": { "amount": 700000, "currency": "IDR" }
+    },
+    "monthly_salary": 1200000,
+    "salary_currency": "IDR",
+    "status": "active",
+    "joined_date": "2026-07-24",
+    "created_at": "2026-07-24T04:41:46.053Z",
+    "updated_at": "2026-07-27T06:24:00.000Z",
     "deleted_at": null
   }
 ]

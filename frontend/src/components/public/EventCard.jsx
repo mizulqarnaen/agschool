@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Trophy, CheckCircle2, Clock, Image as ImageIcon } from 'lucide-react';
+import { Calendar, Trophy, Image as ImageIcon, Zap, Lock, CheckCircle2, Clock, PlayCircle, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatDateDisplay } from '../../utils/dateFormatter';
 
@@ -8,14 +8,58 @@ export const EventCard = ({ event }) => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  const getStatusBadge = (status) => {
+  // Event Execution Status (Scheduled, Ongoing, Completed, Cancelled)
+  const getEventStatusBadge = (status) => {
     switch (status) {
       case 'Ongoing':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">● {t('ongoing')}</span>;
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            ● Berlangsung
+          </span>
+        );
       case 'Completed':
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">{t('completed')}</span>;
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> Selesai
+          </span>
+        );
+      case 'Cancelled':
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+            <AlertCircle className="w-3.5 h-3.5 text-rose-400" /> Dibatalkan
+          </span>
+        );
       default:
-        return <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">{t('scheduled')}</span>;
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+            <Calendar className="w-3.5 h-3.5 text-amber-400" /> Dijadwalkan
+          </span>
+        );
+    }
+  };
+
+  // Registration Status (Open, Closed, Upcoming)
+  const getRegistrationBadge = (regStatus) => {
+    switch (regStatus) {
+      case 'Open':
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-500 text-slate-950 shadow-md flex items-center gap-1">
+            🟢 Pendaftaran Buka
+          </span>
+        );
+      case 'Closed':
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-slate-950/80 text-rose-300 border border-rose-500/40 backdrop-blur-md flex items-center gap-1">
+            <Lock className="w-3.5 h-3.5 text-rose-400" /> Pendaftaran Ditutup
+          </span>
+        );
+      default:
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-slate-950/80 text-purple-300 border border-purple-500/40 backdrop-blur-md flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-purple-400" /> Segera Dibuka
+          </span>
+        );
     }
   };
 
@@ -39,16 +83,24 @@ export const EventCard = ({ event }) => {
             <span className="text-xs font-medium text-slate-500">Official Poster Artwork</span>
           </div>
         )}
-        <div className="absolute top-3 right-3">
-          {getStatusBadge(event.event_status)}
+
+        {/* Top Badges Overlay (Registration + Execution status) */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+          <div>{getRegistrationBadge(event.registration_status || 'Open')}</div>
+          <div>{getEventStatusBadge(event.event_status)}</div>
         </div>
       </div>
 
       {/* Card Content */}
       <div className="p-6 flex-1 flex flex-col justify-between">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2 flex-wrap">
             <span>{event.event_type}</span>
+            {event.is_league && (
+              <span className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] normal-case flex items-center gap-1 font-semibold">
+                <Zap className="w-3 h-3 text-purple-400 fill-purple-400" /> Sistem Poin Liga
+              </span>
+            )}
           </div>
 
           <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-1 mb-2">

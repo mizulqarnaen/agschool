@@ -43,7 +43,15 @@ frontend/
 - Frontend: Functional React 19 components, Hooks, ES6+ modules, Tailwind CSS, i18next (`t(...)`)
 - Backend: ES6 Node.js / Express modules, Repository Pattern for JSON data access
 
+## Data Integrity & Preservation Guarantees
+
+1. **Non-Destructive Schema Evolution**: Any new feature or field addition MUST maintain 100% backward compatibility. Existing stored data in JSON files (`backend/data/*.json`) must NEVER be overwritten, cleared, or lost during schema migrations or feature updates. Always provide default fallbacks when reading legacy records (`item.categories || [item.category]`).
+2. **Immutable Financial Snapshots**: Recorded transactions (Incomes, Expenses, Payments, Logs) store exact snapshot values (`exchange_rate_used`, `base_amount_idr`, `amount`, `currency`, `member_name`) captured at the transaction time. Subsequent changes to settings, exchange rates, or member profiles MUST NEVER retroactively modify historical financial entries.
+
 ## Recent Changes
+- 005-prize-modal-and-public-portal-enhancements: Redesigned PrizeModal into 2-column layout with real-time winner search, added real-time participant search to LeagueStandingsModal, enabled dynamic placement rank counts & presets, updated public portal wording, and added dual status badges (Registration & Execution) to Event Cards.
+- 004-league-points-system: Implemented Dual Event Formats (Standard vs League), dynamic match counts, custom placement point schemas, match placement matrix, automatic best-finish tie-breaker engine, 1-click sync to prize winners, and public leaderboard transparency portal.
+- 003-multi-role-bank-details: Implemented multi-role category assignments for staff members, per-role salary benchmarks (`role_salaries`), automatic role-matching payout auto-fill in `PaymentPage.jsx`, member bank account storage (`bank_name`, `bank_account_number`, `bank_account_name`), and full documentation.
 - 002-localization-currency: Implemented system-wide i18n localization (ID/EN), dynamic member & payment categories, auto-synced paid prize expenses, opening cash balance (initial balance), optional member monthly salary benchmarks with payout auto-fill, and full documentation.
 - 001-srs-ag-school-finance: Mandated React 19 + Vite + Tailwind CSS + Node.js (Express) + JSON File Storage stack.
 

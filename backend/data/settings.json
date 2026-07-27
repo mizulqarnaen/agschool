@@ -48,5 +48,11 @@
     "setting_key": "initial_balance_idr",
     "setting_value": "200000000",
     "updated_at": "2026-07-24T04:28:32.592Z"
+  },
+  {
+    "id": 10,
+    "setting_key": "member_categories",
+    "setting_value": "[\"BA\",\"Caster\",\"Maintainer\",\"Secretary\",\"Staff\",\"Content Creator\",\"Finance\"]",
+    "updated_at": "2026-07-27T06:32:55.545Z"
   }
 ]

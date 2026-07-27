@@ -15,7 +15,8 @@ export const EventFormModal = ({ isOpen, onClose, event, onSave }) => {
     registration_status: 'Open',
     event_status: 'Scheduled',
     total_prize_pool: '',
-    currency: 'IDR'
+    currency: 'IDR',
+    is_league: false
   });
   const [posterFile, setPosterFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,8 @@ export const EventFormModal = ({ isOpen, onClose, event, onSave }) => {
         registration_status: event.registration_status,
         event_status: event.event_status,
         total_prize_pool: event.total_prize_pool,
-        currency: event.currency || 'IDR'
+        currency: event.currency || 'IDR',
+        is_league: !!event.is_league
       });
     } else if (isOpen) {
       setFormData({
@@ -43,7 +45,8 @@ export const EventFormModal = ({ isOpen, onClose, event, onSave }) => {
         registration_status: 'Open',
         event_status: 'Scheduled',
         total_prize_pool: '',
-        currency: 'IDR'
+        currency: 'IDR',
+        is_league: false
       });
       // Automatically pull default reporting currency from system settings
       api.get('/internal/admin/settings').then(res => {
@@ -203,6 +206,22 @@ export const EventFormModal = ({ isOpen, onClose, event, onSave }) => {
               <option value="Cancelled">Cancelled</option>
             </select>
           </div>
+        </div>
+
+        {/* Format Selection: Standard vs League Points System */}
+        <div className="p-3 bg-slate-900/80 rounded-xl border border-purple-500/30 space-y-1.5">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.is_league}
+              onChange={(e) => setFormData({ ...formData, is_league: e.target.checked })}
+              className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 bg-slate-950 border-slate-700"
+            />
+            <span className="text-xs font-bold text-purple-300 uppercase">Gunakan Sistem Poin Liga & Standings Leaderboard</span>
+          </label>
+          <p className="text-[11px] text-slate-400 pl-6">
+            Aktifkan jika acara ini menggunakan akumulasi poin multi-match finalis dan kalkulasi klasemen otomatis dengan tie-breaker.
+          </p>
         </div>
 
         <div>

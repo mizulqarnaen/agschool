@@ -1,5 +1,7 @@
 import { eventRepository } from '../repositories/eventRepository.js';
 import { prizeRepository } from '../repositories/prizeRepository.js';
+import { standingsRepository } from '../repositories/standingsRepository.js';
+import { sortStandings, DEFAULT_POINT_SCHEMA } from '../services/standingsService.js';
 
 export const getPublicEvents = (req, res) => {
   try {
@@ -48,5 +50,38 @@ export const getPublicEventDetail = (req, res) => {
   } catch (err) {
     console.error('Error fetching event detail:', err);
     res.status(500).json({ success: false, message: 'Failed to retrieve event detail.' });
+  }
+};
+
+export const getPublicEventStandings = (req, res) => {
+  try {
+    const { id } = req.params;
+    const event = eventRepository.findById(id);
+
+    if (!event || event.event_status === 'Draft') {
+      return res.status(404).json({ success: false, message: 'Public event not found.' });
+    }
+
+    const leagueConfig = event.league_config || {
+      is_league: !!event.is_league,
+      max_finalists: 20,
+      podium_count: 3,
+      total_matches: 3,
+      point_schema: DEFAULT_POINT_SCHEMA
+    };
+
+    const rawParticipants = standingsRepository.findByEventId(id);
+    const standings = sortStandings(rawParticipants, leagueConfig.point_schema);
+
+    res.json({
+      success: true,
+      data: {
+        league_config: leagueConfig,
+        standings
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching public event standings:', err);
+    res.status(500).json({ success: false, message: 'Failed to retrieve event standings.' });
   }
 };
