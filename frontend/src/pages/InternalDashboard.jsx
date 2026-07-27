@@ -16,12 +16,13 @@ export const InternalDashboard = () => {
 
   // Date Period Filter State (default 'all')
   const [period, setPeriod] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     fetchDashboardSummary();
-  }, [period, startDate, endDate]);
+  }, [period, selectedMonth, startDate, endDate]);
 
   const fetchDashboardSummary = async () => {
     setLoading(true);
@@ -29,6 +30,7 @@ export const InternalDashboard = () => {
       const response = await api.get('/internal/finance/dashboard', {
         params: {
           period,
+          selected_month: selectedMonth,
           start_date: startDate,
           end_date: endDate
         }
@@ -100,25 +102,41 @@ export const InternalDashboard = () => {
                 <option value="all" className="bg-slate-900 text-white">Semua Waktu (All Time)</option>
                 <option value="today" className="bg-slate-900 text-white">Hari Ini (Today)</option>
                 <option value="month" className="bg-slate-900 text-white">Bulan Ini (This Month)</option>
+                <option value="month_select" className="bg-slate-900 text-white">Pilih Bulan Spesifik...</option>
                 <option value="year" className="bg-slate-900 text-white">Tahun Ini (This Year)</option>
                 <option value="custom" className="bg-slate-900 text-white">Rentang Custom (Custom Range)</option>
               </select>
             </div>
 
+            {period === 'month_select' && (
+              <div className="flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
+                <span className="text-xs text-slate-400 font-medium">Bulan:</span>
+                <input
+                  type="month"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="bg-transparent text-xs text-cyan-300 font-bold focus:outline-none cursor-pointer"
+                />
+              </div>
+            )}
+
             {period === 'custom' && (
-              <div className="flex items-center gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+              <div className="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none"
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="bg-transparent text-xs text-white focus:outline-none cursor-pointer"
                 />
-                <span className="text-slate-400 text-xs">s/d</span>
+                <span className="text-slate-400 text-xs font-bold">s/d</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none"
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="bg-transparent text-xs text-white focus:outline-none cursor-pointer"
                 />
               </div>
             )}

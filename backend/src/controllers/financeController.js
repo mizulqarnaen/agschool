@@ -11,7 +11,7 @@ import { currencyService } from '../services/currencyService.js';
 // --- Dashboard Summary Metrics ---
 export const getDashboardSummary = (req, res) => {
   try {
-    const { period = 'all', start_date, end_date } = req.query;
+    const { period = 'all', start_date, end_date, selected_month } = req.query;
 
     const allIncomes = incomeRepository.readAll();
     const allExpenses = expenseRepository.readAll();
@@ -41,13 +41,21 @@ export const getDashboardSummary = (req, res) => {
         const m = String(now.getMonth() + 1).padStart(2, '0');
         start = `${y}-${m}-01`;
         end = new Date(y, now.getMonth() + 1, 0).toISOString().split('T')[0];
+      } else if (period === 'month_select') {
+        if (selected_month) {
+          const parts = selected_month.split('-');
+          const y = Number(parts[0]);
+          const m = Number(parts[1]);
+          start = `${y}-${String(m).padStart(2, '0')}-01`;
+          end = new Date(y, m, 0).toISOString().split('T')[0];
+        }
       } else if (period === 'year') {
         const y = now.getFullYear();
         start = `${y}-01-01`;
         end = `${y}-12-31`;
       } else if (period === 'custom') {
-        start = start_date || '1970-01-01';
-        end = end_date || '2099-12-31';
+        start = start_date || null;
+        end = end_date || null;
       }
 
       return items.filter(item => {

@@ -252,33 +252,33 @@ export const IncomePage = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700">
-              <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80 hover:border-emerald-500/50 transition-colors">
+              <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="bg-transparent text-xs text-white focus:outline-none font-medium"
+                className="bg-transparent text-xs text-white focus:outline-none font-semibold cursor-pointer pr-1"
               >
-                <option value="">Semua Kategori</option>
+                <option value="" className="bg-slate-900 text-white">Semua Kategori</option>
                 {categories.map(c => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c} className="bg-slate-900 text-white">{c}</option>
                 ))}
               </select>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700">
-              <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80 hover:border-emerald-500/50 transition-colors">
+              <Calendar className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <select
                 value={datePeriod}
                 onChange={(e) => setDatePeriod(e.target.value)}
-                className="bg-transparent text-xs text-white focus:outline-none font-medium cursor-pointer"
+                className="bg-transparent text-xs text-white focus:outline-none font-semibold cursor-pointer pr-1"
               >
-                <option value="all">Semua Tanggal</option>
-                <option value="today">Hari Ini</option>
-                <option value="month">Bulan Ini</option>
-                <option value="month_select">Pilih Bulan Spesifik...</option>
-                <option value="year">Tahun Ini</option>
-                <option value="custom">Rentang Tanggal Custom...</option>
+                <option value="all" className="bg-slate-900 text-white">Semua Tanggal</option>
+                <option value="today" className="bg-slate-900 text-white">Hari Ini</option>
+                <option value="month" className="bg-slate-900 text-white">Bulan Ini</option>
+                <option value="month_select" className="bg-slate-900 text-white">Pilih Bulan Spesifik...</option>
+                <option value="year" className="bg-slate-900 text-white">Tahun Ini</option>
+                <option value="custom" className="bg-slate-900 text-white">Rentang Tanggal Custom...</option>
               </select>
             </div>
 
