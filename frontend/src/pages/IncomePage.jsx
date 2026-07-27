@@ -206,7 +206,7 @@ export const IncomePage = () => {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
               >
-                {categories.map((cat) => (
+                {Array.from(new Set([...categories, formData.category])).filter(Boolean).map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>

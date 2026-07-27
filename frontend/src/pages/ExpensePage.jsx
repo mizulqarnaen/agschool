@@ -18,7 +18,7 @@ export const ExpensePage = () => {
 
   const [formData, setFormData] = useState({
     transaction_date: new Date().toISOString().split('T')[0],
-    category: 'Logistics',
+    category: 'Pembuatan Map',
     description: '',
     amount: '',
     currency: 'IDR',
@@ -37,6 +37,10 @@ export const ExpensePage = () => {
       const response = await api.get('/internal/finance/expenses/categories');
       if (response.data.success && response.data.data?.length > 0) {
         setCategories(response.data.data);
+        setFormData(prev => ({
+          ...prev,
+          category: prev.category && response.data.data.includes(prev.category) ? prev.category : response.data.data[0]
+        }));
       }
     } catch (_) {}
   };
@@ -80,7 +84,7 @@ export const ExpensePage = () => {
       setEditingId(null);
       setFormData({
         transaction_date: new Date().toISOString().split('T')[0],
-        category: 'Logistics',
+        category: categories[0] || 'Pembuatan Map',
         description: '',
         amount: '',
         currency: 'IDR',
@@ -223,7 +227,7 @@ export const ExpensePage = () => {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
               >
-                {categories.map((cat) => (
+                {Array.from(new Set([...categories, formData.category])).filter(Boolean).map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>

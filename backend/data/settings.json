@@ -54,5 +54,11 @@
     "setting_key": "member_categories",
     "setting_value": "[\"BA\",\"Caster\",\"Maintainer\",\"Secretary\",\"Staff\",\"Content Creator\",\"Finance\"]",
     "updated_at": "2026-07-27T06:32:55.545Z"
+  },
+  {
+    "id": 11,
+    "setting_key": "expense_categories",
+    "setting_value": "[\"Pembuatan Map\",\"Biaya Operasional\",\"Event Prize Payout\",\"Biaya Promosi\",\"Tidak Terduga\"]",
+    "updated_at": "2026-07-27T09:13:33.887Z"
   }
 ]
