@@ -89,7 +89,10 @@
 ### 11. System-Wide Table Pagination & Advanced Date Filtering
 - **System-Wide Pagination ([Table.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/Table.jsx))**: All tables across the application now feature responsive pagination footers with page size selectors (10, 25, 50, 100 per page), previous/next navigation, and data count summary.
 - **Date & Category Filter Toolbar ([IncomePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/IncomePage.jsx) & [ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Refactored filter dropdown aesthetics with dark background option styling, native calendar popup triggers (`showPicker()`), and date period presets (`Semua Tanggal`, `Hari Ini`, `Bulan Ini`, `Pilih Bulan Spesifik...`, `Tahun Ini`, and `Rentang Tanggal Custom...`).
-- **Dashboard Financial Filters ([InternalDashboard.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/InternalDashboard.jsx))**: Integrated specific month picker (`selected_month`), refined custom date range filtering, and auto-refreshing metric cards.
+### 12. Payment Status Management for Operational Incomes & Expenses
+- **Payment Status Field**: Added `payment_status` (`Paid` 🟢, `Unpaid` 🟡, `Cancelled` 🔴) to modal forms and backend endpoints on `IncomePage.jsx` and `ExpensePage.jsx`.
+- **Status Badges & Status Filter**: Tables display interactive status badges (`Paid`, `Unpaid`, `Cancelled`) and filter toolbars include status filters (`Semua Status`, `Paid`, `Unpaid`, `Cancelled`).
+- **Dashboard Net Balance Accuracy**: Dashboard metrics automatically filter net cash balance computations to count transactions with `payment_status === 'Paid'`.
 
 ---
 

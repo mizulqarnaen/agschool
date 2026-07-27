@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingUp, Search, Filter, Calendar } from 'lucide-react';
+import { Plus, Trash2, Edit, TrendingUp, Search, Filter, Calendar, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -18,6 +18,7 @@ export const IncomePage = () => {
   // Filters state
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [datePeriod, setDatePeriod] = useState('all');
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [startDate, setStartDate] = useState('');
@@ -30,6 +31,7 @@ export const IncomePage = () => {
     description: '',
     amount: '',
     currency: 'IDR',
+    payment_status: 'Paid',
     notes: ''
   });
 
@@ -71,6 +73,7 @@ export const IncomePage = () => {
         description: income.description,
         amount: income.amount,
         currency: income.currency || 'IDR',
+        payment_status: income.payment_status || 'Paid',
         notes: income.notes || ''
       });
     } else {
@@ -82,6 +85,7 @@ export const IncomePage = () => {
         description: '',
         amount: '',
         currency: 'IDR',
+        payment_status: 'Paid',
         notes: ''
       });
       api.get('/internal/admin/settings').then(res => {
@@ -135,6 +139,10 @@ export const IncomePage = () => {
     // Category filter
     if (categoryFilter && item.category !== categoryFilter) return false;
 
+    // Status filter
+    const status = item.payment_status || 'Paid';
+    if (statusFilter && status !== statusFilter) return false;
+
     // Date Period filter
     const itemDate = item.transaction_date || (item.created_at ? item.created_at.split('T')[0] : '');
     if (!itemDate) return true;
@@ -174,6 +182,31 @@ export const IncomePage = () => {
     },
     { header: t('income_source'), accessor: 'source' },
     { header: t('description'), accessor: 'description' },
+    {
+      header: 'Status Pembayaran',
+      render: (row) => {
+        const st = row.payment_status || 'Paid';
+        if (st === 'Paid') {
+          return (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Paid (Lunas)
+            </span>
+          );
+        } else if (st === 'Unpaid') {
+          return (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <Clock className="w-3.5 h-3.5" /> Unpaid (Pending)
+            </span>
+          );
+        } else {
+          return (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+              <XCircle className="w-3.5 h-3.5" /> Cancelled
+            </span>
+          );
+        }
+      }
+    },
     {
       header: 'Nominal / Jumlah',
       render: (row) => (
@@ -252,6 +285,7 @@ export const IncomePage = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Category Filter */}
             <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80 hover:border-emerald-500/50 transition-colors">
               <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <select
@@ -266,6 +300,22 @@ export const IncomePage = () => {
               </select>
             </div>
 
+            {/* Status Filter */}
+            <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80 hover:border-emerald-500/50 transition-colors">
+              <span className="text-xs text-slate-400 font-semibold">Status:</span>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="bg-transparent text-xs text-white focus:outline-none font-semibold cursor-pointer pr-1"
+              >
+                <option value="" className="bg-slate-900 text-white">Semua Status</option>
+                <option value="Paid" className="bg-slate-900 text-emerald-400 font-bold">🟢 Paid (Lunas)</option>
+                <option value="Unpaid" className="bg-slate-900 text-amber-400 font-bold">🟡 Unpaid (Pending)</option>
+                <option value="Cancelled" className="bg-slate-900 text-rose-400 font-bold">🔴 Cancelled</option>
+              </select>
+            </div>
+
+            {/* Date Period Filter */}
             <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80 hover:border-emerald-500/50 transition-colors">
               <Calendar className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <select
@@ -338,11 +388,24 @@ export const IncomePage = () => {
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
               >
                 {Array.from(new Set([...categories, formData.category])).filter(Boolean).map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat} className="bg-slate-900 text-white">{cat}</option>
                 ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Status Pembayaran *</label>
+              <select
+                value={formData.payment_status || 'Paid'}
+                onChange={(e) => setFormData({ ...formData, payment_status: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm font-bold text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
+              >
+                <option value="Paid" className="bg-slate-900 text-emerald-400 font-bold">🟢 Paid (Lunas / Received)</option>
+                <option value="Unpaid" className="bg-slate-900 text-amber-400 font-bold">🟡 Unpaid (Belum Bayar / Pending)</option>
+                <option value="Cancelled" className="bg-slate-900 text-rose-400 font-bold">🔴 Cancelled (Dibatalkan)</option>
               </select>
             </div>
 
@@ -390,10 +453,10 @@ export const IncomePage = () => {
                 <select
                   value={formData.currency}
                   onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-cyan-400 font-bold focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-cyan-400 font-bold focus:outline-none focus:border-cyan-500 cursor-pointer"
                 >
-                  <option value="IDR">IDR</option>
-                  <option value="SGD">SGD</option>
+                  <option value="IDR" className="bg-slate-900 text-white">IDR</option>
+                  <option value="SGD" className="bg-slate-900 text-white">SGD</option>
                 </select>
               </div>
             </div>

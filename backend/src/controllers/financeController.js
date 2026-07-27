@@ -72,10 +72,18 @@ export const getDashboardSummary = (req, res) => {
     const payments = filterByPeriod(allPayments, 'payment_date');
     const prizes = filterByPeriod(allPrizes, 'payment_date');
 
-    // Calculate totals in converted base currency (IDR)
-    const totalIncomeIDR = incomes.reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
-    const totalExpenseIDR = expenses.reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
-    const totalPaymentsIDR = payments.reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+    // Calculate totals in converted base currency (IDR) for completed/paid transactions
+    const totalIncomeIDR = incomes
+      .filter(item => !item.payment_status || item.payment_status === 'Paid')
+      .reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+
+    const totalExpenseIDR = expenses
+      .filter(item => !item.payment_status || item.payment_status === 'Paid')
+      .reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
+
+    const totalPaymentsIDR = payments
+      .filter(item => !item.payment_status || item.payment_status === 'Paid')
+      .reduce((sum, item) => sum + Number(item.base_amount_idr || item.amount || 0), 0);
 
     // Only prizes with payment_status === 'Paid' are counted in paid prize expense summary
     const paidPrizes = prizes.filter(p => p.payment_status === 'Paid');
@@ -142,6 +150,7 @@ export const createIncome = (req, res) => {
   const baseIDR = currencyService.calculateBaseIdr(amount, currency, rateUsed);
 
   const newIncome = incomeRepository.create({
+    payment_status: 'Paid',
     ...req.body,
     amount,
     currency,
@@ -197,6 +206,7 @@ export const createExpense = (req, res) => {
   const baseIDR = currencyService.calculateBaseIdr(amount, currency, rateUsed);
 
   const newExpense = expenseRepository.create({
+    payment_status: 'Paid',
     ...req.body,
     amount,
     currency,
