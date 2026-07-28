@@ -11,6 +11,7 @@ import { InternalDashboard } from './pages/InternalDashboard';
 import { IncomePage } from './pages/IncomePage';
 import { ExpensePage } from './pages/ExpensePage';
 import { PaymentPage } from './pages/PaymentPage';
+import { MemberPage } from './pages/MemberPage';
 import { EventManagementPage } from './pages/EventManagementPage';
 import { UserManagementPage } from './pages/UserManagementPage';
 import { ReportPage } from './pages/ReportPage';
@@ -69,6 +70,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['administrator', 'finance']}>
               <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/internal/members"
+          element={
+            <ProtectedRoute allowedRoles={['administrator', 'finance', 'secretary']}>
+              <MemberPage />
             </ProtectedRoute>
           }
         />

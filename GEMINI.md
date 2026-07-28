@@ -49,6 +49,7 @@ frontend/
 2. **Immutable Financial Snapshots**: Recorded transactions (Incomes, Expenses, Payments, Logs) store exact snapshot values (`exchange_rate_used`, `base_amount_idr`, `amount`, `currency`, `member_name`) captured at the transaction time. Subsequent changes to settings, exchange rates, or member profiles MUST NEVER retroactively modify historical financial entries.
 
 ## Recent Changes
+- 011-dedicated-directory-menu-and-inline-recipient-creation: Added dedicated Sidebar menu & page **`Direktori Pemain & Staff`** (`/internal/members` -> `MemberPage.jsx`), and implemented direct inline recipient creation with bank details auto-save directly inside `ExpensePage.jsx` modal form.
 - 010-unified-recipient-directory-and-linking: Implemented Unified Master Directory for Players & Staff (`MemberModal.jsx`), 1-click Bank Details Auto-Fill & Auto-Save on Event Prizes (`PrizeModal.jsx`), and Recipient Member Linking on Operational Expenses (`ExpensePage.jsx`).
 - 009-summary-cards-category-breakdown: Implemented reactive Financial Summary Cards (Total Paid 🟢, Total Unpaid 🟡, Total Cancelled 🔴, Total Filtered) and Grouped Category Breakdown Panels on `IncomePage.jsx` and `ExpensePage.jsx`, fully reactive to date, status, and search filters.
 - 008-payment-status-incomes-expenses: Added `payment_status` (`Paid` 🟢, `Unpaid` 🟡, `Cancelled` 🔴) to modal forms, table status badge columns, and filter toolbars on `IncomePage.jsx` and `ExpensePage.jsx`, and integrated payment status filters into `financeController.js` dashboard net cash balance calculations.

@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingDown, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag, UserCheck } from 'lucide-react';
+import { Plus, Trash2, Edit, TrendingDown, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag, UserCheck, UserPlus, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -25,6 +25,12 @@ export const ExpensePage = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  // Inline Recipient Auto-Save State
+  const [saveRecipientToDirectory, setSaveRecipientToDirectory] = useState(false);
+  const [newRecipientType, setNewRecipientType] = useState('Player');
+  const [newRecipientBank, setNewRecipientBank] = useState('');
+  const [newRecipientAccount, setNewRecipientAccount] = useState('');
 
   const [formData, setFormData] = useState({
     transaction_date: new Date().toISOString().split('T')[0],
@@ -111,6 +117,11 @@ export const ExpensePage = () => {
   };
 
   const handleOpenModal = (expense = null) => {
+    setSaveRecipientToDirectory(false);
+    setNewRecipientBank('');
+    setNewRecipientAccount('');
+    setNewRecipientType('Player');
+
     if (expense) {
       setEditingId(expense.id);
       setFormData({
@@ -151,11 +162,38 @@ export const ExpensePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let finalMemberId = formData.recipient_member_id;
+
+      // Inline Save New Recipient to Directory
+      if (saveRecipientToDirectory && formData.recipient_name.trim()) {
+        try {
+          const res = await api.post('/internal/finance/members', {
+            full_name: formData.recipient_name.trim(),
+            member_type: newRecipientType,
+            ign_tag: formData.recipient_name.trim(),
+            bank_name: newRecipientBank,
+            bank_account_number: newRecipientAccount,
+            bank_account_name: formData.recipient_name.trim(),
+            categories: [newRecipientType]
+          });
+          if (res.data.success && res.data.data?.id) {
+            finalMemberId = res.data.data.id;
+            toast.success(`Penerima "${formData.recipient_name}" langsung tersimpan ke Direktori!`);
+            fetchDirectoryMembers();
+          }
+        } catch (_) {}
+      }
+
+      const payload = {
+        ...formData,
+        recipient_member_id: finalMemberId ? Number(finalMemberId) : null
+      };
+
       if (editingId) {
-        await api.put(`/internal/finance/expenses/${editingId}`, formData);
+        await api.put(`/internal/finance/expenses/${editingId}`, payload);
         toast.success('Pengeluaran diperbarui');
       } else {
-        await api.post('/internal/finance/expenses', formData);
+        await api.post('/internal/finance/expenses', payload);
         toast.success('Pengeluaran baru dicatat');
       }
       setModalOpen(false);
@@ -574,29 +612,96 @@ export const ExpensePage = () => {
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Penerima / Penerima Dana (Opsional)</label>
-              <div className="space-y-2">
-                <select
-                  value={formData.recipient_member_id}
-                  onChange={(e) => handleSelectRecipient(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-cyan-300 font-semibold focus:outline-none focus:border-cyan-500 cursor-pointer"
-                >
-                  <option value="" className="bg-slate-900 text-white">-- Pilih dari Direktori Pemain / Staff --</option>
-                  {directoryMembers.map((m) => (
-                    <option key={m.id} value={m.id} className="bg-slate-900 text-white">
-                      {m.full_name} {m.ign_tag ? `[${m.ign_tag}]` : ''} ({m.member_type || 'Staff'})
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Atau ketik nama penerima manual..."
-                  value={formData.recipient_name}
-                  onChange={(e) => setFormData({ ...formData, recipient_name: e.target.value, recipient_member_id: '' })}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
-                />
-              </div>
+            {/* Recipient Selection + Inline Add to Directory */}
+            <div className="p-3 bg-slate-900/90 rounded-2xl border border-cyan-500/30 space-y-2">
+              <label className="block text-xs font-bold text-cyan-300 uppercase flex items-center justify-between">
+                <span>Penerima / Penerima Dana (Opsional)</span>
+                {formData.recipient_name && !saveRecipientToDirectory && (
+                  <span className="text-[10px] text-emerald-400 font-normal">✓ Terpilih: {formData.recipient_name}</span>
+                )}
+              </label>
+
+              <select
+                value={formData.recipient_member_id}
+                onChange={(e) => handleSelectRecipient(e.target.value)}
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-cyan-300 font-semibold focus:outline-none focus:border-cyan-500 cursor-pointer"
+              >
+                <option value="" className="bg-slate-900 text-white">-- Pilih dari Direktori Pemain / Staff --</option>
+                {directoryMembers.map((m) => (
+                  <option key={m.id} value={m.id} className="bg-slate-900 text-white">
+                    {m.full_name} {m.ign_tag ? `[${m.ign_tag}]` : ''} ({m.member_type || 'Staff'})
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="text"
+                placeholder="Atau ketik nama penerima baru..."
+                value={formData.recipient_name}
+                onChange={(e) => {
+                  setFormData({ ...formData, recipient_name: e.target.value, recipient_member_id: '' });
+                }}
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+              />
+
+              {/* Inline Save Recipient to Directory Toggle */}
+              {formData.recipient_name.trim() && !formData.recipient_member_id && (
+                <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 space-y-2 mt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={saveRecipientToDirectory}
+                      onChange={(e) => setSaveRecipientToDirectory(e.target.checked)}
+                      className="w-4 h-4 text-cyan-500 rounded border-slate-700 bg-slate-900 focus:ring-0"
+                    />
+                    <span className="text-xs text-cyan-300 font-bold flex items-center gap-1">
+                      <UserPlus className="w-3.5 h-3.5" /> Direct Simpan Penerima Ini ke Direktori Utama
+                    </span>
+                  </label>
+
+                  {saveRecipientToDirectory && (
+                    <div className="space-y-2 pt-1 border-t border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">Tipe:</span>
+                        <button
+                          type="button"
+                          onClick={() => setNewRecipientType('Player')}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded-lg border ${
+                            newRecipientType === 'Player' ? 'bg-emerald-600 text-white border-emerald-400' : 'bg-slate-900 text-slate-400 border-slate-700'
+                          }`}
+                        >
+                          Pemain
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setNewRecipientType('Staff')}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded-lg border ${
+                            newRecipientType === 'Staff' ? 'bg-purple-600 text-white border-purple-400' : 'bg-slate-900 text-slate-400 border-slate-700'
+                          }`}
+                        >
+                          Staff
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Bank / E-Wallet (BCA/DANA)"
+                          value={newRecipientBank}
+                          onChange={(e) => setNewRecipientBank(e.target.value)}
+                          className="px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-300"
+                        />
+                        <input
+                          type="text"
+                          placeholder="No. Rekening Bank"
+                          value={newRecipientAccount}
+                          onChange={(e) => setNewRecipientAccount(e.target.value)}
+                          className="px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>

@@ -92,10 +92,10 @@
 ### 12. Payment Status Management for Operational Incomes & Expenses
 - **Payment Status Field**: Added `payment_status` (`Paid` 🟢, `Unpaid` 🟡, `Cancelled` 🔴) to modal forms and backend endpoints on `IncomePage.jsx` and `ExpensePage.jsx`.
 - **Status Badges & Status Filter**: Tables display interactive status badges (`Paid`, `Unpaid`, `Cancelled`) and filter toolbars include status filters (`Semua Status`, `Paid`, `Unpaid`, `Cancelled`).
-### 14. Unified Recipient Directory (Players & Staff) & Expense Recipient Linking
-- **Unified Master Directory ([MemberModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/MemberModal.jsx))**: Enriched member directory with Entity Type tab filters (`Semua`, `Staff & Pengurus`, `Pemain & Turnamen`) supporting stored bank account details, IGN tags, and contact handles.
-- **Event Prize Auto-Fill & Auto-Save ([PrizeModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/events/PrizeModal.jsx))**: Added 1-click bank details auto-fill from the directory into event winner prizes, with an optional auto-save checkbox to store new winner accounts into the directory.
-- **Operational Expense Recipient Linking ([ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Added optional Recipient selection (`recipient_member_id` & `recipient_name`) in expense forms, displaying recipient badges and auto-filling bank info into expense notes.
+### 14. Dedicated Player & Staff Directory & Inline Recipient Creation
+- **Dedicated Sidebar Menu & Page ([Sidebar.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/Sidebar.jsx) & [MemberPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/MemberPage.jsx))**: Added a dedicated navigation menu item **`Direktori Pemain & Staff`** (`/internal/members`) to directly view, search, and manage staff and tournament player profiles with entity type tab filters (`Semua`, `Staff & Pengurus`, `Pemain & Turnamen`).
+- **Inline Recipient Auto-Save in Expenses ([ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: When recording an operational expense, admins can select existing recipients or type a new recipient and check **`☑ Direct Simpan Penerima Ini ke Direktori Utama`** to save their bank details directly on the fly.
+- **Event Prize Auto-Fill & Auto-Save ([PrizeModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/events/PrizeModal.jsx))**: 1-click bank account auto-fill for event winners with auto-save to directory option.
 
 ---
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, TrendingUp, TrendingDown, Users,
+  LayoutDashboard, TrendingUp, TrendingDown, Users, UserCheck,
   Calendar, Shield, FileText, Settings, History,
   LogOut, Menu, X
 } from 'lucide-react';
@@ -22,6 +22,7 @@ export const Sidebar = () => {
     { label: t('incomes'), path: '/internal/incomes', icon: TrendingUp, roles: ['administrator', 'finance'] },
     { label: t('expenses'), path: '/internal/expenses', icon: TrendingDown, roles: ['administrator', 'finance'] },
     { label: t('payments'), path: '/internal/payments', icon: Users, roles: ['administrator', 'finance'] },
+    { label: 'Direktori Pemain & Staff', path: '/internal/members', icon: UserCheck, roles: ['administrator', 'finance', 'secretary'] },
     { label: t('events'), path: '/internal/events', icon: Calendar, roles: ['administrator', 'secretary'] },
     { label: t('users'), path: '/internal/users', icon: Shield, roles: ['administrator'] },
     { label: t('reports'), path: '/internal/reports', icon: FileText, roles: ['administrator', 'finance'] },
