@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingDown, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag } from 'lucide-react';
+import { Plus, Trash2, Edit, TrendingDown, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -11,6 +11,7 @@ export const ExpensePage = () => {
   const { t } = useTranslation();
   const [expenses, setExpenses] = useState([]);
   const [events, setEvents] = useState([]);
+  const [directoryMembers, setDirectoryMembers] = useState([]);
   const [categories, setCategories] = useState(['Equipment', 'Logistics', 'Server/Domain', 'Refreshments', 'Operations', 'Event Prize Payout', 'Marketing', 'Other Expense']);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -33,6 +34,8 @@ export const ExpensePage = () => {
     currency: 'IDR',
     payment_status: 'Paid',
     related_event_id: '',
+    recipient_member_id: '',
+    recipient_name: '',
     notes: ''
   });
 
@@ -40,7 +43,17 @@ export const ExpensePage = () => {
     fetchExpenses();
     fetchEvents();
     fetchCategories();
+    fetchDirectoryMembers();
   }, []);
+
+  const fetchDirectoryMembers = async () => {
+    try {
+      const response = await api.get('/internal/finance/members');
+      if (response.data.success) {
+        setDirectoryMembers(response.data.data);
+      }
+    } catch (_) {}
+  };
 
   const fetchCategories = async () => {
     try {
@@ -78,6 +91,25 @@ export const ExpensePage = () => {
     } catch (_) {}
   };
 
+  const handleSelectRecipient = (memberId) => {
+    if (!memberId) {
+      setFormData(prev => ({ ...prev, recipient_member_id: '', recipient_name: '' }));
+      return;
+    }
+    const m = directoryMembers.find(item => item.id === Number(memberId));
+    if (m) {
+      const name = m.ign_tag || m.roblox_username || m.full_name;
+      setFormData(prev => ({
+        ...prev,
+        recipient_member_id: m.id,
+        recipient_name: name,
+        notes: m.bank_account_number
+          ? (prev.notes ? `${prev.notes} (Rek: ${m.bank_name} ${m.bank_account_number})` : `Rek: ${m.bank_name} ${m.bank_account_number} a.n ${m.bank_account_name || name}`)
+          : prev.notes
+      }));
+    }
+  };
+
   const handleOpenModal = (expense = null) => {
     if (expense) {
       setEditingId(expense.id);
@@ -89,6 +121,8 @@ export const ExpensePage = () => {
         currency: expense.currency || 'IDR',
         payment_status: expense.payment_status || 'Paid',
         related_event_id: expense.related_event_id || '',
+        recipient_member_id: expense.recipient_member_id || '',
+        recipient_name: expense.recipient_name || '',
         notes: expense.notes || ''
       });
     } else {
@@ -101,6 +135,8 @@ export const ExpensePage = () => {
         currency: 'IDR',
         payment_status: 'Paid',
         related_event_id: '',
+        recipient_member_id: '',
+        recipient_name: '',
         notes: ''
       });
       api.get('/internal/admin/settings').then(res => {
@@ -147,8 +183,9 @@ export const ExpensePage = () => {
       const q = searchQuery.toLowerCase().trim();
       const matchDesc = (item.description || '').toLowerCase().includes(q);
       const matchCategory = (item.category || '').toLowerCase().includes(q);
+      const matchRecipient = (item.recipient_name || '').toLowerCase().includes(q);
       const matchNotes = (item.notes || '').toLowerCase().includes(q);
-      if (!matchDesc && !matchCategory && !matchNotes) return false;
+      if (!matchDesc && !matchCategory && !matchRecipient && !matchNotes) return false;
     }
 
     // Category filter
@@ -223,6 +260,16 @@ export const ExpensePage = () => {
       )
     },
     { header: t('description'), accessor: 'description', cellClassName: 'font-semibold text-white' },
+    {
+      header: 'Penerima Dana',
+      render: (row) => (
+        row.recipient_name ? (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-bold text-xs border border-cyan-500/20">
+            <UserCheck className="w-3 h-3 text-cyan-400" /> {row.recipient_name}
+          </span>
+        ) : <span className="text-xs text-slate-500">-</span>
+      )
+    },
     {
       header: 'Status Pembayaran',
       render: (row) => {
@@ -320,7 +367,7 @@ export const ExpensePage = () => {
             <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
             <input
               type="text"
-              placeholder="Cari deskripsi pengeluaran / catatan..."
+              placeholder="Cari deskripsi / penerima dana / catatan..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-8 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
@@ -528,6 +575,31 @@ export const ExpensePage = () => {
             </div>
 
             <div>
+              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Penerima / Penerima Dana (Opsional)</label>
+              <div className="space-y-2">
+                <select
+                  value={formData.recipient_member_id}
+                  onChange={(e) => handleSelectRecipient(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-cyan-300 font-semibold focus:outline-none focus:border-cyan-500 cursor-pointer"
+                >
+                  <option value="" className="bg-slate-900 text-white">-- Pilih dari Direktori Pemain / Staff --</option>
+                  {directoryMembers.map((m) => (
+                    <option key={m.id} value={m.id} className="bg-slate-900 text-white">
+                      {m.full_name} {m.ign_tag ? `[${m.ign_tag}]` : ''} ({m.member_type || 'Staff'})
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Atau ketik nama penerima manual..."
+                  value={formData.recipient_name}
+                  onChange={(e) => setFormData({ ...formData, recipient_name: e.target.value, recipient_member_id: '' })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
+                />
+              </div>
+            </div>
+
+            <div>
               <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Status Pembayaran *</label>
               <select
                 value={formData.payment_status || 'Paid'}
@@ -545,7 +617,7 @@ export const ExpensePage = () => {
               <input
                 type="text"
                 required
-                placeholder="contoh: Pembelian Peralatan Stream / Pembuatan Map"
+                placeholder="contoh: Hadiah Pemenang YeemMKJZT_ID / Pembuatan Map"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
@@ -600,7 +672,7 @@ export const ExpensePage = () => {
               <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('notes')}</label>
               <textarea
                 rows="2"
-                placeholder="Catatan tambahan (opsional)"
+                placeholder="Catatan tambahan / rincian rekening"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"

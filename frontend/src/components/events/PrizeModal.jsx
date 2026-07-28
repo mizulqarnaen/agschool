@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../common/Modal';
 import api from '../../services/api';
-import { Trophy, Plus, Trash2, Edit, CheckCircle2, Search, Award, Clock, DollarSign } from 'lucide-react';
+import { Trophy, Plus, Trash2, Edit, CheckCircle2, Search, Award, Clock, DollarSign, UserCheck, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 export const PrizeModal = ({ isOpen, onClose, event }) => {
   const { t } = useTranslation();
   const [prizes, setPrizes] = useState([]);
+  const [directoryMembers, setDirectoryMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingPrizeId, setEditingPrizeId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [saveToDirectory, setSaveToDirectory] = useState(false);
 
   const [formData, setFormData] = useState({
     prize_title: 'Juara 1',
@@ -20,12 +22,16 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
     currency: 'IDR',
     payment_status: 'Unpaid',
     payment_date: '',
+    bank_name: '',
+    bank_account_number: '',
+    bank_account_name: '',
     internal_notes: ''
   });
 
   useEffect(() => {
     if (event && isOpen) {
       fetchPrizes();
+      fetchDirectoryMembers();
     }
   }, [event, isOpen]);
 
@@ -42,6 +48,34 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
     }
   };
 
+  const fetchDirectoryMembers = async () => {
+    try {
+      const response = await api.get('/internal/finance/members');
+      if (response.data.success) {
+        setDirectoryMembers(response.data.data);
+      }
+    } catch (_) {}
+  };
+
+  const handleSelectDirectoryMember = (memberId) => {
+    if (!memberId) return;
+    const m = directoryMembers.find(item => item.id === Number(memberId));
+    if (m) {
+      const winnerName = m.ign_tag || m.roblox_username || m.roblox_nickname || m.full_name;
+      setFormData(prev => ({
+        ...prev,
+        winner_name: winnerName,
+        bank_name: m.bank_name || prev.bank_name,
+        bank_account_number: m.bank_account_number || prev.bank_account_number,
+        bank_account_name: m.bank_account_name || prev.bank_account_name,
+        internal_notes: m.bank_account_number
+          ? `[Terdaftar] Bank: ${m.bank_name || '-'} ${m.bank_account_number} a.n ${m.bank_account_name || m.full_name}`
+          : prev.internal_notes
+      }));
+      toast.success(`Data rekening ${winnerName} berhasil di-autofill!`);
+    }
+  };
+
   const handleEdit = (prize) => {
     setEditingPrizeId(prize.id);
     setFormData({
@@ -52,12 +86,16 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
       currency: prize.currency || event?.currency || 'IDR',
       payment_status: prize.payment_status || 'Unpaid',
       payment_date: prize.payment_date || '',
+      bank_name: prize.bank_name || '',
+      bank_account_number: prize.bank_account_number || '',
+      bank_account_name: prize.bank_account_name || '',
       internal_notes: prize.internal_notes || ''
     });
   };
 
   const handleResetForm = () => {
     setEditingPrizeId(null);
+    setSaveToDirectory(false);
     setFormData({
       prize_title: 'Juara 1',
       winner_name: '',
@@ -66,6 +104,9 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
       currency: event?.currency || 'IDR',
       payment_status: 'Unpaid',
       payment_date: '',
+      bank_name: '',
+      bank_account_number: '',
+      bank_account_name: '',
       internal_notes: ''
     });
   };
@@ -76,11 +117,29 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
       const payload = { ...formData, event_id: event.id };
       if (editingPrizeId) {
         await api.put(`/internal/events/prizes/${editingPrizeId}`, payload);
-        toast.success('Pemenang / Tier Hadiah berhasil diperbarui');
+        toast.success('Pemenang / Tier Hadiah diperbarui');
       } else {
         await api.post('/internal/events/prizes', payload);
-        toast.success('Pemenang / Tier Hadiah baru berhasil ditambahkan');
+        toast.success('Pemenang baru berhasil ditambahkan');
       }
+
+      // Auto-save to Member/Player Directory if checked
+      if (saveToDirectory && formData.winner_name) {
+        try {
+          await api.post('/internal/finance/members', {
+            full_name: formData.winner_name,
+            member_type: 'Player',
+            ign_tag: formData.winner_name,
+            bank_name: formData.bank_name,
+            bank_account_number: formData.bank_account_number,
+            bank_account_name: formData.bank_account_name || formData.winner_name,
+            categories: ['Player']
+          });
+          toast.success(`Data rekening ${formData.winner_name} tersimpan ke Direktori Pemain!`);
+          fetchDirectoryMembers();
+        } catch (_) {}
+      }
+
       handleResetForm();
       fetchPrizes();
     } catch (err) {
@@ -240,6 +299,24 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
             )}
           </div>
 
+          {/* Quick Auto-Fill Selector from Directory */}
+          <div className="p-2.5 bg-slate-900/90 rounded-xl border border-cyan-500/30 space-y-1">
+            <label className="block text-[10px] font-bold text-cyan-300 uppercase flex items-center gap-1">
+              <UserCheck className="w-3.5 h-3.5" /> Auto-Fill dari Direktori Pemain / Staff
+            </label>
+            <select
+              onChange={(e) => handleSelectDirectoryMember(e.target.value)}
+              className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
+            >
+              <option value="">-- Pilih Pemain / Staff Terdaftar --</option>
+              {directoryMembers.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.full_name} {m.ign_tag ? `[${m.ign_tag}]` : ''} {m.bank_name ? `(${m.bank_name})` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label className="block text-[10px] font-semibold text-slate-300 uppercase mb-1">
@@ -281,6 +358,48 @@ export const PrizeModal = ({ isOpen, onClose, event }) => {
                 onChange={(e) => setFormData({ ...formData, reward_description: e.target.value })}
                 className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
               />
+            </div>
+
+            {/* Optional Bank Details Section */}
+            <div className="p-3 bg-slate-900/80 rounded-xl border border-amber-500/20 space-y-2">
+              <span className="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1">
+                <CreditCard className="w-3.5 h-3.5" /> Info Rekening Bank Pemenang (Opsional)
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  placeholder="Bank / E-Wallet"
+                  value={formData.bank_name}
+                  onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
+                  className="px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-semibold"
+                />
+                <input
+                  type="text"
+                  placeholder="No. Rekening"
+                  value={formData.bank_account_number}
+                  onChange={(e) => setFormData({ ...formData, bank_account_number: e.target.value })}
+                  className="px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
+                />
+              </div>
+              <input
+                type="text"
+                placeholder="Nama Pemilik Rekening (a.n)"
+                value={formData.bank_account_name}
+                onChange={(e) => setFormData({ ...formData, bank_account_name: e.target.value })}
+                className="w-full px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white"
+              />
+
+              {!editingPrizeId && (
+                <label className="flex items-center gap-2 pt-1 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={saveToDirectory}
+                    onChange={(e) => setSaveToDirectory(e.target.checked)}
+                    className="w-3.5 h-3.5 text-cyan-500 rounded border-slate-700 bg-slate-950 focus:ring-0"
+                  />
+                  <span className="text-[10px] text-cyan-300 font-bold">☑ Simpan data rekening ke Direktori Pemain</span>
+                </label>
+              )}
             </div>
 
             {/* Cash Payout & Currency Input */}

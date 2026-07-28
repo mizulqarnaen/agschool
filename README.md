@@ -92,9 +92,10 @@
 ### 12. Payment Status Management for Operational Incomes & Expenses
 - **Payment Status Field**: Added `payment_status` (`Paid` 🟢, `Unpaid` 🟡, `Cancelled` 🔴) to modal forms and backend endpoints on `IncomePage.jsx` and `ExpensePage.jsx`.
 - **Status Badges & Status Filter**: Tables display interactive status badges (`Paid`, `Unpaid`, `Cancelled`) and filter toolbars include status filters (`Semua Status`, `Paid`, `Unpaid`, `Cancelled`).
-### 13. Dynamic Financial Summary Cards & Category Breakdown Panels
-- **Filtered Financial Summary Cards ([IncomePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/IncomePage.jsx) & [ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Displays 4 reactive glassmorphic metric cards above the table showing Total Paid (Lunas), Total Unpaid (Pending), Total Cancelled (Dibatalkan), and Total Filtered.
-- **Grouped Category Breakdown**: Renders category summary pills displaying total nominal sums in IDR and item counts for each active category, dynamically updated by date and search filters.
+### 14. Unified Recipient Directory (Players & Staff) & Expense Recipient Linking
+- **Unified Master Directory ([MemberModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/MemberModal.jsx))**: Enriched member directory with Entity Type tab filters (`Semua`, `Staff & Pengurus`, `Pemain & Turnamen`) supporting stored bank account details, IGN tags, and contact handles.
+- **Event Prize Auto-Fill & Auto-Save ([PrizeModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/events/PrizeModal.jsx))**: Added 1-click bank details auto-fill from the directory into event winner prizes, with an optional auto-save checkbox to store new winner accounts into the directory.
+- **Operational Expense Recipient Linking ([ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Added optional Recipient selection (`recipient_member_id` & `recipient_name`) in expense forms, displaying recipient badges and auto-filling bank info into expense notes.
 
 ---
 

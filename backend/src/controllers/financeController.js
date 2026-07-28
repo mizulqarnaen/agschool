@@ -213,6 +213,8 @@ export const createExpense = (req, res) => {
     exchange_rate_used: rateUsed,
     base_amount_idr: baseIDR,
     related_event_id: req.body.related_event_id ? Number(req.body.related_event_id) : null,
+    recipient_member_id: req.body.recipient_member_id ? Number(req.body.recipient_member_id) : null,
+    recipient_name: req.body.recipient_name || '',
     recorded_by_user_id: req.user.id
   });
   loggerService.logActivity(req.user.id, 'CREATE_EXPENSE', 'Expense', newExpense.id, { amount: newExpense.amount, currency: newExpense.currency });
@@ -234,7 +236,9 @@ export const updateExpense = (req, res) => {
     currency,
     exchange_rate_used: rateUsed,
     base_amount_idr: baseIDR,
-    related_event_id: req.body.related_event_id ? Number(req.body.related_event_id) : null
+    related_event_id: req.body.related_event_id ? Number(req.body.related_event_id) : null,
+    recipient_member_id: req.body.recipient_member_id ? Number(req.body.recipient_member_id) : null,
+    recipient_name: req.body.recipient_name || ''
   });
   if (!updated) return res.status(404).json({ success: false, message: 'Expense record not found.' });
   loggerService.logActivity(req.user.id, 'UPDATE_EXPENSE', 'Expense', id, req.body);
@@ -344,6 +348,8 @@ export const createMember = (req, res) => {
 
   const newMember = memberRepository.create({
     full_name: req.body.full_name,
+    member_type: req.body.member_type || (req.body.category === 'Player' ? 'Player' : 'Staff'),
+    ign_tag: req.body.ign_tag || req.body.roblox_username || req.body.roblox_nickname || '',
     email: req.body.email || '',
     phone: req.body.phone || '',
     roblox_username: req.body.roblox_username || '',
@@ -387,6 +393,8 @@ export const updateMember = (req, res) => {
 
   const updated = memberRepository.update(id, {
     full_name: req.body.full_name,
+    member_type: req.body.member_type || (req.body.category === 'Player' ? 'Player' : 'Staff'),
+    ign_tag: req.body.ign_tag || req.body.roblox_username || req.body.roblox_nickname || '',
     email: req.body.email || '',
     phone: req.body.phone || '',
     roblox_username: req.body.roblox_username || '',
