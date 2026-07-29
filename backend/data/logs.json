@@ -1342,5 +1342,53 @@
     "created_at": "2026-07-28T12:18:04.743Z",
     "updated_at": "2026-07-28T12:18:04.743Z",
     "deleted_at": null
+  },
+  {
+    "id": 113,
+    "user_id": 1,
+    "action": "LOGIN_SUCCESS",
+    "module": "Auth",
+    "entity_id": 1,
+    "details_json": "{\"username\":\"admin\"}",
+    "timestamp": "2026-07-29T06:52:03.518Z",
+    "created_at": "2026-07-29T06:52:03.520Z",
+    "updated_at": "2026-07-29T06:52:03.520Z",
+    "deleted_at": null
+  },
+  {
+    "id": 114,
+    "user_id": 1,
+    "action": "UPDATE_MEMBER",
+    "module": "Member",
+    "entity_id": 5,
+    "details_json": "{\"full_name\":\"Huppla\",\"member_type\":\"Staff\",\"ign_tag\":\"hupplakiw\",\"email\":\"\",\"phone\":\"\",\"roblox_username\":\"hupplakiw\",\"roblox_nickname\":\"SangxHuppla\",\"tiktok_handle\":\"@imhuppla\",\"discord_username\":\"@huppla\",\"bank_name\":\"BCA\",\"bank_account_number\":\"8930541401\",\"bank_account_name\":\"Rizky Ramdhani\",\"categories\":[\"BA\"],\"role_salaries\":{\"BA\":{\"amount\":\"3500000\",\"currency\":\"IDR\"}},\"monthly_salary\":3500000,\"salary_currency\":\"IDR\",\"category\":\"BA\",\"status\":\"active\",\"joined_date\":\"2026-07-27\"}",
+    "timestamp": "2026-07-29T07:17:43.973Z",
+    "created_at": "2026-07-29T07:17:43.975Z",
+    "updated_at": "2026-07-29T07:17:43.975Z",
+    "deleted_at": null
+  },
+  {
+    "id": 115,
+    "user_id": 1,
+    "action": "UPDATE_MEMBER",
+    "module": "Member",
+    "entity_id": 4,
+    "details_json": "{\"full_name\":\"Kang Iqbal\",\"member_type\":\"Staff\",\"ign_tag\":\"mizulqarnaen\",\"email\":\"aikyuubal@gmail.com\",\"phone\":\"082117133380\",\"roblox_username\":\"mizulqarnaen\",\"roblox_nickname\":\"KangIqbalFALL_MKJZT\",\"tiktok_handle\":\"@mizulqarnaen\",\"discord_username\":\"@iqbalasz\",\"bank_name\":\"Mandiri\",\"bank_account_number\":\"1320025674145\",\"bank_account_name\":\"Mohammad Iqbal\",\"categories\":[\"Caster\",\"Finance\"],\"role_salaries\":{\"Caster\":{\"amount\":\"1200000\",\"currency\":\"IDR\"},\"Finance\":{\"amount\":850000,\"currency\":\"IDR\"}},\"monthly_salary\":2050000,\"salary_currency\":\"IDR\",\"category\":\"Caster, Finance\",\"status\":\"active\",\"joined_date\":\"2026-07-24\"}",
+    "timestamp": "2026-07-29T07:17:53.791Z",
+    "created_at": "2026-07-29T07:17:53.792Z",
+    "updated_at": "2026-07-29T07:17:53.792Z",
+    "deleted_at": null
+  },
+  {
+    "id": 116,
+    "user_id": 1,
+    "action": "UPDATE_MEMBER",
+    "module": "Member",
+    "entity_id": 6,
+    "details_json": "{\"full_name\":\"Jefry Pang\",\"member_type\":\"Staff\",\"ign_tag\":\"jefryyyy666\",\"email\":\"\",\"phone\":\"\",\"roblox_username\":\"jefryyyy666\",\"roblox_nickname\":\"\",\"tiktok_handle\":\"@jefrypang\",\"discord_username\":\"@jefrypang\",\"bank_name\":\"BCA\",\"bank_account_number\":\"6768143022\",\"bank_account_name\":\"Muhammad Rizqi Baihaqi\",\"categories\":[\"BA\"],\"role_salaries\":{\"BA\":{\"amount\":\"3499999.98\",\"currency\":\"IDR\"}},\"monthly_salary\":3499999.98,\"salary_currency\":\"IDR\",\"category\":\"BA\",\"status\":\"active\",\"joined_date\":\"2026-07-27\"}",
+    "timestamp": "2026-07-29T07:18:11.133Z",
+    "created_at": "2026-07-29T07:18:11.134Z",
+    "updated_at": "2026-07-29T07:18:11.134Z",
+    "deleted_at": null
   }
 ]

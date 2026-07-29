@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Users, Plus, Trash2, Edit, UserCheck, Settings, X, Gamepad2, Video, Search, Filter, Phone, Mail, DollarSign, CreditCard, MessageSquare, Trophy } from 'lucide-react';
+import { Users, Plus, Trash2, Edit, UserCheck, Settings, X, Gamepad2, Video, Search, Filter, Phone, Mail, DollarSign, CreditCard, MessageSquare, Trophy, Calendar, CheckCircle2, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -19,6 +19,7 @@ export const MemberPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
   const [selectedTypeFilter, setSelectedTypeFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   // Sub-panel for category management
   const [showCategoryManager, setShowCategoryManager] = useState(false);
@@ -306,6 +307,10 @@ export const MemberPage = () => {
     const matchCat = selectedCategoryFilter === 'All' || m.category?.includes(selectedCategoryFilter);
     if (!matchCat) return false;
 
+    // Status Filter
+    const mStatus = m.status || 'active';
+    if (statusFilter !== 'All' && mStatus !== statusFilter) return false;
+
     // Search Filter
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
@@ -361,6 +366,31 @@ export const MemberPage = () => {
       }
     },
     {
+      header: 'Status & Tgl Masuk',
+      render: (row) => {
+        const isActive = (row.status || 'active') === 'active';
+        return (
+          <div className="space-y-1">
+            <div>
+              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${
+                isActive
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+              }`}>
+                {isActive ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
+                {isActive ? 'Aktif' : 'Nonaktif / Berhenti'}
+              </span>
+            </div>
+            {row.joined_date && (
+              <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-cyan-400" /> Masuk: {row.joined_date}
+              </div>
+            )}
+          </div>
+        );
+      }
+    },
+    {
       header: 'Informasi Rekening Bank',
       render: (row) => (
         (row.bank_name || row.bank_account_number) ? (
@@ -373,7 +403,7 @@ export const MemberPage = () => {
       )
     },
     {
-      header: 'Kontak & Sosmed (Discord/Roblox)',
+      header: 'Kontak & Sosmed',
       render: (row) => (
         <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
           {row.discord_username && (
@@ -489,6 +519,21 @@ export const MemberPage = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Status Filter */}
+            <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80">
+              <span className="text-xs text-slate-400 font-semibold">Status:</span>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="bg-transparent text-xs text-white focus:outline-none font-semibold cursor-pointer pr-1"
+              >
+                <option value="All" className="bg-slate-900 text-white">Semua Status</option>
+                <option value="active" className="bg-slate-900 text-emerald-400 font-bold">🟢 Aktif</option>
+                <option value="inactive" className="bg-slate-900 text-rose-400 font-bold">🔴 Nonaktif / Berhenti</option>
+              </select>
+            </div>
+
+            {/* Role/Category Filter */}
             <div className="flex items-center gap-1.5 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-700/80">
               <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               <select
@@ -578,7 +623,33 @@ export const MemberPage = () => {
               </div>
             </div>
 
-            {/* Form Fields for PLAYER (Streamlined) */}
+            {/* Status & Tanggal Masuk Inputs */}
+            <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900/90 rounded-xl border border-slate-800">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-300 uppercase mb-1">Status Keanggotaan *</label>
+                <select
+                  value={formData.status || 'active'}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white font-bold cursor-pointer"
+                >
+                  <option value="active" className="bg-slate-900 text-emerald-400 font-bold">🟢 Aktif</option>
+                  <option value="inactive" className="bg-slate-900 text-rose-400 font-bold">🔴 Nonaktif / Berhenti</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-300 uppercase mb-1">Tanggal Masuk / Bergabung *</label>
+                <input
+                  type="date"
+                  required
+                  value={formData.joined_date || ''}
+                  onChange={(e) => setFormData({ ...formData, joined_date: e.target.value })}
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-cyan-300 font-mono font-bold cursor-pointer"
+                />
+              </div>
+            </div>
+
+            {/* PLAYER FORM (Streamlined & Simple) */}
             {formData.member_type === 'Player' ? (
               <div className="space-y-3 p-3 bg-slate-900/60 rounded-2xl border border-emerald-500/30">
                 <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
@@ -586,36 +657,36 @@ export const MemberPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Nama Pemain / Nama Tim *</label>
+                  <label className="block text-[10px] font-semibold text-slate-300 uppercase mb-1">Nama Pemain / Nama Tim *</label>
                   <input
                     type="text"
                     required
                     placeholder="contoh: YeemMKJZT_ID / Team Alpha"
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500 font-bold"
+                    className="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 font-bold"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">In-Game Nickname / Tag IGN (Opsional)</label>
+                  <label className="block text-[10px] font-semibold text-slate-300 uppercase mb-1">In-Game Nickname / Tag IGN (Opsional)</label>
                   <input
                     type="text"
                     placeholder="contoh: YeemMKJZT_ID"
                     value={formData.ign_tag}
                     onChange={(e) => setFormData({ ...formData, ign_tag: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-emerald-300 font-mono font-bold focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-emerald-300 font-mono font-bold focus:outline-none focus:border-emerald-500"
                   />
                 </div>
 
-                {/* Bank Details */}
+                {/* Bank Account Details */}
                 <div className="p-3 bg-slate-950 rounded-xl border border-amber-500/30 space-y-2">
-                  <span className="text-xs font-bold text-amber-400 uppercase flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-amber-400 uppercase block flex items-center gap-1">
                     <CreditCard className="w-3.5 h-3.5" /> Rekening Pembayaran Hadiah Pemain
                   </span>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Nama Bank / E-Wallet</label>
+                      <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Bank / E-Wallet</label>
                       <input
                         type="text"
                         placeholder="contoh: BCA / Mandiri / DANA"
@@ -647,10 +718,10 @@ export const MemberPage = () => {
                   </div>
                 </div>
 
-                {/* Discord & Roblox Inputs */}
+                {/* Discord & Roblox Handles */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-indigo-300 uppercase mb-1 flex items-center gap-1">
+                    <label className="block text-[10px] font-semibold text-indigo-300 uppercase mb-0.5 flex items-center gap-1">
                       <MessageSquare className="w-3.5 h-3.5 text-indigo-400" /> Discord Handle *
                     </label>
                     <input
@@ -658,11 +729,11 @@ export const MemberPage = () => {
                       placeholder="contoh: @iqbalasz"
                       value={formData.discord_username}
                       onChange={(e) => setFormData({ ...formData, discord_username: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-indigo-300 font-semibold focus:outline-none focus:border-emerald-500"
+                      className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-indigo-300 font-semibold"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-cyan-300 uppercase mb-1 flex items-center gap-1">
+                    <label className="block text-[10px] font-semibold text-cyan-300 uppercase mb-0.5 flex items-center gap-1">
                       <Gamepad2 className="w-3.5 h-3.5 text-cyan-400" /> Roblox Username
                     </label>
                     <input
@@ -670,40 +741,40 @@ export const MemberPage = () => {
                       placeholder="contoh: YeemRoblox"
                       value={formData.roblox_username}
                       onChange={(e) => setFormData({ ...formData, roblox_username: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-cyan-300 focus:outline-none focus:border-emerald-500"
+                      className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-cyan-300"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Nomor WhatsApp / Kontak (Opsional)</label>
+                  <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">WhatsApp / No. Telepon (Opsional)</label>
                   <input
                     type="text"
                     placeholder="contoh: +62 821 1713 3380"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white"
                   />
                 </div>
               </div>
             ) : (
-              /* Form Fields for STAFF / PENGURUS (Full Komplit) */
-              <div className="space-y-4">
+              /* STAFF FORM (Full Komplit) */
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Nama Lengkap *</label>
+                  <label className="block text-[10px] font-semibold text-slate-300 uppercase mb-1">Nama Lengkap *</label>
                   <input
                     type="text"
                     required
                     placeholder="contoh: Alex Tan"
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 font-bold"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
-                    Role / Peran Anggota (Bisa Pilih Lebih Dari 1) *
+                  <label className="block text-[10px] font-semibold text-slate-300 uppercase mb-1">
+                    Role / Peran Anggota Staff (Multi-Select) *
                   </label>
                   <div className="flex flex-wrap gap-1.5 p-2 bg-slate-900 border border-slate-700 rounded-xl">
                     {categories.filter(c => c !== 'Player').map((c) => {
@@ -727,10 +798,10 @@ export const MemberPage = () => {
                 </div>
 
                 {/* Per-Role Salary Benchmark */}
-                <div className="p-3 bg-slate-900/80 rounded-xl border border-emerald-500/30 space-y-2.5">
-                  <span className="text-xs font-bold text-emerald-400 uppercase flex items-center justify-between">
+                <div className="p-3 bg-slate-900/80 rounded-xl border border-emerald-500/30 space-y-2">
+                  <span className="text-[10px] font-bold text-emerald-400 uppercase flex items-center justify-between">
                     <span className="flex items-center gap-1">
-                      <DollarSign className="w-3.5 h-3.5" /> Honor Acuan Per-Role (Opsional)
+                      <DollarSign className="w-3.5 h-3.5" /> Honor Acuan Per-Role (Staff)
                     </span>
                     {formData.monthly_salary > 0 && (
                       <span className="text-[10px] text-emerald-300 font-mono">
@@ -739,16 +810,16 @@ export const MemberPage = () => {
                     )}
                   </span>
 
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     {(formData.categories || []).map((cat) => {
                       const roleSal = formData.role_salaries?.[cat] || {};
                       const amountVal = typeof roleSal === 'object' ? roleSal.amount : roleSal;
                       const currVal = typeof roleSal === 'object' ? roleSal.currency || 'IDR' : 'IDR';
 
                       return (
-                        <div key={cat} className="flex items-center gap-2 p-2 bg-slate-950 rounded-xl border border-slate-800">
-                          <span className="w-24 text-xs font-bold text-cyan-300 truncate shrink-0">{cat}</span>
-                          <div className="flex-1 min-w-0 flex items-center gap-1.5">
+                        <div key={cat} className="flex items-center gap-2 p-1.5 bg-slate-950 rounded-xl border border-slate-800">
+                          <span className="w-20 text-[10px] font-bold text-cyan-300 truncate shrink-0">{cat}</span>
+                          <div className="flex-1 min-w-0 flex items-center gap-1">
                             <input
                               type="number"
                               step="0.01"
@@ -756,12 +827,12 @@ export const MemberPage = () => {
                               placeholder="Nominal Honor"
                               value={amountVal !== undefined && amountVal !== null ? amountVal : ''}
                               onChange={(e) => handleRoleSalaryChange(cat, 'amount', e.target.value)}
-                              className="flex-1 min-w-0 px-2.5 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-emerald-300 font-semibold focus:outline-none focus:border-cyan-500"
+                              className="flex-1 min-w-0 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-emerald-300 font-semibold focus:outline-none focus:border-cyan-500"
                             />
                             <select
                               value={currVal}
                               onChange={(e) => handleRoleSalaryChange(cat, 'currency', e.target.value)}
-                              className="w-16 shrink-0 px-1 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white font-bold focus:outline-none focus:border-cyan-500 text-center"
+                              className="w-14 shrink-0 px-1 py-1 bg-slate-900 border border-slate-700 rounded-lg text-[10px] text-white font-bold focus:outline-none focus:border-cyan-500 text-center"
                             >
                               <option value="IDR">IDR</option>
                               <option value="SGD">SGD</option>
@@ -774,16 +845,16 @@ export const MemberPage = () => {
                 </div>
 
                 {/* Bank Account Details */}
-                <div className="p-3 bg-slate-900/80 rounded-xl border border-amber-500/30 space-y-2.5">
-                  <span className="text-xs font-bold text-amber-400 uppercase block flex items-center gap-1">
-                    <CreditCard className="w-3.5 h-3.5" /> Informasi Rekening Bank / E-Wallet
+                <div className="p-3 bg-slate-900/80 rounded-xl border border-amber-500/30 space-y-2">
+                  <span className="text-[10px] font-bold text-amber-400 uppercase block flex items-center gap-1">
+                    <CreditCard className="w-3.5 h-3.5" /> Informasi Rekening / Bank
                   </span>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Nama Bank</label>
                       <input
                         type="text"
-                        placeholder="BCA / Mandiri / DANA"
+                        placeholder="contoh: BCA / Mandiri"
                         value={formData.bank_name}
                         onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
                         className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-semibold"
@@ -793,7 +864,7 @@ export const MemberPage = () => {
                       <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">No. Rekening</label>
                       <input
                         type="text"
-                        placeholder="8830192831"
+                        placeholder="contoh: 8830192831"
                         value={formData.bank_account_number}
                         onChange={(e) => setFormData({ ...formData, bank_account_number: e.target.value })}
                         className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
@@ -804,7 +875,7 @@ export const MemberPage = () => {
                     <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Nama Pemilik Rekening (a.n)</label>
                     <input
                       type="text"
-                      placeholder="Nama Pemilik Rekening"
+                      placeholder="contoh: Alex Tan"
                       value={formData.bank_account_name}
                       onChange={(e) => setFormData({ ...formData, bank_account_name: e.target.value })}
                       className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white"
@@ -813,11 +884,13 @@ export const MemberPage = () => {
                 </div>
 
                 {/* Social Handles including Discord */}
-                <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2.5">
-                  <span className="text-xs font-bold text-cyan-400 uppercase block">Roblox, Discord & Sosmed (Opsional)</span>
+                <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2">
+                  <span className="text-[10px] font-bold text-cyan-400 uppercase block">Roblox, Discord & TikTok</span>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[10px] font-semibold text-indigo-300 uppercase mb-0.5">Discord Handle *</label>
+                      <label className="block text-[10px] font-semibold text-indigo-300 uppercase mb-0.5 flex items-center gap-1">
+                        <MessageSquare className="w-3 h-3 text-indigo-400" /> Discord Handle *
+                      </label>
                       <input
                         type="text"
                         placeholder="contoh: @brenda_discord"
@@ -863,7 +936,7 @@ export const MemberPage = () => {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase mb-0.5">Email (Opsional)</label>
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Email (Opsional)</label>
                     <input
                       type="email"
                       placeholder="email@agschool.com"
@@ -873,7 +946,7 @@ export const MemberPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 uppercase mb-0.5">Nomor Telepon (Opsional)</label>
+                    <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">No. Telepon (Opsional)</label>
                     <input
                       type="text"
                       placeholder="+65 9123 4567"
@@ -886,17 +959,19 @@ export const MemberPage = () => {
               </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
-              <button
-                type="button"
-                onClick={() => setModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700"
-              >
-                {t('cancel')}
-              </button>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700"
+                >
+                  {t('cancel')}
+                </button>
+              )}
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-md glow-cyan"
+                className="px-4 py-1.5 rounded-xl bg-cyan-500 text-white text-xs font-semibold hover:bg-cyan-400 shadow-md glow-cyan"
               >
                 {editingId ? 'Simpan Perubahan' : 'Tambah ke Direktori'}
               </button>

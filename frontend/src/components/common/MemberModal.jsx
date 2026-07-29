@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from './Modal';
 import api from '../../services/api';
-import { Users, Plus, Trash2, Edit, UserCheck, Settings, X, Gamepad2, Video, Search, Filter, Phone, Mail, DollarSign, CreditCard, MessageSquare, Trophy } from 'lucide-react';
+import { Users, Plus, Trash2, Edit, UserCheck, Settings, X, Gamepad2, Video, Search, Filter, Phone, Mail, DollarSign, CreditCard, MessageSquare, Trophy, Calendar, CheckCircle2, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -16,6 +16,7 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
   const [selectedTypeFilter, setSelectedTypeFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   // Sub-panel for category management
   const [showCategoryManager, setShowCategoryManager] = useState(false);
@@ -306,6 +307,10 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
     const matchCat = selectedCategoryFilter === 'All' || m.category?.includes(selectedCategoryFilter);
     if (!matchCat) return false;
 
+    // Status Filter
+    const mStatus = m.status || 'active';
+    if (statusFilter !== 'All' && mStatus !== statusFilter) return false;
+
     // Search Filter
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
@@ -390,13 +395,23 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
               )}
             </div>
 
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-slate-900 border border-slate-800 text-xs text-white px-2.5 py-2 rounded-xl focus:outline-none cursor-pointer"
+            >
+              <option value="All">Semua Status</option>
+              <option value="active">🟢 Aktif</option>
+              <option value="inactive">🔴 Nonaktif</option>
+            </select>
+
             <button
               type="button"
               onClick={() => setShowCategoryManager(!showCategoryManager)}
               className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs text-cyan-400 hover:text-cyan-300 font-semibold bg-slate-900 border border-slate-800 hover:border-cyan-500/40 rounded-xl transition-all shrink-0"
             >
               <Settings className="w-3.5 h-3.5" />
-              <span>{showCategoryManager ? 'Tutup Kategori' : 'Kelola Kategori'}</span>
+              <span>{showCategoryManager ? 'Tutup' : 'Kategori'}</span>
             </button>
           </div>
 
@@ -476,6 +491,7 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
             <div className="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
               {filteredMembers.map((m) => {
                 const isPlayer = (m.member_type || (m.categories?.includes('Player') ? 'Player' : 'Staff')) === 'Player';
+                const isActive = (m.status || 'active') === 'active';
 
                 return (
                   <div key={m.id} className="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl hover:border-slate-700 transition-all flex items-start justify-between gap-4">
@@ -495,9 +511,21 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                         }`}>
                           {m.category || m.member_type || 'Staff'}
                         </span>
+                        <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${
+                          isActive
+                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                        }`}>
+                          {isActive ? 'Aktif' : 'Nonaktif / Berhenti'}
+                        </span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-400">
+                        {m.joined_date && (
+                          <span className="flex items-center gap-1 text-cyan-300 font-mono">
+                            <Calendar className="w-3.5 h-3.5 text-cyan-400" /> Masuk: {m.joined_date}
+                          </span>
+                        )}
                         {m.monthly_salary > 0 && (
                           <span className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 font-semibold">
                             <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> Gaji Acuan: {m.salary_currency || 'IDR'} {Number(m.monthly_salary).toLocaleString()}/bln
@@ -513,16 +541,6 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                         {m.discord_username && (
                           <span className="flex items-center gap-1 text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20 font-semibold">
                             <MessageSquare className="w-3.5 h-3.5 text-indigo-400" /> Discord: {m.discord_username}
-                          </span>
-                        )}
-                        {m.roblox_username && (
-                          <span className="flex items-center gap-1 text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">
-                            <Gamepad2 className="w-3.5 h-3.5" /> @{m.roblox_username} {m.roblox_nickname ? `(${m.roblox_nickname})` : ''}
-                          </span>
-                        )}
-                        {m.tiktok_handle && (
-                          <span className="flex items-center gap-1 text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded-md border border-pink-500/20">
-                            <Video className="w-3.5 h-3.5" /> {m.tiktok_handle}
                           </span>
                         )}
                       </div>
@@ -588,6 +606,32 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                 >
                   <Trophy className="w-3.5 h-3.5" /> Pemain / Player
                 </button>
+              </div>
+            </div>
+
+            {/* Status & Tanggal Masuk Inputs */}
+            <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900/90 rounded-xl border border-slate-800">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-300 uppercase mb-0.5">Status Keanggotaan *</label>
+                <select
+                  value={formData.status || 'active'}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  className="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white font-bold cursor-pointer"
+                >
+                  <option value="active" className="bg-slate-900 text-emerald-400 font-bold">🟢 Aktif</option>
+                  <option value="inactive" className="bg-slate-900 text-rose-400 font-bold">🔴 Nonaktif / Berhenti</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-300 uppercase mb-0.5">Tanggal Masuk *</label>
+                <input
+                  type="date"
+                  required
+                  value={formData.joined_date || ''}
+                  onChange={(e) => setFormData({ ...formData, joined_date: e.target.value })}
+                  onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                  className="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-cyan-300 font-mono font-bold cursor-pointer"
+                />
               </div>
             </div>
 
