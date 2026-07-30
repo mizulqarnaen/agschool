@@ -92,13 +92,6 @@ export const LoginPage = () => {
             {loading ? 'Authenticating...' : 'Sign In'}
           </button>
         </form>
-
-        <div className="mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-400">
-          <p>Demo Accounts:</p>
-          <p className="mt-1 font-mono text-cyan-400">admin / Password123!</p>
-          <p className="font-mono text-slate-400">finance / Finance123!</p>
-          <p className="font-mono text-slate-400">secretary / Secretary123!</p>
-        </div>
       </div>
     </div>
   );

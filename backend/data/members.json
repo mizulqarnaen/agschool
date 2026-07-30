@@ -99,9 +99,9 @@
       }
     },
     "status": "active",
-    "joined_date": "2026-07-24",
+    "joined_date": "2026-07-14",
     "created_at": "2026-07-24T04:41:46.053Z",
-    "updated_at": "2026-07-29T07:17:53.789Z",
+    "updated_at": "2026-07-29T07:24:56.074Z",
     "deleted_at": null,
     "monthly_salary": 2050000,
     "salary_currency": "IDR",
@@ -133,9 +133,9 @@
       }
     },
     "status": "active",
-    "joined_date": "2026-07-27",
+    "joined_date": "2026-06-08",
     "created_at": "2026-07-27T06:40:25.402Z",
-    "updated_at": "2026-07-29T07:17:43.970Z",
+    "updated_at": "2026-07-29T07:24:46.925Z",
     "deleted_at": null,
     "member_type": "Staff",
     "ign_tag": "hupplakiw"
@@ -165,11 +165,282 @@
       }
     },
     "status": "active",
-    "joined_date": "2026-07-27",
+    "joined_date": "2026-06-23",
     "created_at": "2026-07-27T06:41:49.456Z",
-    "updated_at": "2026-07-29T07:18:11.131Z",
+    "updated_at": "2026-07-29T07:25:10.031Z",
     "deleted_at": null,
     "member_type": "Staff",
     "ign_tag": "jefryyyy666"
+  },
+  {
+    "id": 7,
+    "full_name": "Starry",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "0895422982440",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Dana",
+    "bank_account_number": "0895422982440",
+    "bank_account_name": "Puspita",
+    "monthly_salary": 500000,
+    "salary_currency": "IDR",
+    "category": "Head Admin",
+    "categories": [
+      "Head Admin"
+    ],
+    "role_salaries": {
+      "Head Admin": {
+        "amount": "500000",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-07-10",
+    "created_at": "2026-07-29T07:27:59.345Z",
+    "updated_at": "2026-07-29T07:32:14.180Z",
+    "deleted_at": null
+  },
+  {
+    "id": 8,
+    "full_name": "Lia",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "BCA",
+    "bank_account_number": "5460375501",
+    "bank_account_name": "Fazira Mega Nur Aulia",
+    "monthly_salary": 750000,
+    "salary_currency": "IDR",
+    "category": "Admin",
+    "categories": [
+      "Admin"
+    ],
+    "role_salaries": {
+      "Admin": {
+        "amount": "750000",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-02-24",
+    "created_at": "2026-07-29T07:33:12.858Z",
+    "updated_at": "2026-07-29T07:33:28.333Z",
+    "deleted_at": null
+  },
+  {
+    "id": 9,
+    "full_name": "Acha",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "0882021091534",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Dana",
+    "bank_account_number": "0882021091534",
+    "bank_account_name": "Acha Putri Aulidia",
+    "monthly_salary": 600000,
+    "salary_currency": "IDR",
+    "category": "Admin",
+    "categories": [
+      "Admin"
+    ],
+    "role_salaries": {
+      "Admin": {
+        "amount": "600000",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-02-24",
+    "created_at": "2026-07-29T07:37:55.047Z",
+    "updated_at": "2026-07-29T07:37:55.047Z",
+    "deleted_at": null
+  },
+  {
+    "id": 10,
+    "full_name": "Milly",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "BRI",
+    "bank_account_number": "030901065972507",
+    "bank_account_name": "T.K.",
+    "monthly_salary": 1000000,
+    "salary_currency": "IDR",
+    "category": "Secretary",
+    "categories": [
+      "Secretary"
+    ],
+    "role_salaries": {
+      "Secretary": {
+        "amount": "1000000",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-05-02",
+    "created_at": "2026-07-29T07:40:30.408Z",
+    "updated_at": "2026-07-29T07:40:30.408Z",
+    "deleted_at": null
+  },
+  {
+    "id": 11,
+    "full_name": "Lucifer",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "BCA",
+    "bank_account_number": "6030426108",
+    "bank_account_name": "achmad sebastian veron",
+    "monthly_salary": 500000,
+    "salary_currency": "IDR",
+    "category": "Developer",
+    "categories": [
+      "Developer"
+    ],
+    "role_salaries": {
+      "Developer": {
+        "amount": "500000",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-05-16",
+    "created_at": "2026-07-29T07:46:07.256Z",
+    "updated_at": "2026-07-29T07:46:07.256Z",
+    "deleted_at": null
+  },
+  {
+    "id": 12,
+    "full_name": "Nai",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "085212817844",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Dana",
+    "bank_account_number": "085212817844",
+    "bank_account_name": "Nara Aira Kirana",
+    "monthly_salary": 650000,
+    "salary_currency": "IDR",
+    "category": "Admin",
+    "categories": [
+      "Admin"
+    ],
+    "role_salaries": {
+      "Admin": {
+        "amount": "650000",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-03-30",
+    "created_at": "2026-07-29T07:59:58.392Z",
+    "updated_at": "2026-07-29T07:59:58.392Z",
+    "deleted_at": null
+  },
+  {
+    "id": 13,
+    "full_name": "Beatrix",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Neo Bank",
+    "bank_account_number": "5859459272974584",
+    "bank_account_name": "Sylvia Beatrix Harsaya",
+    "monthly_salary": 1500000,
+    "salary_currency": "IDR",
+    "category": "Caster",
+    "categories": [
+      "Caster"
+    ],
+    "role_salaries": {
+      "Caster": {
+        "amount": "1500000",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-07-15",
+    "created_at": "2026-07-29T08:00:50.299Z",
+    "updated_at": "2026-07-29T08:00:50.300Z",
+    "deleted_at": null
+  },
+  {
+    "id": 14,
+    "full_name": "YeemMKJZT_ID",
+    "member_type": "Player",
+    "ign_tag": "YeemMKJZT_ID",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "yeemskie",
+    "bank_name": "Dana",
+    "bank_account_number": "089620613823",
+    "bank_account_name": "adityailham",
+    "monthly_salary": null,
+    "salary_currency": "IDR",
+    "category": "Player",
+    "categories": [
+      "Player"
+    ],
+    "role_salaries": {},
+    "status": "active",
+    "joined_date": "2026-07-26",
+    "created_at": "2026-07-29T12:23:43.234Z",
+    "updated_at": "2026-07-29T12:23:43.234Z",
+    "deleted_at": null
   }
 ]

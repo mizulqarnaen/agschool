@@ -21,7 +21,9 @@ import { NotFoundPage } from './pages/NotFoundPage';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
-  if (!user) {
+  const token = localStorage.getItem('token');
+
+  if (!user || !token) {
     return <Navigate to="/login" replace />;
   }
   if (allowedRoles && !allowedRoles.includes(user.role_slug)) {
