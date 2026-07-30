@@ -1618,5 +1618,65 @@
     "created_at": "2026-07-29T12:23:43.243Z",
     "updated_at": "2026-07-29T12:23:43.243Z",
     "deleted_at": null
+  },
+  {
+    "id": 136,
+    "user_id": 1,
+    "action": "LOGIN_SUCCESS",
+    "module": "Auth",
+    "entity_id": 1,
+    "details_json": "{\"username\":\"admin\"}",
+    "timestamp": "2026-07-30T00:48:49.899Z",
+    "created_at": "2026-07-30T00:48:49.900Z",
+    "updated_at": "2026-07-30T00:48:49.900Z",
+    "deleted_at": null
+  },
+  {
+    "id": 137,
+    "user_id": 1,
+    "action": "LOGOUT",
+    "module": "Auth",
+    "entity_id": 1,
+    "details_json": "{\"username\":\"admin\"}",
+    "timestamp": "2026-07-30T00:49:03.873Z",
+    "created_at": "2026-07-30T00:49:03.874Z",
+    "updated_at": "2026-07-30T00:49:03.874Z",
+    "deleted_at": null
+  },
+  {
+    "id": 138,
+    "user_id": null,
+    "action": "LOGIN_FAILED",
+    "module": "Auth",
+    "entity_id": null,
+    "details_json": "{\"username\":\"demo\",\"reason\":\"User not found or inactive\"}",
+    "timestamp": "2026-07-30T00:49:09.817Z",
+    "created_at": "2026-07-30T00:49:09.819Z",
+    "updated_at": "2026-07-30T00:49:09.819Z",
+    "deleted_at": null
+  },
+  {
+    "id": 139,
+    "user_id": 1,
+    "action": "LOGIN_SUCCESS",
+    "module": "Auth",
+    "entity_id": 1,
+    "details_json": "{\"username\":\"admin\"}",
+    "timestamp": "2026-07-30T00:49:16.425Z",
+    "created_at": "2026-07-30T00:49:16.426Z",
+    "updated_at": "2026-07-30T00:49:16.426Z",
+    "deleted_at": null
+  },
+  {
+    "id": 140,
+    "user_id": 1,
+    "action": "LOGOUT",
+    "module": "Auth",
+    "entity_id": 1,
+    "details_json": "{\"username\":\"admin\"}",
+    "timestamp": "2026-07-30T00:49:19.682Z",
+    "created_at": "2026-07-30T00:49:19.683Z",
+    "updated_at": "2026-07-30T00:49:19.683Z",
+    "deleted_at": null
   }
 ]

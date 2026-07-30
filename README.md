@@ -97,8 +97,8 @@
 - **Membership Status & Joined Date Tracking**: Added **`status`** (🟢 `active` / Aktif vs 🔴 `inactive` / Nonaktif / Berhenti) and **`joined_date`** (Tanggal Masuk / Bergabung) fields to forms and directory tables with status filter toolbar options.
 - **Tailored Staff vs Player Forms**: Player form is streamlined (role buttons hidden, category auto-set to `Player`, IGN & bank details focus), while Staff form remains full-featured (multi-role selection & per-role salary benchmarks). Both forms feature prominent **Discord Handle** inputs (`discord_username`).
 - **Inline Recipient Auto-Save in Expenses ([ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Direct 1-click recipient creation with bank details auto-save directly from operational expense forms.
-### 15. Login Page Cleanup & Session Expiry Auto-Redirect
-- **Clean Production Login UI ([LoginPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/LoginPage.jsx))**: Removed all demo account credential footers for a clean production login interface.
+### 15. Login Page Branding & Session Expiry Auto-Redirect
+- **Clean Production Login UI & AG School Logo ([LoginPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/LoginPage.jsx))**: Replaced the default Shield icon with the official **AG School Logo** (`/logo.png`) and removed demo account credential footers for a sleek production login interface.
 - **Session Expiry & Unauthorized Auto-Redirect ([api.js](file:///c:/laragon/www/agschool/frontend/src/services/api.js) & [App.jsx](file:///c:/laragon/www/agschool/frontend/src/App.jsx))**: Configured Axios response interceptors for status codes `401` and `403` to clear `localStorage` session keys and redirect users directly to `/login`, enforcing strict route protection via `ProtectedRoute`.
 
 ---

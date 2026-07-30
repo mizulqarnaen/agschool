@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, Shield, ArrowLeft } from 'lucide-react';
+import { Lock, User, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const LoginPage = () => {
@@ -42,8 +42,12 @@ export const LoginPage = () => {
 
       <div className="w-full max-w-md glass-panel p-8 sm:p-10 rounded-3xl glow-cyan border border-slate-800 shadow-2xl relative z-10">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white mx-auto mb-4 shadow-lg">
-            <Shield className="w-6 h-6" />
+          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 border border-slate-700/80 shadow-xl shrink-0 flex items-center justify-center p-1 glow-cyan mx-auto mb-4">
+            <img
+              src="/logo.png"
+              alt="AG School Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-white">AG School Management</h1>
           <p className="text-xs text-slate-400 mt-1">Sign in to access internal financial tools</p>
