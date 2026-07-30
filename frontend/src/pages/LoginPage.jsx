@@ -42,11 +42,11 @@ export const LoginPage = () => {
 
       <div className="w-full max-w-md glass-panel p-8 sm:p-10 rounded-3xl glow-cyan border border-slate-800 shadow-2xl relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 border border-slate-700/80 shadow-xl shrink-0 flex items-center justify-center p-1 glow-cyan mx-auto mb-4">
+          <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-900 border border-slate-700/80 shadow-2xl shrink-0 flex items-center justify-center p-2.5 glow-cyan mx-auto mb-4">
             <img
               src="/logo.png"
               alt="AG School Logo"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain rounded-xl overflow-hidden"
             />
           </div>
           <h1 className="text-2xl font-bold text-white">AG School Management</h1>
