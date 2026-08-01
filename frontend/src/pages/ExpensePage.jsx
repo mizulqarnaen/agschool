@@ -32,6 +32,10 @@ export const ExpensePage = () => {
   const [newRecipientBank, setNewRecipientBank] = useState('');
   const [newRecipientAccount, setNewRecipientAccount] = useState('');
 
+  // Searchable Recipient Select Dropdown State
+  const [recipientSearchQuery, setRecipientSearchQuery] = useState('');
+  const [isRecipientDropdownOpen, setIsRecipientDropdownOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     transaction_date: new Date().toISOString().split('T')[0],
     category: 'Pembuatan Map',
@@ -121,6 +125,8 @@ export const ExpensePage = () => {
     setNewRecipientBank('');
     setNewRecipientAccount('');
     setNewRecipientType('Player');
+    setRecipientSearchQuery('');
+    setIsRecipientDropdownOpen(false);
 
     if (expense) {
       setEditingId(expense.id);
@@ -158,6 +164,21 @@ export const ExpensePage = () => {
     }
     setModalOpen(true);
   };
+
+  // Real-time filtered directory members for searchable select
+  const filteredDirectoryMembers = directoryMembers.filter(m => {
+    const q = recipientSearchQuery.toLowerCase().trim();
+    if (!q) return true;
+    return (
+      m.full_name?.toLowerCase().includes(q) ||
+      m.ign_tag?.toLowerCase().includes(q) ||
+      m.bank_name?.toLowerCase().includes(q) ||
+      m.bank_account_number?.toLowerCase().includes(q) ||
+      m.bank_account_name?.toLowerCase().includes(q) ||
+      (m.member_type || '').toLowerCase().includes(q) ||
+      (m.category || '').toLowerCase().includes(q)
+    );
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -612,31 +633,119 @@ export const ExpensePage = () => {
               </select>
             </div>
 
-            {/* Recipient Selection + Inline Add to Directory */}
-            <div className="p-3 bg-slate-900/90 rounded-2xl border border-cyan-500/30 space-y-2">
-              <label className="block text-xs font-bold text-cyan-300 uppercase flex items-center justify-between">
-                <span>Penerima / Penerima Dana (Opsional)</span>
-                {formData.recipient_name && !saveRecipientToDirectory && (
-                  <span className="text-[10px] text-emerald-400 font-normal">✓ Terpilih: {formData.recipient_name}</span>
+            {/* Recipient Selection with Real-Time Search + Inline Add to Directory */}
+            <div className="p-3 bg-slate-900/90 rounded-2xl border border-cyan-500/30 space-y-2.5 relative">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-cyan-300 uppercase flex items-center gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-cyan-400" /> Penerima / Penerima Dana (Opsional)
+                </label>
+                {formData.recipient_name && (
+                  <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    ✓ Terpilih: {formData.recipient_name}
+                  </span>
                 )}
-              </label>
+              </div>
 
-              <select
-                value={formData.recipient_member_id}
-                onChange={(e) => handleSelectRecipient(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-cyan-300 font-semibold focus:outline-none focus:border-cyan-500 cursor-pointer"
-              >
-                <option value="" className="bg-slate-900 text-white">-- Pilih dari Direktori Pemain / Staff --</option>
-                {directoryMembers.map((m) => (
-                  <option key={m.id} value={m.id} className="bg-slate-900 text-white">
-                    {m.full_name} {m.ign_tag ? `[${m.ign_tag}]` : ''} ({m.member_type || 'Staff'})
-                  </option>
-                ))}
-              </select>
+              {/* Searchable Select Input */}
+              <div className="relative">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Cari penerima terdaftar (nama, IGN, bank, tipe)..."
+                    value={recipientSearchQuery}
+                    onChange={(e) => {
+                      setRecipientSearchQuery(e.target.value);
+                      setIsRecipientDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsRecipientDropdownOpen(true)}
+                    className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-medium"
+                  />
+                  {recipientSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRecipientSearchQuery('');
+                        setIsRecipientDropdownOpen(true);
+                      }}
+                      className="absolute right-3 top-2 text-slate-400 hover:text-white text-xs font-bold"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
 
+                {/* Searchable Dropdown Results Box */}
+                {isRecipientDropdownOpen && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-cyan-500/40 rounded-xl shadow-2xl max-h-56 overflow-y-auto z-50 p-1.5 space-y-1 divide-y divide-slate-800/60 scrollbar-thin">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, recipient_member_id: '', recipient_name: '' }));
+                        setRecipientSearchQuery('');
+                        setIsRecipientDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:bg-slate-800 transition-colors flex items-center justify-between"
+                    >
+                      <span>-- Reset / Tanpa Penerima Terdaftar --</span>
+                      <span className="text-[10px] text-slate-500">Reset</span>
+                    </button>
+
+                    {filteredDirectoryMembers.length > 0 ? (
+                      filteredDirectoryMembers.map((m) => {
+                        const isSelected = formData.recipient_member_id === m.id;
+                        const isPlayer = (m.member_type || (m.categories?.includes('Player') ? 'Player' : 'Staff')) === 'Player';
+
+                        return (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => {
+                              handleSelectRecipient(m.id);
+                              setRecipientSearchQuery('');
+                              setIsRecipientDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex items-center justify-between gap-2 ${
+                              isSelected
+                                ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-500/40 font-bold'
+                                : 'hover:bg-slate-800/90 text-slate-200'
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="font-bold flex items-center gap-1.5">
+                                <span>{m.full_name}</span>
+                                {m.ign_tag && <span className="text-[11px] font-mono text-emerald-300">[{m.ign_tag}]</span>}
+                              </div>
+                              {(m.bank_name || m.bank_account_number) && (
+                                <div className="text-[10px] text-amber-300 font-mono">
+                                  💳 {m.bank_name ? `${m.bank_name}: ` : ''}{m.bank_account_number} {m.bank_account_name ? `(a.n ${m.bank_account_name})` : ''}
+                                </div>
+                              )}
+                            </div>
+
+                            <span className={`px-2 py-0.5 text-[9px] font-extrabold uppercase rounded-full shrink-0 border ${
+                              isPlayer
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                                : 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                            }`}>
+                              {m.member_type || 'Staff'}
+                            </span>
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="p-3 text-center text-slate-400 text-xs font-medium">
+                        Tidak ada penerima cocok dengan "{recipientSearchQuery}".
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Manual Input for Non-Directory Recipients */}
               <input
                 type="text"
-                placeholder="Atau ketik nama penerima baru..."
+                placeholder="Atau ketik nama penerima manual baru..."
                 value={formData.recipient_name}
                 onChange={(e) => {
                   setFormData({ ...formData, recipient_name: e.target.value, recipient_member_id: '' });
