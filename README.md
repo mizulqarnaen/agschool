@@ -97,9 +97,13 @@
 - **Membership Status & Joined Date Tracking**: Added **`status`** (🟢 `active` / Aktif vs 🔴 `inactive` / Nonaktif / Berhenti) and **`joined_date`** (Tanggal Masuk / Bergabung) fields to forms and directory tables with status filter toolbar options.
 - **Tailored Staff vs Player Forms**: Player form is streamlined (role buttons hidden, category auto-set to `Player`, IGN & bank details focus), while Staff form remains full-featured (multi-role selection & per-role salary benchmarks). Both forms feature prominent **Discord Handle** inputs (`discord_username`).
 - **Searchable Recipient Select & Click-Outside Auto-Dismiss ([ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Replaced standard recipient dropdown with a real-time **Searchable Recipient Select** component (filtering by name, IGN, bank info, and member type), featuring click-outside auto-dismiss listener and direct 1-click recipient creation.
-### 15. Login Page Branding & Session Expiry Auto-Redirect
-- **Clean Production Login UI & AG School Logo ([LoginPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/LoginPage.jsx))**: Replaced the default Shield icon with the official **AG School Logo** (`/logo.png`), refined with inner `rounded-xl` clipping, exact `p-2.5` container padding, and cyan glow backdrop, removing demo account footers for a premium production interface.
-- **Session Expiry & Unauthorized Auto-Redirect ([api.js](file:///c:/laragon/www/agschool/frontend/src/services/api.js) & [App.jsx](file:///c:/laragon/www/agschool/frontend/src/App.jsx))**: Configured Axios response interceptors for status codes `401` and `403` to clear `localStorage` session keys and redirect users directly to `/login`, enforcing strict route protection via `ProtectedRoute`.
+
+### 16. Multi-Tier Chronological & Input Sorting
+- **Newest Input Priority (`created_at` DESC & `id` DESC)**: Enhanced financial repositories (`expenseRepository.js`, `incomeRepository.js`, `paymentRepository.js`) with multi-tier sorting:
+  1. **Primary Sort**: Transaction Date Descending (`transaction_date` DESC).
+  2. **Secondary Sort (Tie-Breaker for same date)**: Input Creation Timestamp Descending (`created_at` DESC).
+  3. **Fallback Sort**: Internal ID Descending (`id` DESC).
+- Newly created entries immediately float to the top of table views under their respective transaction date, preventing new entries from being submerged under older ones.
 
 ---
 

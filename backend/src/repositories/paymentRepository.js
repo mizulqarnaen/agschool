@@ -13,7 +13,12 @@ export class PaymentRepository extends JsonRepository {
     if (dateFrom) payments = payments.filter(p => new Date(p.created_at) >= new Date(dateFrom));
     if (dateTo) payments = payments.filter(p => new Date(p.created_at) <= new Date(dateTo));
 
-    return payments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    return payments.sort((a, b) => {
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeB !== timeA) return timeB - timeA;
+      return (b.id || 0) - (a.id || 0);
+    });
   }
 }
 
