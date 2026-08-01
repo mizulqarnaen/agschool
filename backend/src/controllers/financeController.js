@@ -503,7 +503,7 @@ export const updateIncomeCategories = (req, res) => {
 // --- Operational Expense Categories Management ---
 export const getExpenseCategories = (req, res) => {
   const settings = settingRepository.getSettingsMap();
-  const defaultCategories = ['Equipment', 'Logistics', 'Server/Domain', 'Refreshments', 'Operations', 'Event Prize Payout', 'Marketing', 'Other Expense'];
+  const defaultCategories = ['Pembuatan Map', 'Biaya Operasional', 'Event', 'Biaya Promosi', 'Biaya Maintenance', 'Reward Anggota', 'Tidak Terduga'];
   let categories = defaultCategories;
   if (settings.expense_categories) {
     try {

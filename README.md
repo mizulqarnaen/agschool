@@ -50,7 +50,7 @@
 - **Full Editability**: Complete edit capability confirmed via edit button (pencil icon) populating all multi-role, bank, and salary data.
 
 ### 5. Automatic Event Prize Expense Sync
-- When an event winner prize payment status is set to `Paid`, the backend automatically generates a corresponding expense entry in `expenses.json` under category `Event Prize Payout`.
+- When an event winner prize payment status is set to `Paid`, the backend automatically generates a corresponding expense entry in `expenses.json` under category `Event`.
 - Automatic sync avoids manual re-entry and updates financial summaries instantly.
 
 ### 6. System-Wide i18n Localization & Date Formatting (Indonesian & English)

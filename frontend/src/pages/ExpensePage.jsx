@@ -12,7 +12,7 @@ export const ExpensePage = () => {
   const [expenses, setExpenses] = useState([]);
   const [events, setEvents] = useState([]);
   const [directoryMembers, setDirectoryMembers] = useState([]);
-  const [categories, setCategories] = useState(['Equipment', 'Logistics', 'Server/Domain', 'Refreshments', 'Operations', 'Event Prize Payout', 'Marketing', 'Other Expense']);
+  const [categories, setCategories] = useState(['Pembuatan Map', 'Biaya Operasional', 'Event', 'Biaya Promosi', 'Biaya Maintenance', 'Reward Anggota', 'Tidak Terduga']);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);

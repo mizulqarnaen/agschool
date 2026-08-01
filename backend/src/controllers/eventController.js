@@ -20,14 +20,14 @@ const syncPrizeToExpenses = (prize, userId) => {
       const expensePayload = {
         auto_prize_id: prize.id,
         transaction_date: prize.paid_date || new Date().toISOString().split('T')[0],
-        category: 'Event Prize Payout',
+        category: 'Event',
         description,
         amount: Number(prize.prize_amount),
         currency: prize.currency || 'IDR',
         exchange_rate_used: prize.exchange_rate_used || 1,
         base_amount_idr: prize.base_amount_idr || prize.prize_amount,
         related_event_id: prize.event_id,
-        notes: `Auto-generated from Event Prize Payout #${prize.id}`,
+        notes: `Auto-generated from Event Prize #${prize.id}`,
         recorded_by_user_id: userId
       };
 

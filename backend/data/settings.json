@@ -58,7 +58,7 @@
   {
     "id": 11,
     "setting_key": "expense_categories",
-    "setting_value": "[\"Pembuatan Map\",\"Biaya Operasional\",\"Event Prize Payout\",\"Biaya Promosi\",\"Biaya Maintenance\",\"Reward Anggota\",\"Tidak Terduga\"]",
+    "setting_value": "[\"Pembuatan Map\",\"Biaya Operasional\",\"Event\",\"Biaya Promosi\",\"Biaya Maintenance\",\"Reward Anggota\",\"Tidak Terduga\"]",
     "updated_at": "2026-07-27T09:53:16.004Z"
   }
 ]
