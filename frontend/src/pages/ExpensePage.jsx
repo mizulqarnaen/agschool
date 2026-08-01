@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
@@ -32,9 +32,23 @@ export const ExpensePage = () => {
   const [newRecipientBank, setNewRecipientBank] = useState('');
   const [newRecipientAccount, setNewRecipientAccount] = useState('');
 
-  // Searchable Recipient Select Dropdown State
+  // Searchable Recipient Select Dropdown State & Ref
   const [recipientSearchQuery, setRecipientSearchQuery] = useState('');
   const [isRecipientDropdownOpen, setIsRecipientDropdownOpen] = useState(false);
+  const recipientSelectRef = useRef(null);
+
+  // Click outside handler for closing recipient dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (recipientSelectRef.current && !recipientSelectRef.current.contains(event.target)) {
+        setIsRecipientDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const [formData, setFormData] = useState({
     transaction_date: new Date().toISOString().split('T')[0],
@@ -647,7 +661,7 @@ export const ExpensePage = () => {
               </div>
 
               {/* Searchable Select Input */}
-              <div className="relative">
+              <div ref={recipientSelectRef} className="relative">
                 <div className="relative">
                   <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400 pointer-events-none" />
                   <input
