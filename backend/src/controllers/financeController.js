@@ -324,7 +324,18 @@ export const deletePayment = (req, res) => {
 // --- Members CRUD ---
 export const getMembers = (req, res) => {
   const members = memberRepository.readAll();
-  res.json({ success: true, data: members });
+  const sorted = members.sort((a, b) => {
+    const dateA = a.joined_date ? new Date(a.joined_date).getTime() : 0;
+    const dateB = b.joined_date ? new Date(b.joined_date).getTime() : 0;
+    if (dateB !== dateA) return dateB - dateA;
+
+    const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    if (timeB !== timeA) return timeB - timeA;
+
+    return (b.id || 0) - (a.id || 0);
+  });
+  res.json({ success: true, data: sorted });
 };
 
 export const createMember = (req, res) => {

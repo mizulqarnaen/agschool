@@ -21,7 +21,17 @@ export class EventRepository extends JsonRepository {
       events = events.filter(e => e.title.toLowerCase().includes(q) || e.description.toLowerCase().includes(q));
     }
 
-    return events.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+    return events.sort((a, b) => {
+      const dateA = a.start_date ? new Date(a.start_date).getTime() : 0;
+      const dateB = b.start_date ? new Date(b.start_date).getTime() : 0;
+      if (dateB !== dateA) return dateB - dateA;
+
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeB !== timeA) return timeB - timeA;
+
+      return (b.id || 0) - (a.id || 0);
+    });
   }
 }
 

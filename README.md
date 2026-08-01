@@ -98,12 +98,12 @@
 - **Tailored Staff vs Player Forms**: Player form is streamlined (role buttons hidden, category auto-set to `Player`, IGN & bank details focus), while Staff form remains full-featured (multi-role selection & per-role salary benchmarks). Both forms feature prominent **Discord Handle** inputs (`discord_username`).
 - **Searchable Recipient Select & Click-Outside Auto-Dismiss ([ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx))**: Replaced standard recipient dropdown with a real-time **Searchable Recipient Select** component (filtering by name, IGN, bank info, and member type), featuring click-outside auto-dismiss listener and direct 1-click recipient creation.
 
-### 16. Multi-Tier Chronological & Input Sorting
-- **Newest Input Priority (`created_at` DESC & `id` DESC)**: Enhanced financial repositories (`expenseRepository.js`, `incomeRepository.js`, `paymentRepository.js`) with multi-tier sorting:
-  1. **Primary Sort**: Transaction Date Descending (`transaction_date` DESC).
+### 16. System-Wide Multi-Tier Chronological & Input Sorting
+- **System-Wide Newest Input Priority (`created_at` DESC & `id` DESC)**: Enforced consistent multi-tier sorting across **ALL system modules** (`expenseRepository.js`, `incomeRepository.js`, `paymentRepository.js`, `eventRepository.js`, `eventController.js`, `financeController.js`, `loggerService.js`):
+  1. **Primary Sort**: Transaction / Event / Joined Date Descending (`transaction_date` / `start_date` / `joined_date` DESC).
   2. **Secondary Sort (Tie-Breaker for same date)**: Input Creation Timestamp Descending (`created_at` DESC).
   3. **Fallback Sort**: Internal ID Descending (`id` DESC).
-- Newly created entries immediately float to the top of table views under their respective transaction date, preventing new entries from being submerged under older ones.
+- Newly created entries immediately float to the top of table views across all menus (Expenses, Incomes, Member Payments, Player & Staff Directory, Event Management, and Audit Logs).
 
 ---
 

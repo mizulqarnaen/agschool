@@ -47,7 +47,18 @@ const syncPrizeToExpenses = (prize, userId) => {
 // --- Events ---
 export const getInternalEvents = (req, res) => {
   const events = eventRepository.readAll();
-  res.json({ success: true, data: events.sort((a, b) => new Date(b.start_date) - new Date(a.start_date)) });
+  const sorted = events.sort((a, b) => {
+    const dateA = a.start_date ? new Date(a.start_date).getTime() : 0;
+    const dateB = b.start_date ? new Date(b.start_date).getTime() : 0;
+    if (dateB !== dateA) return dateB - dateA;
+
+    const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+    if (timeB !== timeA) return timeB - timeA;
+
+    return (b.id || 0) - (a.id || 0);
+  });
+  res.json({ success: true, data: sorted });
 };
 
 export const createEvent = (req, res) => {

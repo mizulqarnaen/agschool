@@ -22,7 +22,12 @@ class LoggerService extends JsonRepository {
 
   getLogs(limit = 100) {
     const logs = this.readAll(true);
-    return logs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, limit);
+    return logs.sort((a, b) => {
+      const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (timeB !== timeA) return timeB - timeA;
+      return (b.id || 0) - (a.id || 0);
+    }).slice(0, limit);
   }
 }
 
