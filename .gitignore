@@ -17,6 +17,8 @@ frontend/.env
 # Server filesystem uploads & temp database storage
 backend/uploads/*
 !backend/uploads/.gitkeep
+backend/data/*.json
+!backend/data/.gitkeep
 backend/data/*.tmp
 
 # OS & IDE junk
