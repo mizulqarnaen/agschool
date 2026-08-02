@@ -124,6 +124,18 @@ app.use('/api/internal/finance', authenticateToken, financeRoutes);
 app.use('/api/internal/events', authenticateToken, eventRoutes);
 app.use('/api/internal/admin', authenticateToken, adminRoutes);
 
+// Serve static frontend build files in production if available
+const frontendDistPath = path.resolve(__dirname, '../frontend/dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
+
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error('Unhandled API Error:', err);
