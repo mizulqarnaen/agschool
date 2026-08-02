@@ -103,10 +103,11 @@
   1. **Primary Sort**: Transaction / Event / Joined Date Descending (`transaction_date` / `start_date` / `joined_date` DESC).
   2. **Secondary Sort (Tie-Breaker for same date)**: Input Creation Timestamp Descending (`created_at` DESC).
 
-### 17. User Access Management & Password Reset Features
-- **Location**: Menu **`Pengaturan`** (`/internal/settings` -> [SettingsPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/SettingsPage.jsx)).
-- **Ganti Password Akun Saya (Self Change Password)**: Any logged-in user can change their own password via endpoint `PUT /api/auth/change-password` with current password verification.
-- **Admin Reset User Password & Account Management**: Administrators can reset passwords for ANY user account (`admin`, `finance`, `secretary`, or new users) via endpoint `PUT /api/internal/admin/users/:id/password`, manage account status (`Aktif` vs `Nonaktif`), and create new user accounts.
+
+### 18. Multiple Bank Accounts & E-Wallets per Player / Staff
+- **Location**: Menu **`Direktori Pemain & Staff`** (`/internal/members` -> [MemberPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/MemberPage.jsx) & [MemberModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/MemberModal.jsx)).
+- **Feature**: Supports adding multiple bank accounts and e-wallets (BCA, Mandiri, DANA, GoPay, OVO, etc.) for each player or staff member with a **`⭐ Utama (Primary)`** badge toggle and dynamic add/remove items (`+ Tambah Rekening Lain`).
+- **Backward Compatibility**: Fully backward compatible with legacy single-account records (`bank_name`, `bank_account_number`, `bank_account_name`).
 
 ---
 

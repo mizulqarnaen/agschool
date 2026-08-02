@@ -44,6 +44,11 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
     joined_date: new Date().toISOString().split('T')[0]
   });
 
+  // Multiple Bank Accounts / E-Wallets State
+  const [bankAccounts, setBankAccounts] = useState([
+    { id: 1, bank_name: '', bank_account_number: '', bank_account_name: '', is_primary: true }
+  ]);
+
   useEffect(() => {
     if (isOpen) {
       fetchMembers();
@@ -65,64 +70,47 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
         updatedCats = [...currentCats, cat];
       }
 
-      const updatedRoleSalaries = { ...(prev.role_salaries || {}) };
-      if (!updatedRoleSalaries[cat]) {
-        updatedRoleSalaries[cat] = { amount: '', currency: prev.salary_currency || 'IDR' };
+      const updatedRoleSalaries = { ...prev.role_salaries };
+      if (!currentCats.includes(cat)) {
+        updatedRoleSalaries[cat] = {
+          amount: prev.role_salaries?.[cat]?.amount !== undefined ? prev.role_salaries[cat].amount : '',
+          currency: prev.role_salaries?.[cat]?.currency || 'IDR'
+        };
+      } else {
+        delete updatedRoleSalaries[cat];
       }
-
-      const sum = updatedCats.reduce((acc, c) => {
-        const val = updatedRoleSalaries[c];
-        const amt = typeof val === 'object' ? Number(val?.amount || 0) : Number(val || 0);
-        return acc + amt;
-      }, 0);
 
       return {
         ...prev,
         categories: updatedCats,
         category: updatedCats.join(', '),
-        role_salaries: updatedRoleSalaries,
-        monthly_salary: sum > 0 ? sum : ''
+        role_salaries: updatedRoleSalaries
       };
     });
   };
 
-  const handleRoleSalaryChange = (catName, field, value) => {
-    setFormData(prev => {
-      const existingObj = typeof prev.role_salaries?.[catName] === 'object'
-        ? prev.role_salaries[catName]
-        : { amount: prev.role_salaries?.[catName] || '', currency: prev.salary_currency || 'IDR' };
-
-      const updatedRoleSalaries = {
-        ...(prev.role_salaries || {}),
-        [catName]: {
-          ...existingObj,
-          [field]: value
+  const handleRoleSalaryChange = (role, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      role_salaries: {
+        ...prev.role_salaries,
+        [role]: {
+          ...(prev.role_salaries?.[role] || { amount: '', currency: 'IDR' }),
+          [field]: field === 'amount' ? (value === '' ? '' : Number(value)) : value
         }
-      };
-
-      const sum = (prev.categories || []).reduce((acc, c) => {
-        const val = updatedRoleSalaries[c];
-        const amt = typeof val === 'object' ? Number(val?.amount || 0) : Number(val || 0);
-        return acc + amt;
-      }, 0);
-
-      return {
-        ...prev,
-        role_salaries: updatedRoleSalaries,
-        monthly_salary: sum > 0 ? sum : ''
-      };
-    });
+      }
+    }));
   };
 
   const fetchMembers = async () => {
     setLoading(true);
     try {
       const response = await api.get('/internal/finance/members');
-      if (response.data.success) {
+      if (response.data.success && response.data.data) {
         setMembers(response.data.data);
       }
     } catch (_) {
-      toast.error('Failed to load member directory');
+      toast.error('Gagal memuat data anggota');
     } finally {
       setLoading(false);
     }
@@ -531,13 +519,22 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                             <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> Gaji Acuan: {m.salary_currency || 'IDR'} {Number(m.monthly_salary).toLocaleString()}/bln
                           </span>
                         )}
-                        {(m.bank_name || m.bank_account_number) && (
-                          <span className="flex items-center gap-1 text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 font-semibold">
-                            <CreditCard className="w-3.5 h-3.5 text-amber-400" />
-                            {m.bank_name ? `${m.bank_name}: ` : ''}{m.bank_account_number}
-                            {m.bank_account_name ? ` (a.n ${m.bank_account_name})` : ''}
-                          </span>
-                        )}
+                        {(() => {
+                          const accounts = (Array.isArray(m.bank_accounts) && m.bank_accounts.length > 0)
+                            ? m.bank_accounts
+                            : (m.bank_name || m.bank_account_number ? [{ bank_name: m.bank_name, bank_account_number: m.bank_account_number, bank_account_name: m.bank_account_name, is_primary: true }] : []);
+
+                          if (accounts.length === 0) return null;
+
+                          return accounts.map((acc, idx) => (
+                            <span key={idx} className="flex items-center gap-1 text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 font-semibold">
+                              <CreditCard className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                              {acc.bank_name ? `${acc.bank_name}: ` : ''}{acc.bank_account_number}
+                              {acc.bank_account_name ? ` (a.n ${acc.bank_account_name})` : ''}
+                              {acc.is_primary && accounts.length > 1 && <span className="text-[9px] bg-amber-500/30 text-amber-200 px-1 py-0.2 rounded font-extrabold ml-1">Utama</span>}
+                            </span>
+                          ));
+                        })()}
                         {m.discord_username && (
                           <span className="flex items-center gap-1 text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20 font-semibold">
                             <MessageSquare className="w-3.5 h-3.5 text-indigo-400" /> Discord: {m.discord_username}
@@ -665,42 +662,101 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                   />
                 </div>
 
-                {/* Bank Account Details */}
-                <div className="p-3 bg-slate-950 rounded-xl border border-amber-500/30 space-y-2">
-                  <span className="text-[10px] font-bold text-amber-400 uppercase block flex items-center gap-1">
-                    <CreditCard className="w-3.5 h-3.5" /> Rekening Pembayaran Hadiah Pemain
-                  </span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Bank / E-Wallet</label>
-                      <input
-                        type="text"
-                        placeholder="contoh: BCA / Mandiri / DANA"
-                        value={formData.bank_name}
-                        onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-300 font-semibold"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">No. Rekening</label>
-                      <input
-                        type="text"
-                        placeholder="contoh: 8830192831"
-                        value={formData.bank_account_number}
-                        onChange={(e) => setFormData({ ...formData, bank_account_number: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
-                      />
-                    </div>
+                {/* Multiple Bank Accounts / E-Wallets Section */}
+                <div className="p-3 bg-slate-950 rounded-xl border border-amber-500/30 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1">
+                      <CreditCard className="w-3.5 h-3.5" /> Rekening Bank & E-Wallet ({bankAccounts.length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setBankAccounts(prev => [
+                        ...prev,
+                        { id: Date.now(), bank_name: '', bank_account_number: '', bank_account_name: formData.full_name || '', is_primary: prev.length === 0 }
+                      ])}
+                      className="text-[10px] font-bold text-amber-300 hover:text-amber-200 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30 flex items-center gap-1 transition-colors"
+                    >
+                      + Tambah Rekening Lain
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Nama Pemilik Rekening (a.n)</label>
-                    <input
-                      type="text"
-                      placeholder="contoh: Yeem MKJZT"
-                      value={formData.bank_account_name}
-                      onChange={(e) => setFormData({ ...formData, bank_account_name: e.target.value })}
-                      className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white"
-                    />
+
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {bankAccounts.map((acc, index) => (
+                      <div key={acc.id || index} className="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-2 relative">
+                        <div className="flex items-center justify-between">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBankAccounts(prev => prev.map((item, idx) => ({
+                                ...item,
+                                is_primary: idx === index
+                              })));
+                            }}
+                            className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border transition-all ${
+                              acc.is_primary
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+                            }`}
+                          >
+                            {acc.is_primary ? '⭐ Utama (Primary)' : 'Jadikan Utama'}
+                          </button>
+
+                          {bankAccounts.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setBankAccounts(prev => prev.filter((_, idx) => idx !== index))}
+                              className="text-slate-500 hover:text-rose-400 text-xs font-bold px-1.5 py-0.5"
+                              title="Hapus Rekening Ini"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-[9px] font-semibold text-slate-400 uppercase mb-0.5">Bank / E-Wallet</label>
+                            <input
+                              type="text"
+                              placeholder="BCA / Mandiri / DANA"
+                              value={acc.bank_name || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setBankAccounts(prev => prev.map((item, idx) => idx === index ? { ...item, bank_name: val } : item));
+                              }}
+                              className="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-semibold"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[9px] font-semibold text-slate-400 uppercase mb-0.5">No. Rekening</label>
+                            <input
+                              type="text"
+                              placeholder="123456789"
+                              value={acc.bank_account_number || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setBankAccounts(prev => prev.map((item, idx) => idx === index ? { ...item, bank_account_number: val } : item));
+                              }}
+                              className="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[9px] font-semibold text-slate-400 uppercase mb-0.5">Atas Nama (a.n)</label>
+                          <input
+                            type="text"
+                            placeholder="Nama Pemilik"
+                            value={acc.bank_account_name || ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setBankAccounts(prev => prev.map((item, idx) => idx === index ? { ...item, bank_account_name: val } : item));
+                            }}
+                            className="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white"
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -830,42 +886,101 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                   </div>
                 </div>
 
-                {/* Bank Account Details */}
-                <div className="p-3 bg-slate-900/80 rounded-xl border border-amber-500/30 space-y-2">
-                  <span className="text-[10px] font-bold text-amber-400 uppercase block flex items-center gap-1">
-                    <CreditCard className="w-3.5 h-3.5" /> Informasi Rekening / Bank
-                  </span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Nama Bank</label>
-                      <input
-                        type="text"
-                        placeholder="contoh: BCA / Mandiri"
-                        value={formData.bank_name}
-                        onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-semibold"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">No. Rekening</label>
-                      <input
-                        type="text"
-                        placeholder="contoh: 8830192831"
-                        value={formData.bank_account_number}
-                        onChange={(e) => setFormData({ ...formData, bank_account_number: e.target.value })}
-                        className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
-                      />
-                    </div>
+                {/* Multiple Bank Accounts / E-Wallets Section */}
+                <div className="p-3 bg-slate-900/80 rounded-xl border border-amber-500/30 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1">
+                      <CreditCard className="w-3.5 h-3.5" /> Rekening Bank & E-Wallet ({bankAccounts.length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setBankAccounts(prev => [
+                        ...prev,
+                        { id: Date.now(), bank_name: '', bank_account_number: '', bank_account_name: formData.full_name || '', is_primary: prev.length === 0 }
+                      ])}
+                      className="text-[10px] font-bold text-amber-300 hover:text-amber-200 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30 flex items-center gap-1 transition-colors"
+                    >
+                      + Tambah Rekening Lain
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 uppercase mb-0.5">Nama Pemilik Rekening (a.n)</label>
-                    <input
-                      type="text"
-                      placeholder="contoh: Alex Tan"
-                      value={formData.bank_account_name}
-                      onChange={(e) => setFormData({ ...formData, bank_account_name: e.target.value })}
-                      className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white"
-                    />
+
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {bankAccounts.map((acc, index) => (
+                      <div key={acc.id || index} className="p-2.5 bg-slate-950/90 rounded-lg border border-slate-800 space-y-2 relative">
+                        <div className="flex items-center justify-between">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBankAccounts(prev => prev.map((item, idx) => ({
+                                ...item,
+                                is_primary: idx === index
+                              })));
+                            }}
+                            className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border transition-all ${
+                              acc.is_primary
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+                            }`}
+                          >
+                            {acc.is_primary ? '⭐ Utama (Primary)' : 'Jadikan Utama'}
+                          </button>
+
+                          {bankAccounts.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setBankAccounts(prev => prev.filter((_, idx) => idx !== index))}
+                              className="text-slate-500 hover:text-rose-400 text-xs font-bold px-1.5 py-0.5"
+                              title="Hapus Rekening Ini"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-[9px] font-semibold text-slate-400 uppercase mb-0.5">Bank / E-Wallet</label>
+                            <input
+                              type="text"
+                              placeholder="BCA / Mandiri / DANA"
+                              value={acc.bank_name || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setBankAccounts(prev => prev.map((item, idx) => idx === index ? { ...item, bank_name: val } : item));
+                              }}
+                              className="w-full px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-300 font-semibold"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[9px] font-semibold text-slate-400 uppercase mb-0.5">No. Rekening</label>
+                            <input
+                              type="text"
+                              placeholder="123456789"
+                              value={acc.bank_account_number || ''}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setBankAccounts(prev => prev.map((item, idx) => idx === index ? { ...item, bank_account_number: val } : item));
+                              }}
+                              className="w-full px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-300 font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[9px] font-semibold text-slate-400 uppercase mb-0.5">Atas Nama (a.n)</label>
+                          <input
+                            type="text"
+                            placeholder="Nama Pemilik"
+                            value={acc.bank_account_name || ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setBankAccounts(prev => prev.map((item, idx) => idx === index ? { ...item, bank_account_name: val } : item));
+                            }}
+                            className="w-full px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white"
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 

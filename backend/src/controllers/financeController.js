@@ -357,6 +357,27 @@ export const createMember = (req, res) => {
     }, 0);
   }
 
+  // Support Multiple Bank Accounts / E-Wallets
+  let bank_accounts = req.body.bank_accounts;
+  if (!Array.isArray(bank_accounts) || bank_accounts.length === 0) {
+    if (req.body.bank_name || req.body.bank_account_number) {
+      bank_accounts = [{
+        id: 'ba_1',
+        bank_name: req.body.bank_name || '',
+        bank_account_number: req.body.bank_account_number || '',
+        bank_account_name: req.body.bank_account_name || req.body.full_name || '',
+        is_primary: true
+      }];
+    } else {
+      bank_accounts = [];
+    }
+  }
+
+  const primaryAccount = bank_accounts.find(a => a.is_primary) || bank_accounts[0] || {};
+  const bank_name = primaryAccount.bank_name || req.body.bank_name || '';
+  const bank_account_number = primaryAccount.bank_account_number || req.body.bank_account_number || '';
+  const bank_account_name = primaryAccount.bank_account_name || req.body.bank_account_name || '';
+
   const newMember = memberRepository.create({
     full_name: req.body.full_name,
     member_type: req.body.member_type || (req.body.category === 'Player' ? 'Player' : 'Staff'),
@@ -367,9 +388,10 @@ export const createMember = (req, res) => {
     roblox_nickname: req.body.roblox_nickname || '',
     tiktok_handle: req.body.tiktok_handle || '',
     discord_username: req.body.discord_username || '',
-    bank_name: req.body.bank_name || '',
-    bank_account_number: req.body.bank_account_number || '',
-    bank_account_name: req.body.bank_account_name || '',
+    bank_name,
+    bank_account_number,
+    bank_account_name,
+    bank_accounts,
     monthly_salary,
     salary_currency: req.body.salary_currency || 'IDR',
     category: categoryStr,
@@ -402,6 +424,27 @@ export const updateMember = (req, res) => {
     }, 0);
   }
 
+  // Support Multiple Bank Accounts / E-Wallets
+  let bank_accounts = req.body.bank_accounts;
+  if (!Array.isArray(bank_accounts) || bank_accounts.length === 0) {
+    if (req.body.bank_name || req.body.bank_account_number) {
+      bank_accounts = [{
+        id: 'ba_1',
+        bank_name: req.body.bank_name || '',
+        bank_account_number: req.body.bank_account_number || '',
+        bank_account_name: req.body.bank_account_name || req.body.full_name || '',
+        is_primary: true
+      }];
+    } else {
+      bank_accounts = [];
+    }
+  }
+
+  const primaryAccount = bank_accounts.find(a => a.is_primary) || bank_accounts[0] || {};
+  const bank_name = primaryAccount.bank_name || req.body.bank_name || '';
+  const bank_account_number = primaryAccount.bank_account_number || req.body.bank_account_number || '';
+  const bank_account_name = primaryAccount.bank_account_name || req.body.bank_account_name || '';
+
   const updated = memberRepository.update(id, {
     full_name: req.body.full_name,
     member_type: req.body.member_type || (req.body.category === 'Player' ? 'Player' : 'Staff'),
@@ -412,9 +455,10 @@ export const updateMember = (req, res) => {
     roblox_nickname: req.body.roblox_nickname || '',
     tiktok_handle: req.body.tiktok_handle || '',
     discord_username: req.body.discord_username || '',
-    bank_name: req.body.bank_name || '',
-    bank_account_number: req.body.bank_account_number || '',
-    bank_account_name: req.body.bank_account_name || '',
+    bank_name,
+    bank_account_number,
+    bank_account_name,
+    bank_accounts,
     monthly_salary,
     salary_currency: req.body.salary_currency || 'IDR',
     category: categoryStr,
