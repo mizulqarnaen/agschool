@@ -125,6 +125,11 @@ app.use('/api/internal/finance', authenticateToken, financeRoutes);
 app.use('/api/internal/events', authenticateToken, eventRoutes);
 app.use('/api/internal/admin', authenticateToken, adminRoutes);
 
+// Health Check Endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, status: 'online', timestamp: new Date().toISOString() });
+});
+
 // Serve static frontend build files in production if available
 const frontendDistPath = path.resolve(__dirname, '../frontend/dist');
 if (fs.existsSync(frontendDistPath)) {
@@ -134,6 +139,20 @@ if (fs.existsSync(frontendDistPath)) {
       return next();
     }
     res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Root fallback route when frontend build is not yet uploaded
+  app.get('/', (req, res) => {
+    res.json({
+      success: true,
+      message: '🚀 AG School Finance API is online and running on IDCloudHost!',
+      status: 'Active',
+      notice: 'Frontend dist is not yet uploaded. Upload frontend/dist to serve full UI.',
+      endpoints: {
+        public_events: '/api/public/events',
+        health: '/api/health'
+      }
+    });
   });
 }
 
