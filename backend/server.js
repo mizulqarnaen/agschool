@@ -98,7 +98,7 @@ app.put('/api/auth/change-password', authenticateToken, async (req, res) => {
     }
 
     const users = userRepository.readAll(true);
-    const user = users.find(u => u.id === req.user.id);
+    const user = users.find(u => Number(u.id) === Number(req.user.id));
     if (!user) {
       return res.status(404).json({ success: false, message: 'User account not found.' });
     }
