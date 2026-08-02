@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
-import { Settings, Save, RefreshCw, DollarSign, Wallet, Plus, Trash2, Tag, TrendingUp, TrendingDown, Users } from 'lucide-react';
+import { Modal } from '../components/common/Modal';
+import { Settings, Save, RefreshCw, DollarSign, Wallet, Plus, Trash2, Tag, TrendingUp, TrendingDown, Users, Lock, Key, ShieldCheck, UserPlus, UserCheck, Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 export const SettingsPage = () => {
   const { t } = useTranslation();
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = currentUser.role_slug === 'administrator' || currentUser.role_id === 1;
 
   const [settings, setSettings] = useState({
     org_name: 'AG School',
@@ -35,10 +38,33 @@ export const SettingsPage = () => {
   const [syncing, setSyncing] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // User Management & Password States
+  const [usersList, setUsersList] = useState([]);
+  const [selfPasswordForm, setSelfPasswordForm] = useState({ current_password: '', new_password: '', confirm_password: '' });
+
+  // Reset User Password Modal State
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [targetUser, setTargetUser] = useState(null);
+  const [targetNewPassword, setTargetNewPassword] = useState('');
+
+  // Create New User Modal State
+  const [createUserModalOpen, setCreateUserModalOpen] = useState(false);
+  const [newUserForm, setNewUserForm] = useState({ username: '', full_name: '', email: '', password: '', role_id: '2' });
+
   useEffect(() => {
     fetchSettings();
     fetchAllCategories();
+    if (isAdmin) fetchUsersList();
   }, []);
+
+  const fetchUsersList = async () => {
+    try {
+      const res = await api.get('/internal/admin/users');
+      if (res.data.success) {
+        setUsersList(res.data.data);
+      }
+    } catch (_) {}
+  };
 
   const fetchSettings = async () => {
     setLoading(true);
@@ -98,6 +124,78 @@ export const SettingsPage = () => {
       toast.error('Gagal memicu sinkronisasi kurs');
     } finally {
       setSyncing(false);
+    }
+  };
+
+  // Password & User Handlers
+  const handleSelfChangePassword = async (e) => {
+    e.preventDefault();
+    if (selfPasswordForm.new_password !== selfPasswordForm.confirm_password) {
+      toast.error('Konfirmasi password baru tidak cocok');
+      return;
+    }
+    if (selfPasswordForm.new_password.length < 6) {
+      toast.error('Password baru minimal 6 karakter');
+      return;
+    }
+    try {
+      const res = await api.put('/auth/change-password', {
+        current_password: selfPasswordForm.current_password,
+        new_password: selfPasswordForm.new_password
+      });
+      toast.success(res.data.message || 'Password Anda berhasil diperbarui!');
+      setSelfPasswordForm({ current_password: '', new_password: '', confirm_password: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Gagal mengubah password');
+    }
+  };
+
+  const handleResetUserPassword = async (e) => {
+    e.preventDefault();
+    if (!targetNewPassword || targetNewPassword.length < 6) {
+      toast.error('Password baru minimal 6 karakter');
+      return;
+    }
+    try {
+      const res = await api.put(`/internal/admin/users/${targetUser.id}/password`, {
+        new_password: targetNewPassword
+      });
+      toast.success(res.data.message || `Password user ${targetUser.username} berhasil diperbarui!`);
+      setResetModalOpen(false);
+      setTargetUser(null);
+      setTargetNewPassword('');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Gagal mereset password user');
+    }
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    if (!newUserForm.username || !newUserForm.password) {
+      toast.error('Username dan Password wajib diisi');
+      return;
+    }
+    try {
+      const res = await api.post('/internal/admin/users', newUserForm);
+      if (res.data.success) {
+        toast.success(`User ${newUserForm.username} berhasil dibuat!`);
+        setCreateUserModalOpen(false);
+        setNewUserForm({ username: '', full_name: '', email: '', password: '', role_id: '2' });
+        fetchUsersList();
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Gagal membuat user baru');
+    }
+  };
+
+  const handleToggleUserStatus = async (userItem) => {
+    const newStatus = userItem.status === 'active' ? 'inactive' : 'active';
+    try {
+      await api.put(`/internal/admin/users/${userItem.id}/status`, { status: newStatus });
+      toast.success(`Status ${userItem.username} diubah menjadi ${newStatus}`);
+      fetchUsersList();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Gagal mengubah status user');
     }
   };
 
@@ -483,6 +581,268 @@ export const SettingsPage = () => {
               </div>
             </div>
           </div>
+
+          {/* User Management & Password Section */}
+          <div className="space-y-6 pt-4 border-t border-slate-800">
+            <h3 className="text-sm font-extrabold text-slate-300 uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
+              <Lock className="w-4 h-4 text-cyan-400" /> Keamanan, Password & Hak Akses User
+            </h3>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Self Password Change Panel */}
+              <div className="lg:col-span-4 glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div className="flex items-center gap-2 text-cyan-300 font-bold text-xs uppercase">
+                  <Key className="w-4 h-4 text-cyan-400" /> Ganti Password Akun Saya
+                </div>
+                <form onSubmit={handleSelfChangePassword} className="space-y-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Password Saat Ini</label>
+                    <input
+                      type="password"
+                      required
+                      value={selfPasswordForm.current_password}
+                      onChange={(e) => setSelfPasswordForm({ ...selfPasswordForm, current_password: e.target.value })}
+                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Password Baru (Min 6 Karakter)</label>
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={selfPasswordForm.new_password}
+                      onChange={(e) => setSelfPasswordForm({ ...selfPasswordForm, new_password: e.target.value })}
+                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Konfirmasi Password Baru</label>
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={selfPasswordForm.confirm_password}
+                      onChange={(e) => setSelfPasswordForm({ ...selfPasswordForm, confirm_password: e.target.value })}
+                      className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-1.5"
+                  >
+                    <Save className="w-3.5 h-3.5" /> Simpan Password Baru
+                  </button>
+                </form>
+              </div>
+
+              {/* Admin User Management & Password Reset Panel */}
+              <div className="lg:col-span-8 glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-400" /> Kelola Pengguna & Reset Password User
+                    </h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Daftar akun administrator, divisi keuangan, dan sekretaris</p>
+                  </div>
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => setCreateUserModalOpen(true)}
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shrink-0"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" /> + Tambah User Baru
+                    </button>
+                  )}
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
+                        <th className="py-2 px-3">User</th>
+                        <th className="py-2 px-3">Role</th>
+                        <th className="py-2 px-3">Status</th>
+                        <th className="py-2 px-3 text-right">Aksi Password</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60">
+                      {usersList.map((u) => {
+                        const isSelf = u.id === currentUser.id;
+                        const roleColor = u.role_slug === 'administrator' ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' : (u.role_slug === 'finance' ? 'text-amber-400 bg-amber-500/10 border-amber-500/30' : 'text-purple-400 bg-purple-500/10 border-purple-500/30');
+
+                        return (
+                          <tr key={u.id} className="hover:bg-slate-900/50">
+                            <td className="py-2.5 px-3">
+                              <div className="font-bold text-white flex items-center gap-1.5">
+                                {u.full_name || u.username}
+                                {isSelf && <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold">(Saya)</span>}
+                              </div>
+                              <div className="text-[10px] text-slate-400 font-mono">{u.username} • {u.email}</div>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className={`px-2 py-0.5 text-[10px] font-extrabold uppercase rounded-full border ${roleColor}`}>
+                                {u.role_slug || 'user'}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <button
+                                type="button"
+                                disabled={isSelf || !isAdmin}
+                                onClick={() => handleToggleUserStatus(u)}
+                                className={`px-2 py-0.5 text-[10px] font-bold rounded-full border transition-all ${
+                                  u.status === 'active'
+                                    ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20'
+                                    : 'bg-rose-500/10 text-rose-300 border-rose-500/30 hover:bg-rose-500/20'
+                                } ${isSelf || !isAdmin ? 'opacity-60 cursor-not-allowed' : ''}`}
+                              >
+                                {u.status === 'active' ? '🟢 Aktif' : '🔴 Nonaktif'}
+                              </button>
+                            </td>
+                            <td className="py-2.5 px-3 text-right">
+                              {isAdmin ? (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setTargetUser(u);
+                                    setTargetNewPassword('');
+                                    setResetModalOpen(true);
+                                  }}
+                                  className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ml-auto"
+                                >
+                                  <Key className="w-3 h-3 text-amber-400" /> Ganti / Reset Password
+                                </button>
+                              ) : (
+                                <span className="text-[10px] text-slate-500">Khusus Admin</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Modal Reset Password User */}
+          <Modal
+            isOpen={resetModalOpen}
+            onClose={() => setResetModalOpen(false)}
+            title={`Ganti / Reset Password User: ${targetUser?.username || ''}`}
+          >
+            <form onSubmit={handleResetUserPassword} className="space-y-4">
+              <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/30 text-xs text-amber-200">
+                Anda akan mengganti password untuk akun <strong>{targetUser?.full_name} ({targetUser?.username})</strong>.
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Password Baru (Min 6 Karakter) *</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={targetNewPassword}
+                  onChange={(e) => setTargetNewPassword(e.target.value)}
+                  placeholder="Masukkan password baru..."
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setResetModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5"
+                >
+                  <Key className="w-3.5 h-3.5" /> Simpan Password Baru
+                </button>
+              </div>
+            </form>
+          </Modal>
+
+          {/* Modal Tambah User Baru */}
+          <Modal
+            isOpen={createUserModalOpen}
+            onClose={() => setCreateUserModalOpen(false)}
+            title="Tambah Akun Pengguna Baru"
+          >
+            <form onSubmit={handleCreateUser} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Username *</label>
+                <input
+                  type="text"
+                  required
+                  value={newUserForm.username}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, username: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Nama Lengkap *</label>
+                <input
+                  type="text"
+                  required
+                  value={newUserForm.full_name}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, full_name: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Email *</label>
+                <input
+                  type="email"
+                  required
+                  value={newUserForm.email}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Password *</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={newUserForm.password}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">Role / Peran *</label>
+                <select
+                  value={newUserForm.role_id}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, role_id: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                >
+                  <option value="1">Administrator</option>
+                  <option value="2">Finance / Keuangan</option>
+                  <option value="3">Secretary / Sekretaris</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setCreateUserModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5"
+                >
+                  <UserPlus className="w-3.5 h-3.5" /> Buat Akun User
+                </button>
+              </div>
+            </form>
+          </Modal>
         </div>
       </main>
     </div>

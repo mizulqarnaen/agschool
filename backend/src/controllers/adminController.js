@@ -56,6 +56,32 @@ export const updateUserStatus = (req, res) => {
   res.json({ success: true, data: userPayload });
 };
 
+export const updateUserPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { new_password } = req.body;
+
+    if (!new_password || new_password.trim().length < 6) {
+      return res.status(400).json({ success: false, message: 'Password baru minimal 6 karakter.' });
+    }
+
+    const users = userRepository.readAll(true);
+    const user = users.find(u => u.id === Number(id));
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User account not found.' });
+    }
+
+    const passwordHash = await hashPassword(new_password);
+    userRepository.update(id, { password_hash: passwordHash });
+
+    loggerService.logActivity(req.user.id, 'RESET_USER_PASSWORD', 'Users', id, { target_username: user.username });
+
+    res.json({ success: true, message: `Password user ${user.username} berhasil diperbarui.` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Gagal memperbarui password user.' });
+  }
+};
+
 // --- Settings & Exchange Rates ---
 export const getSettings = (req, res) => {
   const settings = settingRepository.getSettingsMap();

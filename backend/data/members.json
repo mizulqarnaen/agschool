@@ -651,5 +651,248 @@
     "created_at": "2026-08-01T12:13:03.175Z",
     "updated_at": "2026-08-01T12:13:03.175Z",
     "deleted_at": null
+  },
+  {
+    "id": 22,
+    "full_name": "HajiBEP",
+    "member_type": "Player",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Gopay",
+    "bank_account_number": "083182616752",
+    "bank_account_name": "Muhammad Daffa Alfadlan",
+    "monthly_salary": null,
+    "salary_currency": "IDR",
+    "category": "Player",
+    "categories": [
+      "Player"
+    ],
+    "role_salaries": {},
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:55:57.584Z",
+    "updated_at": "2026-08-01T12:55:57.584Z",
+    "deleted_at": null
+  },
+  {
+    "id": 23,
+    "full_name": "Vann",
+    "member_type": "Player",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "",
+    "bank_account_number": "",
+    "bank_account_name": "",
+    "monthly_salary": null,
+    "salary_currency": "IDR",
+    "category": "Player",
+    "categories": [
+      "Player"
+    ],
+    "role_salaries": {},
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:56:04.630Z",
+    "updated_at": "2026-08-01T12:56:04.630Z",
+    "deleted_at": null
+  },
+  {
+    "id": 24,
+    "full_name": "Beby Embun",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "BCA",
+    "bank_account_number": "2180096984",
+    "bank_account_name": "Zakaria Muchtar",
+    "monthly_salary": 0,
+    "salary_currency": "IDR",
+    "category": "Caster",
+    "categories": [
+      "Caster"
+    ],
+    "role_salaries": {
+      "Caster": {
+        "amount": "",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:56:47.290Z",
+    "updated_at": "2026-08-01T12:56:47.290Z",
+    "deleted_at": null
+  },
+  {
+    "id": 25,
+    "full_name": "Chocong",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Gopay",
+    "bank_account_number": "085711434548",
+    "bank_account_name": "Mufidh Zahfran",
+    "monthly_salary": 0,
+    "salary_currency": "IDR",
+    "category": "Caster",
+    "categories": [
+      "Caster"
+    ],
+    "role_salaries": {
+      "Caster": {
+        "amount": "",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:57:11.636Z",
+    "updated_at": "2026-08-01T12:57:11.636Z",
+    "deleted_at": null
+  },
+  {
+    "id": 26,
+    "full_name": "Milly",
+    "member_type": "Staff",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "BRI",
+    "bank_account_number": "030901065972507",
+    "bank_account_name": "T.K",
+    "monthly_salary": 650000,
+    "salary_currency": "IDR",
+    "category": "Secretary",
+    "categories": [
+      "Secretary"
+    ],
+    "role_salaries": {
+      "Secretary": {
+        "amount": "650000",
+        "currency": "IDR"
+      },
+      "BA": {
+        "amount": "",
+        "currency": "IDR"
+      }
+    },
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:57:46.883Z",
+    "updated_at": "2026-08-01T12:57:46.883Z",
+    "deleted_at": null
+  },
+  {
+    "id": 27,
+    "full_name": "OiRegs",
+    "member_type": "Player",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "",
+    "bank_account_number": "",
+    "bank_account_name": "",
+    "monthly_salary": null,
+    "salary_currency": "IDR",
+    "category": "Player",
+    "categories": [
+      "Player"
+    ],
+    "role_salaries": {},
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:58:00.463Z",
+    "updated_at": "2026-08-01T12:58:00.463Z",
+    "deleted_at": null
+  },
+  {
+    "id": 28,
+    "full_name": "Pat",
+    "member_type": "Player",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "",
+    "bank_account_number": "",
+    "bank_account_name": "",
+    "monthly_salary": null,
+    "salary_currency": "IDR",
+    "category": "Player",
+    "categories": [
+      "Player"
+    ],
+    "role_salaries": {},
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:58:09.177Z",
+    "updated_at": "2026-08-01T12:58:09.177Z",
+    "deleted_at": null
+  },
+  {
+    "id": 29,
+    "full_name": "Kingsac",
+    "member_type": "Player",
+    "ign_tag": "",
+    "email": "",
+    "phone": "",
+    "roblox_username": "",
+    "roblox_nickname": "",
+    "tiktok_handle": "",
+    "discord_username": "",
+    "bank_name": "Mandiri",
+    "bank_account_number": "1380023488294",
+    "bank_account_name": "Krisna",
+    "monthly_salary": null,
+    "salary_currency": "IDR",
+    "category": "Player",
+    "categories": [
+      "Player"
+    ],
+    "role_salaries": {},
+    "status": "active",
+    "joined_date": "2026-08-01",
+    "created_at": "2026-08-01T12:59:11.663Z",
+    "updated_at": "2026-08-01T12:59:11.663Z",
+    "deleted_at": null
   }
 ]

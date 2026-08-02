@@ -52,13 +52,13 @@
   {
     "id": 10,
     "setting_key": "member_categories",
-    "setting_value": "[\"BA\",\"Caster\",\"Secretary\",\"Content Creator\",\"Finance\",\"Admin\",\"Head Admin\",\"Developer\"]",
-    "updated_at": "2026-07-29T07:26:36.859Z"
+    "setting_value": "[\"BA\",\"Caster\",\"Secretary\",\"Content Creator\",\"Finance\",\"Admin\",\"Head Admin\",\"Developer\",\"Owner\"]",
+    "updated_at": "2026-08-01T12:59:21.618Z"
   },
   {
     "id": 11,
     "setting_key": "expense_categories",
-    "setting_value": "[\"Pembuatan Map\",\"Biaya Operasional\",\"Event\",\"Biaya Promosi\",\"Biaya Maintenance\",\"Reward Anggota\",\"Tidak Terduga\"]",
-    "updated_at": "2026-07-27T09:53:16.004Z"
+    "setting_value": "[\"Biaya Operasional\",\"Event\",\"Biaya Promosi\",\"Biaya Maintenance\",\"Reward Anggota\",\"Tidak Terduga\",\"Pembuatan Map\"]",
+    "updated_at": "2026-08-01T12:39:32.064Z"
   }
 ]

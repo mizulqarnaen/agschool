@@ -102,8 +102,11 @@
 - **System-Wide Newest Input Priority (`created_at` DESC & `id` DESC)**: Enforced consistent multi-tier sorting across **ALL system modules** (`expenseRepository.js`, `incomeRepository.js`, `paymentRepository.js`, `eventRepository.js`, `eventController.js`, `financeController.js`, `loggerService.js`):
   1. **Primary Sort**: Transaction / Event / Joined Date Descending (`transaction_date` / `start_date` / `joined_date` DESC).
   2. **Secondary Sort (Tie-Breaker for same date)**: Input Creation Timestamp Descending (`created_at` DESC).
-  3. **Fallback Sort**: Internal ID Descending (`id` DESC).
-- Newly created entries immediately float to the top of table views across all menus (Expenses, Incomes, Member Payments, Player & Staff Directory, Event Management, and Audit Logs).
+
+### 17. User Access Management & Password Reset Features
+- **Location**: Menu **`Pengaturan`** (`/internal/settings` -> [SettingsPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/SettingsPage.jsx)).
+- **Ganti Password Akun Saya (Self Change Password)**: Any logged-in user can change their own password via endpoint `PUT /api/auth/change-password` with current password verification.
+- **Admin Reset User Password & Account Management**: Administrators can reset passwords for ANY user account (`admin`, `finance`, `secretary`, or new users) via endpoint `PUT /api/internal/admin/users/:id/password`, manage account status (`Aktif` vs `Nonaktif`), and create new user accounts.
 
 ---
 

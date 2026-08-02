@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  getUsers, createUser, updateUserStatus,
+  getUsers, createUser, updateUserStatus, updateUserPassword,
   getSettings, updateSettings, syncExchangeRate,
   getLogs
 } from '../controllers/adminController.js';
@@ -14,6 +14,7 @@ router.use(authorizeRoles('administrator'));
 router.get('/users', getUsers);
 router.post('/users', createUser);
 router.put('/users/:id/status', updateUserStatus);
+router.put('/users/:id/password', updateUserPassword);
 
 // Settings & Exchange Rates
 router.get('/settings', getSettings);
