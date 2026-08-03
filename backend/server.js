@@ -130,31 +130,44 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, status: 'online', timestamp: new Date().toISOString() });
 });
 
-// Serve static frontend build files in production if available
-const frontendDistPath = path.resolve(__dirname, '../frontend/dist');
-if (fs.existsSync(frontendDistPath)) {
-  app.use(express.static(frontendDistPath));
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
-      return next();
+// Serve static frontend build files in production (supporting SPA routing)
+const candidateDistPaths = [
+  path.resolve(__dirname, '../frontend/dist'),
+  path.resolve(process.cwd(), '../frontend/dist'),
+  path.resolve(process.cwd(), 'frontend/dist'),
+  path.resolve(__dirname, '../../frontend/dist')
+];
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+    return next();
+  }
+
+  const distPath = candidateDistPaths.find(p => fs.existsSync(p));
+  if (distPath) {
+    const filePath = path.join(distPath, req.path);
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+      return res.sendFile(filePath);
     }
-    res.sendFile(path.join(frontendDistPath, 'index.html'));
+    return res.sendFile(path.join(distPath, 'index.html'));
+  }
+
+  next();
+});
+
+// Root fallback route when frontend build is not yet uploaded
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: '🚀 AG School Finance API is online and running on IDCloudHost!',
+    status: 'Active',
+    notice: 'Frontend dist is not yet uploaded. Upload frontend/dist to serve full UI.',
+    endpoints: {
+      public_events: '/api/public/events',
+      health: '/api/health'
+    }
   });
-} else {
-  // Root fallback route when frontend build is not yet uploaded
-  app.get('/', (req, res) => {
-    res.json({
-      success: true,
-      message: '🚀 AG School Finance API is online and running on IDCloudHost!',
-      status: 'Active',
-      notice: 'Frontend dist is not yet uploaded. Upload frontend/dist to serve full UI.',
-      endpoints: {
-        public_events: '/api/public/events',
-        health: '/api/health'
-      }
-    });
-  });
-}
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {
