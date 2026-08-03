@@ -130,42 +130,38 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, status: 'online', timestamp: new Date().toISOString() });
 });
 
-// Serve static frontend build files in production (supporting SPA routing)
-const candidateDistPaths = [
-  path.resolve(__dirname, '../frontend/dist'),
+// Serve static frontend build files from frontend/dist
+const primaryDistPath = path.resolve(__dirname, '../frontend/dist');
+const fallbackDistPaths = [
+  primaryDistPath,
   path.resolve(process.cwd(), '../frontend/dist'),
   path.resolve(process.cwd(), 'frontend/dist'),
   path.resolve(__dirname, '../../frontend/dist')
 ];
 
-app.use((req, res, next) => {
+// Serve static assets (CSS, JS, images, icons)
+fallbackDistPaths.forEach(distDir => {
+  if (fs.existsSync(distDir)) {
+    app.use(express.static(distDir));
+  }
+});
+
+// SPA wildcard route fallback for all non-API requests
+app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
     return next();
   }
 
-  const distPath = candidateDistPaths.find(p => fs.existsSync(p));
-  if (distPath) {
-    const filePath = path.join(distPath, req.path);
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-      return res.sendFile(filePath);
-    }
-    return res.sendFile(path.join(distPath, 'index.html'));
+  const activeDist = fallbackDistPaths.find(p => fs.existsSync(path.join(p, 'index.html')));
+  if (activeDist) {
+    return res.sendFile(path.join(activeDist, 'index.html'));
   }
 
-  next();
-});
-
-// Root fallback route when frontend build is not yet uploaded
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: '🚀 AG School Finance API is online and running on IDCloudHost!',
-    status: 'Active',
-    notice: 'Frontend dist is not yet uploaded. Upload frontend/dist to serve full UI.',
-    endpoints: {
-      public_events: '/api/public/events',
-      health: '/api/health'
-    }
+  res.status(404).json({
+    success: false,
+    message: 'AG School Backend API is online, but frontend index.html was not found.',
+    searched_paths: fallbackDistPaths,
+    hint: 'Upload frontend/dist to agschool/frontend/dist'
   });
 });
 
