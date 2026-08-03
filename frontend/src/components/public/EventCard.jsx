@@ -85,14 +85,14 @@ export const EventCard = ({ event }) => {
         )}
 
         {/* Top Badges Overlay (Registration + Execution status) */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
-          <div>{getRegistrationBadge(event.registration_status || 'Open')}</div>
-          <div>{getEventStatusBadge(event.event_status)}</div>
+        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5 flex-wrap pointer-events-none">
+          <div className="shrink-0">{getRegistrationBadge(event.registration_status || 'Open')}</div>
+          <div className="shrink-0">{getEventStatusBadge(event.event_status)}</div>
         </div>
       </div>
 
       {/* Card Content */}
-      <div className="p-6 flex-1 flex flex-col justify-between">
+      <div className="p-4 sm:p-6 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2 flex-wrap">
             <span>{event.event_type}</span>
@@ -103,24 +103,24 @@ export const EventCard = ({ event }) => {
             )}
           </div>
 
-          <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-1 mb-2">
+          <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-1 mb-2">
             {event.title}
           </h3>
 
-          <p className="text-sm text-slate-400 line-clamp-2 whitespace-pre-line mb-4">
+          <p className="text-xs sm:text-sm text-slate-400 line-clamp-2 whitespace-pre-line mb-4">
             {event.description}
           </p>
         </div>
 
         <div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl mb-4 border border-slate-800">
-            <div className="flex items-center gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300 bg-slate-900/60 p-2.5 sm:p-3 rounded-xl mb-4 border border-slate-800">
+            <div className="flex items-center gap-2 min-w-0">
               <Calendar className="w-4 h-4 text-cyan-400 shrink-0" />
-              <span className="font-semibold text-slate-200">{formattedDateRange}</span>
+              <span className="font-semibold text-slate-200 truncate">{formattedDateRange}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
-              <span className="font-semibold text-amber-300">
+              <span className="font-semibold text-amber-300 truncate">
                 {event.currency || 'IDR'} {Number(event.total_prize_pool).toLocaleString()}
               </span>
             </div>
@@ -128,7 +128,7 @@ export const EventCard = ({ event }) => {
 
           <Link
             to={`/events/${event.id}`}
-            className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 border border-slate-700 hover:border-cyan-500/40 text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+            className="w-full py-2 sm:py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 border border-slate-700 hover:border-cyan-500/40 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all"
           >
             {t('view_details')} &rarr;
           </Link>

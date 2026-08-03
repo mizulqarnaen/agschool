@@ -36,50 +36,50 @@ export const PublicPortal = () => {
       <PublicNavbar />
 
       {/* Hero Header Section */}
-      <section className="relative overflow-hidden pt-12 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-800/60">
+      <section className="relative overflow-hidden pt-8 sm:pt-14 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-800/60">
         <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold mb-6">
-            <ShieldCheck className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold mb-4 sm:mb-6">
+            <ShieldCheck className="w-4 h-4 shrink-0" />
             <span>Portal Resmi Acara AG School</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent mb-6">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
             AG School Event & Turnamen
           </h1>
 
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base lg:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
             Selamat datang di Portal Resmi Acara AG School. Temukan informasi acara komunitas, poster turnamen, status pendaftaran, klasemen poin liga, dan daftar pemenang resmi.
           </p>
         </div>
       </section>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-16">
         {/* Search & Filter Bar */}
-        <div className="glass-panel p-4 rounded-2xl mb-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+        <div className="glass-panel p-3.5 sm:p-4 rounded-2xl mb-8 sm:mb-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="relative flex-1 sm:max-w-xs lg:max-w-sm">
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
             <input
               type="text"
-              placeholder="Search event title or type..."
+              placeholder="Cari nama event atau kategori..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2 bg-slate-900/90 border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
             />
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Filter className="w-4 h-4 text-slate-400" />
+          <div className="flex items-center gap-2.5">
+            <Filter className="w-4 h-4 text-slate-400 shrink-0" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full sm:w-48 px-3 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition-colors"
+              className="w-full sm:w-48 px-3 py-2 bg-slate-900/90 border border-slate-700/80 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition-colors font-semibold"
             >
-              <option value="">All Event Statuses</option>
-              <option value="Scheduled">Scheduled</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Completed">Completed</option>
+              <option value="">Semua Status Event</option>
+              <option value="Scheduled">Dijadwalkan</option>
+              <option value="Ongoing">Berlangsung</option>
+              <option value="Completed">Selesai</option>
             </select>
           </div>
         </div>

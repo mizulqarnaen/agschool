@@ -83,58 +83,58 @@ export const PublicEventDetail = () => {
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <PublicNavbar />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-cyan-400 transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-400 hover:text-cyan-400 transition-colors mb-6 sm:mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           &larr; Kembali ke Semua Acara
         </Link>
 
         {loading ? (
-          <div className="glass-panel p-12 rounded-3xl animate-pulse text-center">
+          <div className="glass-panel p-8 sm:p-12 rounded-2xl sm:rounded-3xl animate-pulse text-center">
             <div className="w-48 h-8 bg-slate-800 rounded mx-auto mb-4" />
             <div className="w-96 h-4 bg-slate-800 rounded mx-auto" />
           </div>
         ) : error ? (
-          <div className="glass-panel p-12 rounded-3xl text-center max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-rose-400 mb-2">{error}</h3>
-            <p className="text-sm text-slate-400 mb-6">The requested event could not be found.</p>
-            <Link to="/" className="px-4 py-2 bg-cyan-500 text-white rounded-lg text-sm font-semibold">
-              Return to Events
+          <div className="glass-panel p-8 sm:p-12 rounded-2xl sm:rounded-3xl text-center max-w-md mx-auto">
+            <h3 className="text-lg sm:text-xl font-bold text-rose-400 mb-2">{error}</h3>
+            <p className="text-xs sm:text-sm text-slate-400 mb-6">Event yang diminta tidak ditemukan.</p>
+            <Link to="/" className="px-4 py-2 bg-cyan-500 text-white rounded-lg text-xs sm:text-sm font-semibold">
+              Kembali ke Daftar Event
             </Link>
           </div>
         ) : (
-          <div className="space-y-10">
+          <div className="space-y-8 sm:space-y-10">
             {/* Event Header & Poster Banner */}
-            <div className="glass-panel p-8 rounded-3xl grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+            <div className="glass-panel p-4 sm:p-8 rounded-2xl sm:rounded-3xl grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <span className="px-2.5 py-1 text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                     {event.event_type}
                   </span>
-                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                  <span className="px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-slate-800 text-slate-300 border border-slate-700">
                     Status: {event.event_status}
                   </span>
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                <h1 className="text-2xl sm:text-4xl font-extrabold text-white leading-tight">
                   {event.title}
                 </h1>
 
                 {/* Formatted Description preserving all newlines, bullet points & spacing */}
-                <div className="text-slate-300 leading-relaxed text-sm sm:text-base whitespace-pre-line space-y-3 bg-slate-900/40 p-5 rounded-2xl border border-slate-800/80">
+                <div className="text-slate-300 leading-relaxed text-xs sm:text-base whitespace-pre-line space-y-3 bg-slate-900/40 p-4 sm:p-5 rounded-2xl border border-slate-800/80">
                   {event.description}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-slate-300 border-t border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-cyan-400" />
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-4 text-xs sm:text-sm text-slate-300 border-t border-slate-800">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0" />
                     <span className="font-semibold text-slate-200">{formattedDateRange}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-amber-400" />
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 shrink-0" />
                     <span className="font-bold text-amber-300">
                       {t('prize_pool')}: {event.currency || 'IDR'} {Number(event.total_prize_pool).toLocaleString()}
                     </span>
@@ -146,7 +146,7 @@ export const PublicEventDetail = () => {
               <div className="w-full lg:sticky lg:top-24">
                 <div
                   onClick={() => event.poster_url && setImageModalOpen(true)}
-                  className={`w-full h-80 sm:h-96 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center relative group ${
+                  className={`w-full h-64 sm:h-96 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center relative group ${
                     event.poster_url ? 'cursor-pointer' : ''
                   }`}
                 >
@@ -158,13 +158,13 @@ export const PublicEventDetail = () => {
                         className="w-full h-full object-contain bg-slate-950 p-2 group-hover:scale-102 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1.5">
-                        <Maximize2 className="w-5 h-5" />
+                        <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span>Klik untuk Memperbesar</span>
                       </div>
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center text-slate-500 gap-2 p-4 text-center">
-                      <ImageIcon className="w-12 h-12 stroke-[1.5]" />
+                      <ImageIcon className="w-10 h-10 sm:w-12 sm:h-12 stroke-[1.5]" />
                       <span className="text-xs font-medium">Poster Resmi Acara</span>
                     </div>
                   )}
@@ -174,20 +174,20 @@ export const PublicEventDetail = () => {
 
             {/* Public League Standings Section (If is_league event) */}
             {event.is_league && standingsData && standingsData.standings && (
-              <div className="glass-panel p-8 rounded-3xl space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <div className="glass-panel p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                      <Trophy className="w-6 h-6" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+                      <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <h2 className="text-lg sm:text-xl font-bold text-white flex flex-wrap items-center gap-2">
                         <span>Papan Skor & Klasemen Poin Liga</span>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">
                           Official Standings
                         </span>
                       </h2>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-[11px] sm:text-xs text-slate-400">
                         Akumulasi poin {standingsData.league_config?.total_matches || 3} match finalis dengan tie-breaker posisi terbaik
                       </p>
                     </div>
@@ -195,18 +195,18 @@ export const PublicEventDetail = () => {
                 </div>
 
                 <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950">
-                  <table className="w-full text-left text-sm text-slate-300">
-                    <thead className="text-xs font-semibold uppercase text-slate-400 bg-slate-900 border-b border-slate-800">
+                  <table className="w-full text-left text-xs sm:text-sm text-slate-300">
+                    <thead className="text-[11px] sm:text-xs font-semibold uppercase text-slate-400 bg-slate-900 border-b border-slate-800">
                       <tr>
-                        <th className="px-4 py-3.5 text-center w-12">Rank</th>
-                        <th className="px-6 py-3.5">Nama Peserta / Tim</th>
+                        <th className="px-3 sm:px-4 py-3 text-center w-10 sm:w-12">Rank</th>
+                        <th className="px-4 sm:px-6 py-3">Nama Peserta / Tim</th>
                         {Array.from({ length: Number(standingsData.league_config?.total_matches || 3) }, (_, i) => i + 1).map(mNum => (
-                          <th key={mNum} className="px-4 py-3.5 text-center">
+                          <th key={mNum} className="px-3 sm:px-4 py-3 text-center whitespace-nowrap">
                             Match {mNum}
                           </th>
                         ))}
-                        <th className="px-6 py-3.5 text-center font-bold text-emerald-400">Total Poin</th>
-                        <th className="px-6 py-3.5">Aturan Tie-Breaker</th>
+                        <th className="px-4 sm:px-6 py-3 text-center font-bold text-emerald-400 whitespace-nowrap">Total Poin</th>
+                        <th className="px-4 sm:px-6 py-3 whitespace-nowrap">Aturan Tie-Breaker</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800/60">
@@ -214,7 +214,7 @@ export const PublicEventDetail = () => {
                         const isPodium = item.rank <= (standingsData.league_config?.podium_count || 3);
                         return (
                           <tr key={item.id} className={`hover:bg-slate-900/40 transition-colors ${isPodium ? 'bg-amber-500/5' : ''}`}>
-                            <td className="px-4 py-3 text-center font-bold">
+                            <td className="px-3 sm:px-4 py-3 text-center font-bold">
                               <span className={`inline-flex items-center justify-center w-6 h-6 rounded-lg font-mono text-xs ${
                                 item.rank === 1
                                   ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30'
@@ -229,7 +229,7 @@ export const PublicEventDetail = () => {
                                 {item.rank}
                               </span>
                             </td>
-                            <td className="px-6 py-3 font-bold text-white flex items-center gap-2">
+                            <td className="px-4 sm:px-6 py-3 font-bold text-white flex items-center gap-2 whitespace-nowrap">
                               <span>{item.player_name}</span>
                               {isPodium && (
                                 <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
@@ -241,7 +241,7 @@ export const PublicEventDetail = () => {
                               const val = item.matches?.[mNum];
                               const pts = val ? standingsData.league_config?.point_schema?.[val] || 0 : null;
                               return (
-                                <td key={mNum} className="px-4 py-3 text-center font-mono text-xs">
+                                <td key={mNum} className="px-3 sm:px-4 py-3 text-center font-mono text-xs whitespace-nowrap">
                                   {val ? (
                                     <span className="text-cyan-300 font-bold">
                                       #{val} <span className="text-[10px] text-emerald-400 font-semibold">(+{pts}pt)</span>
@@ -252,10 +252,10 @@ export const PublicEventDetail = () => {
                                 </td>
                               );
                             })}
-                            <td className="px-6 py-3 text-center font-bold text-emerald-400 font-mono text-base">
+                            <td className="px-4 sm:px-6 py-3 text-center font-bold text-emerald-400 font-mono text-xs sm:text-base whitespace-nowrap">
                               {item.total_points} pts
                             </td>
-                            <td className="px-6 py-3 text-xs text-slate-400">
+                            <td className="px-4 sm:px-6 py-3 text-xs text-slate-400 whitespace-nowrap">
                               {item.tie_note ? (
                                 <span className="inline-flex items-center gap-1 text-[11px] text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-md border border-purple-500/20">
                                   ⚡ {item.tie_note}
@@ -274,18 +274,18 @@ export const PublicEventDetail = () => {
             )}
 
             {/* Prize & Winner Transparency Section */}
-            <div className="glass-panel p-8 rounded-3xl">
-              <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-800">
+            <div className="glass-panel p-4 sm:p-8 rounded-2xl sm:rounded-3xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 pb-4 border-b border-slate-800 gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                    <Award className="w-6 h-6" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <Award className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">{t('winners_and_prizes')}</h2>
-                    <p className="text-xs text-slate-400">Public transparency verification of event awards</p>
+                    <h2 className="text-lg sm:text-xl font-bold text-white">{t('winners_and_prizes')}</h2>
+                    <p className="text-[11px] sm:text-xs text-slate-400">Verifikasi transparansi publik untuk apresiasi & hadiah event</p>
                   </div>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                   <span>{t('verified_public')}</span>
                 </div>
