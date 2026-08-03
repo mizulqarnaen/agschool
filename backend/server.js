@@ -165,8 +165,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 AG School Finance API running on http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 AG School Finance API running on PORT ${PORT}`);
 });
 
-export default app;
+export default server;
