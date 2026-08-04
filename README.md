@@ -122,6 +122,11 @@
 - **Public Portal View**: [PublicEventDetail.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicEventDetail.jsx) & [EventCard.jsx](file:///c:/laragon/www/agschool/frontend/src/components/public/EventCard.jsx).
 - **Feature**: Enables publishing real-time daily/session standings updates (e.g. **Top 10 Best Time Played**, Speedrun records, Qualification Sessions). Supports customizable score column headers (`Best Time`, `Waktu Tercepat`, `Poin`), custom status badges (`🥇 Rekor Tercepat`, `🟢 Lolos Final`), player search, session tabs, and glowing `🔴 LIVE Updates` public badges.
 
+### 22. Official Brand Ambassador (BA) Module & Public Showcase
+- **Location**: Menu **`Brand Ambassador`** (`/internal/brand-ambassadors` -> [BrandAmbassadorPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/BrandAmbassadorPage.jsx) & [BrandAmbassadorModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/common/BrandAmbassadorModal.jsx)).
+- **Public Portal Showcase**: [PublicPortal.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicPortal.jsx) & [PublicBADetail.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicBADetail.jsx).
+- **Feature**: Dedicated module for showcasing official AG School Brand Ambassadors. Supports Roblox Avatar auto-resolution, featured BA ⭐ toggling, display reordering, status visibility (`Public`, `Hidden`, `Archived`), motto, bio, game favorites, specialty, and verified social media profile links (Instagram, TikTok, YouTube, Discord).
+
 ---
 
 ## API Endpoints Summary

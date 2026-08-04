@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, TrendingUp, TrendingDown, Users, UserCheck,
   Calendar, Shield, FileText, Settings, History,
-  LogOut, Menu, X
+  LogOut, Menu, X, Award
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ export const Sidebar = () => {
     { label: t('payments'), path: '/internal/payments', icon: Users, roles: ['administrator', 'finance'] },
     { label: 'Direktori Pemain & Staff', path: '/internal/members', icon: UserCheck, roles: ['administrator', 'finance', 'secretary'] },
     { label: t('events'), path: '/internal/events', icon: Calendar, roles: ['administrator', 'secretary'] },
+    { label: 'Brand Ambassador', path: '/internal/brand-ambassadors', icon: Award, roles: ['administrator', 'finance', 'secretary'] },
     { label: t('users'), path: '/internal/users', icon: Shield, roles: ['administrator'] },
     { label: t('reports'), path: '/internal/reports', icon: FileText, roles: ['administrator', 'finance'] },
     { label: t('settings'), path: '/internal/settings', icon: Settings, roles: ['administrator'] },

@@ -12,6 +12,7 @@ import publicRoutes from './src/routes/publicRoutes.js';
 import financeRoutes from './src/routes/financeRoutes.js';
 import eventRoutes from './src/routes/eventRoutes.js';
 import adminRoutes from './src/routes/adminRoutes.js';
+import brandAmbassadorRoutes from './src/routes/brandAmbassadorRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -124,6 +125,7 @@ app.put('/api/auth/change-password', authenticateToken, async (req, res) => {
 app.use('/api/internal/finance', authenticateToken, financeRoutes);
 app.use('/api/internal/events', authenticateToken, eventRoutes);
 app.use('/api/internal/admin', authenticateToken, adminRoutes);
+app.use('/api/internal/brand-ambassadors', authenticateToken, brandAmbassadorRoutes);
 
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {
