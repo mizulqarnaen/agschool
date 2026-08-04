@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Trophy, Image as ImageIcon, Zap, Lock, CheckCircle2, Clock, PlayCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Trophy, Image as ImageIcon, Zap, Lock, CheckCircle2, Clock, PlayCircle, AlertCircle, Radio } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatDateDisplay } from '../../utils/dateFormatter';
 
@@ -102,6 +102,11 @@ export const EventCard = ({ event }) => {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2 flex-wrap">
             <span>{event.event_type}</span>
+            {Array.isArray(event.live_standings) && event.live_standings.length > 0 && (
+              <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] normal-case flex items-center gap-1 font-extrabold animate-pulse">
+                <Radio className="w-3 h-3 text-rose-400" /> 🔴 LIVE Updates
+              </span>
+            )}
             {event.is_league && (
               <span className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] normal-case flex items-center gap-1 font-semibold">
                 <Zap className="w-3 h-3 text-purple-400 fill-purple-400" /> Sistem Poin Liga

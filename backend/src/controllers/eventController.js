@@ -366,3 +366,38 @@ export const syncStandingsToPrizes = (req, res) => {
     res.status(500).json({ success: false, message: err.message || 'Error syncing standings to prizes' });
   }
 };
+
+export const updateLiveStandings = (req, res) => {
+  try {
+    const { id } = req.params;
+    const { live_standings } = req.body;
+    const event = eventRepository.findById(id);
+    if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
+
+    const updated = eventRepository.update(id, {
+      live_standings: Array.isArray(live_standings) ? live_standings : []
+    });
+
+    loggerService.logActivity(req.user.id, 'UPDATE_LIVE_STANDINGS', 'Event', id, {
+      sessions_count: updated.live_standings?.length || 0
+    });
+
+    res.json({ success: true, data: updated.live_standings, message: 'Live standings updated successfully.' });
+  } catch (err) {
+    console.error('Error updating live standings:', err);
+    res.status(500).json({ success: false, message: err.message || 'Error updating live standings' });
+  }
+};
+
+export const getLiveStandings = (req, res) => {
+  try {
+    const { id } = req.params;
+    const event = eventRepository.findById(id);
+    if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
+
+    res.json({ success: true, data: event.live_standings || [] });
+  } catch (err) {
+    console.error('Error getting live standings:', err);
+    res.status(500).json({ success: false, message: err.message || 'Error getting live standings' });
+  }
+};

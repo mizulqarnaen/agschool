@@ -117,6 +117,11 @@
 - **Location**: Menu **`Pembayaran Honor Anggota`** (`/internal/payments` -> [PaymentPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PaymentPage.jsx)).
 - **Feature**: Filters payout recipient list to strictly show **Staff** members only (excluding players). Includes a real-time Searchable Select dropdown (searchable by full name, role, IGN, or bank account number) with auto-fill benchmark salaries.
 
+### 21. Live Standings & Daily Progress Updates (Top 10 Best Time Played)
+- **Location**: Menu **`Manajemen Acara`** (`/internal/events` -> [EventManagementPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/EventManagementPage.jsx) & [LiveStandingsModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/events/LiveStandingsModal.jsx)).
+- **Public Portal View**: [PublicEventDetail.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicEventDetail.jsx) & [EventCard.jsx](file:///c:/laragon/www/agschool/frontend/src/components/public/EventCard.jsx).
+- **Feature**: Enables publishing real-time daily/session standings updates (e.g. **Top 10 Best Time Played**, Speedrun records, Qualification Sessions). Supports customizable score column headers (`Best Time`, `Waktu Tercepat`, `Poin`), custom status badges (`🥇 Rekor Tercepat`, `🟢 Lolos Final`), player search, session tabs, and glowing `🔴 LIVE Updates` public badges.
+
 ---
 
 ## API Endpoints Summary

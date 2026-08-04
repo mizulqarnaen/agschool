@@ -2,7 +2,8 @@ import express from 'express';
 import {
   getInternalEvents, createEvent, updateEvent, uploadEventPoster, deleteEvent,
   getInternalPrizes, createPrize, updatePrize, deletePrize,
-  getEventStandings, updateLeagueConfig, updateStandingsParticipants, updateMatchResult, syncStandingsToPrizes
+  getEventStandings, updateLeagueConfig, updateStandingsParticipants, updateMatchResult, syncStandingsToPrizes,
+  updateLiveStandings
 } from '../controllers/eventController.js';
 import { authorizeRoles } from '../middleware/roleMiddleware.js';
 import { uploadPoster } from '../middleware/uploadMiddleware.js';
@@ -16,6 +17,7 @@ router.use(authorizeRoles('administrator', 'secretary', 'finance'));
 router.get('/', getInternalEvents);
 router.post('/', createEvent);
 router.put('/:id', updateEvent);
+router.put('/:id/live-standings', updateLiveStandings);
 router.post('/:id/poster', uploadPoster.single('poster'), uploadEventPoster);
 router.delete('/:id', deleteEvent);
 

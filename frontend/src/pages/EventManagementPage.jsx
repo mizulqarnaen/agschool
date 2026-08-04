@@ -5,7 +5,8 @@ import { Table } from '../components/common/Table';
 import { EventFormModal } from '../components/events/EventFormModal';
 import { PrizeModal } from '../components/events/PrizeModal';
 import { LeagueStandingsModal } from '../components/events/LeagueStandingsModal';
-import { Plus, Calendar, Trophy, Trash2, Edit, Award, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { LiveStandingsModal } from '../components/events/LiveStandingsModal';
+import { Plus, Calendar, Trophy, Trash2, Edit, Award, Image as ImageIcon, Sparkles, Radio } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -16,6 +17,7 @@ export const EventManagementPage = () => {
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [prizeModalOpen, setPrizeModalOpen] = useState(false);
   const [standingsModalOpen, setStandingsModalOpen] = useState(false);
+  const [liveStandingsModalOpen, setLiveStandingsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -56,11 +58,16 @@ export const EventManagementPage = () => {
     setStandingsModalOpen(true);
   };
 
-  const handleDelete = async (eventId) => {
-    if (!window.confirm('Delete this event record?')) return;
+  const handleManageLiveStandings = (event) => {
+    setSelectedEvent(event);
+    setLiveStandingsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm(t('confirm_delete_event'))) return;
     try {
-      await api.delete(`/internal/events/${eventId}`);
-      toast.success('Event deleted successfully');
+      await api.delete(`/internal/events/${id}`);
+      toast.success(t('event_deleted'));
       fetchEvents();
     } catch (err) {
       toast.error('Failed to delete event');
@@ -69,34 +76,33 @@ export const EventManagementPage = () => {
 
   const columns = [
     {
-      header: t('event_title'),
+      header: t('title'),
       render: (row) => (
         <div>
-          <div className="font-bold text-white text-sm flex items-center gap-2">
-            <span>{row.title}</span>
-            {row.is_league && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                ⚡ Sistem Poin Liga
-              </span>
-            )}
-          </div>
-          <div className="text-xs text-slate-400 truncate max-w-xs">{row.description}</div>
+          <span className="font-bold text-white block">{row.title}</span>
+          <span className="text-[11px] text-slate-400 line-clamp-1">{row.description}</span>
+          {Array.isArray(row.live_standings) && row.live_standings.length > 0 && (
+            <span className="inline-flex items-center gap-1 text-[10px] text-purple-300 font-extrabold bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20 mt-1">
+              <Radio className="w-3 h-3 text-purple-400 animate-pulse" /> Live Standings Aktif ({row.live_standings.length} Sesi)
+            </span>
+          )}
         </div>
       )
     },
     {
-      header: t('event_type'),
+      header: t('type'),
       render: (row) => (
-        <span className="px-2 py-1 bg-slate-800 text-slate-300 rounded-md text-xs font-semibold">
+        <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300 border border-slate-700">
           {row.event_type}
         </span>
       )
     },
     {
-      header: 'Dates',
+      header: t('dates'),
       render: (row) => (
-        <div className="text-xs text-slate-300 font-mono">
-          {row.start_date} <span className="text-slate-500">to</span> {row.end_date}
+        <div className="text-xs text-slate-300">
+          <div><span className="text-slate-500">Mulai:</span> {row.start_date}</div>
+          <div><span className="text-slate-500">Selesai:</span> {row.end_date}</div>
         </div>
       )
     },
@@ -138,6 +144,14 @@ export const EventManagementPage = () => {
       header: t('actions'),
       render: (row) => (
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleManageLiveStandings(row)}
+            title="Update Live Standings & Rekor Harian"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded-lg border border-purple-500/40 transition-colors shadow-sm"
+          >
+            <Radio className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
+            Live Standings
+          </button>
           {row.is_league && (
             <button
               onClick={() => handleManageStandings(row)}
@@ -213,6 +227,13 @@ export const EventManagementPage = () => {
           onClose={() => setStandingsModalOpen(false)}
           event={selectedEvent}
           onStandingsUpdated={fetchEvents}
+        />
+
+        <LiveStandingsModal
+          isOpen={liveStandingsModalOpen}
+          onClose={() => setLiveStandingsModalOpen(false)}
+          event={selectedEvent}
+          onSuccess={fetchEvents}
         />
       </main>
     </div>
