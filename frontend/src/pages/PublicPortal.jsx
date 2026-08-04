@@ -64,25 +64,28 @@ export const PublicPortal = () => {
 
       {/* Hero Header Section */}
       <section className="relative overflow-hidden pt-8 sm:pt-14 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-800/60">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-600/10 via-cyan-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-purple-500/5 to-transparent pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-red-500/10 via-purple-500/10 to-cyan-500/10 border border-purple-500/30 text-purple-300 text-xs font-extrabold mb-4 sm:mb-6 shadow-sm">
-            <Gamepad2 className="w-4 h-4 text-purple-400 shrink-0" />
-            <span>Portal Resmi Event & Turnamen Roblox AG School</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold mb-4 sm:mb-6 shadow-sm">
+            <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span>Portal Resmi Acara AG School</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-purple-300 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
-            AG School Roblox Event & Turnamen
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
+            AG School Event & Turnamen
           </h1>
 
           <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Pusat resmi kompetisi Roblox AG School. Temukan jadwal turnamen Obby, Tower Race, Speedrun, klasemen poin liga, rekor <strong className="text-amber-300 font-extrabold">Best Time Played</strong>, dan transparansi pemenang hadiah Robux & perlengkapan.
+            Selamat datang di Portal Resmi AG School. Temukan informasi acara komunitas, turnamen game (Roblox, MLBB, dll), poster resmi, status pendaftaran, klasemen poin liga, rekor <strong className="text-amber-300 font-extrabold">Best Time Played</strong>, dan transparansi daftar pemenang.
           </p>
 
-          {/* Roblox Community Feature Pills */}
+          {/* Community Feature Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-8 pt-6 border-t border-slate-800/60 text-xs font-bold text-slate-300">
             <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-purple-500/30 text-purple-300 flex items-center gap-1.5">
-              <Gamepad2 className="w-3.5 h-3.5 text-purple-400" /> Roblox Obby & Tower Race
+              <Gamepad2 className="w-3.5 h-3.5 text-purple-400" /> Roblox (Obby & Speedrun)
+            </span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-blue-500/30 text-blue-300 flex items-center gap-1.5">
+              <Trophy className="w-3.5 h-3.5 text-blue-400" /> MLBB & Esports
             </span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-amber-500/30 text-amber-300 flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-amber-400" /> ⏱️ Top 10 Best Time Played
@@ -91,7 +94,7 @@ export const PublicPortal = () => {
               <Zap className="w-3.5 h-3.5 text-cyan-400" /> Poin Liga & Standings
             </span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 text-emerald-300 flex items-center gap-1.5">
-              <Gift className="w-3.5 h-3.5 text-emerald-400" /> Hadiah Robux & Trophy
+              <Gift className="w-3.5 h-3.5 text-emerald-400" /> Transparansi Hadiah
             </span>
           </div>
         </div>
