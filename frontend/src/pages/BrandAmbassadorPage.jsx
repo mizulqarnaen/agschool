@@ -32,7 +32,8 @@ export const BrandAmbassadorPage = () => {
         setItems(response.data.data || []);
       }
     } catch (err) {
-      toast.error('Gagal memuat data Brand Ambassador');
+      console.error('Error fetching brand ambassadors:', err);
+      toast.error(err.response?.data?.message || 'Gagal memuat data Brand Ambassador');
     } finally {
       setLoading(false);
     }

@@ -11,8 +11,8 @@ import { authorizeRoles } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
-// Allow Administrator, Secretary, and Finance roles
-router.use(authorizeRoles('administrator', 'secretary', 'finance'));
+// Allow internal team roles to access Brand Ambassadors
+router.use(authorizeRoles('administrator', 'admin', 'secretary', 'finance', 'staff', 'manager', 'maintainer'));
 
 router.get('/', getInternalBrandAmbassadors);
 router.post('/', createBrandAmbassador);

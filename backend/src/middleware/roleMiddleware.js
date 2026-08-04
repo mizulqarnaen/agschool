@@ -7,7 +7,7 @@ export const authorizeRoles = (...allowedRoles) => {
     const userRole = req.user.role_slug ? req.user.role_slug.toLowerCase() : '';
     
     // Administrator has super-user access across all endpoints
-    if (userRole === 'administrator' || allowedRoles.map(r => r.toLowerCase()).includes(userRole)) {
+    if (userRole === 'administrator' || userRole === 'admin' || allowedRoles.map(r => r.toLowerCase()).includes(userRole)) {
       return next();
     }
 
