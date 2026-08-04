@@ -22,7 +22,33 @@ export const PublicPortal = () => {
         params: { search, status: statusFilter }
       });
       if (response.data.success) {
-        setEvents(response.data.data);
+        const rawEvents = response.data.data || [];
+        const getStatusPriority = (status) => {
+          const s = String(status || '').trim().toLowerCase();
+          if (s === 'ongoing' || s === 'berlangsung') return 1;
+          if (s === 'scheduled' || s === 'dijadwalkan') return 2;
+          if (s === 'completed' || s === 'selesai') return 3;
+          if (s === 'cancelled' || s === 'dibatalkan') return 4;
+          return 5;
+        };
+
+        const sortedEvents = [...rawEvents].sort((a, b) => {
+          const prioA = getStatusPriority(a.event_status);
+          const prioB = getStatusPriority(b.event_status);
+          if (prioA !== prioB) return prioA - prioB;
+
+          const dateA = a.start_date ? new Date(a.start_date).getTime() : 0;
+          const dateB = b.start_date ? new Date(b.start_date).getTime() : 0;
+          if (dateB !== dateA) return dateB - dateA;
+
+          const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          if (timeB !== timeA) return timeB - timeA;
+
+          return (b.id || 0) - (a.id || 0);
+        });
+
+        setEvents(sortedEvents);
       }
     } catch (err) {
       console.error('Failed to load public events:', err);

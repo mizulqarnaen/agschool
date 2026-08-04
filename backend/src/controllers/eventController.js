@@ -48,13 +48,12 @@ const syncPrizeToExpenses = (prize, userId) => {
 export const getInternalEvents = (req, res) => {
   const events = eventRepository.readAll();
   const getStatusPriority = (status) => {
-    switch (status) {
-      case 'Ongoing': return 1;
-      case 'Scheduled': return 2;
-      case 'Completed': return 3;
-      case 'Cancelled': return 4;
-      default: return 5; // Draft / others
-    }
+    const s = String(status || '').trim().toLowerCase();
+    if (s === 'ongoing' || s === 'berlangsung') return 1;
+    if (s === 'scheduled' || s === 'dijadwalkan') return 2;
+    if (s === 'completed' || s === 'selesai') return 3;
+    if (s === 'cancelled' || s === 'dibatalkan') return 4;
+    return 5;
   };
 
   const sorted = events.sort((a, b) => {
