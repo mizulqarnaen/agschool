@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Modal } from './Modal';
-import { User, Sparkles, Star, Globe, Instagram, Youtube, MessageSquare, Save, Eye, EyeOff, ShieldCheck, Flame, RefreshCw } from 'lucide-react';
+import { User, Sparkles, Star, Globe, Instagram, Youtube, MessageSquare, Save, Eye, EyeOff, ShieldCheck, Flame, RefreshCw, Search, CheckCircle2, UserCheck } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
 export const BrandAmbassadorModal = ({ isOpen, onClose, item, onSave }) => {
   const [activeTab, setActiveTab] = useState('basic');
   const [saving, setSaving] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [memberSearchQuery, setMemberSearchQuery] = useState('');
+  const [isMemberDropdownOpen, setIsMemberDropdownOpen] = useState(false);
+  const memberSelectRef = useRef(null);
 
   const [formData, setFormData] = useState({
+    member_id: null,
     display_name: '',
     roblox_username: '',
     roblox_user_id: '',
@@ -32,8 +37,10 @@ export const BrandAmbassadorModal = ({ isOpen, onClose, item, onSave }) => {
 
   useEffect(() => {
     if (isOpen) {
+      fetchMembers();
       if (item) {
         setFormData({
+          member_id: item.member_id || null,
           display_name: item.display_name || '',
           roblox_username: item.roblox_username || '',
           roblox_user_id: item.roblox_user_id || '',
@@ -56,6 +63,7 @@ export const BrandAmbassadorModal = ({ isOpen, onClose, item, onSave }) => {
         });
       } else {
         setFormData({
+          member_id: null,
           display_name: '',
           roblox_username: '',
           roblox_user_id: '',
@@ -80,6 +88,40 @@ export const BrandAmbassadorModal = ({ isOpen, onClose, item, onSave }) => {
       setActiveTab('basic');
     }
   }, [isOpen, item]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (memberSelectRef.current && !memberSelectRef.current.contains(e.target)) {
+        setIsMemberDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const fetchMembers = async () => {
+    try {
+      const response = await api.get('/internal/finance/members');
+      if (response.data.success) {
+        setMembers(response.data.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load members for select:', err);
+    }
+  };
+
+  const handleSelectMember = (m) => {
+    setFormData(prev => ({
+      ...prev,
+      member_id: m.id,
+      display_name: m.full_name || m.name || prev.display_name,
+      roblox_username: m.ign_tag || m.roblox_username || prev.roblox_username,
+      discord_username: m.discord_username || prev.discord_username,
+      joined_date: m.joined_date || prev.joined_date
+    }));
+    setIsMemberDropdownOpen(false);
+    toast.success(`Terhubung dengan ${m.full_name || m.name}`);
+  };
 
   const previewAvatar = formData.avatar_url && formData.avatar_url.trim()
     ? formData.avatar_url
@@ -175,6 +217,72 @@ export const BrandAmbassadorModal = ({ isOpen, onClose, item, onSave }) => {
                   Avatar Roblox akan otomatis terhubung saat Anda memasukkan Roblox User ID / Username. Anda juga dapat menentukan URL avatar kustom.
                 </p>
               </div>
+            </div>
+
+            {/* Searchable Member Select Dropdown */}
+            <div ref={memberSelectRef} className="relative">
+              <label className="block text-xs font-extrabold text-cyan-300 uppercase mb-1 flex items-center gap-1.5">
+                <UserCheck className="w-4 h-4 text-cyan-400" /> Hubungkan dengan Anggota Direktori Staff / Pemain (Opsional)
+              </label>
+              <div
+                onClick={() => setIsMemberDropdownOpen(!isMemberDropdownOpen)}
+                className="w-full px-3.5 py-2.5 bg-slate-900 border border-cyan-500/40 rounded-xl text-xs text-white cursor-pointer flex items-center justify-between shadow-sm hover:border-cyan-400 transition-colors"
+              >
+                {formData.member_id ? (
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <span className="font-bold text-cyan-300">
+                      {members.find(m => m.id === formData.member_id)?.full_name || formData.display_name}
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      (@{members.find(m => m.id === formData.member_id)?.ign_tag || formData.roblox_username})
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-slate-400 italic">-- Pilih Anggota dari Direktori (Auto-Fill) --</span>
+                )}
+                <Search className="w-3.5 h-3.5 text-cyan-400" />
+              </div>
+
+              {isMemberDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+                  <div className="p-2 border-b border-slate-800">
+                    <input
+                      type="text"
+                      placeholder="Cari nama, IGN, atau role..."
+                      value={memberSearchQuery}
+                      onChange={(e) => setMemberSearchQuery(e.target.value)}
+                      className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-semibold"
+                    />
+                  </div>
+                  <div className="max-h-48 overflow-y-auto divide-y divide-slate-800/60">
+                    {members
+                      .filter(m => {
+                        if (!memberSearchQuery) return true;
+                        const q = memberSearchQuery.toLowerCase();
+                        return (m.full_name || '').toLowerCase().includes(q) ||
+                               (m.ign_tag || '').toLowerCase().includes(q) ||
+                               (m.category || '').toLowerCase().includes(q);
+                      })
+                      .map(m => (
+                        <div
+                          key={m.id}
+                          onClick={() => handleSelectMember(m)}
+                          className="p-2.5 hover:bg-purple-900/30 cursor-pointer flex items-center justify-between text-xs transition-colors"
+                        >
+                          <div>
+                            <span className="font-bold text-white block">{m.full_name || m.name}</span>
+                            <span className="text-[10px] text-cyan-300 font-mono">@{m.ign_tag || 'No IGN'}</span>
+                            <span className="text-[10px] text-slate-400 ml-2">({m.category || m.member_type})</span>
+                          </div>
+                          {formData.member_id === m.id && (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

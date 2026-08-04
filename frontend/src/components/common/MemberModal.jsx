@@ -41,7 +41,8 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
     salary_currency: 'IDR',
     category: 'BA',
     status: 'active',
-    joined_date: new Date().toISOString().split('T')[0]
+    joined_date: new Date().toISOString().split('T')[0],
+    is_brand_ambassador: false
   });
 
   // Multiple Bank Accounts / E-Wallets State
@@ -210,7 +211,8 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
       salary_currency: member.salary_currency || 'IDR',
       category: memberCats.join(', '),
       status: member.status || 'active',
-      joined_date: member.joined_date || new Date().toISOString().split('T')[0]
+      joined_date: member.joined_date || new Date().toISOString().split('T')[0],
+      is_brand_ambassador: !!member.is_brand_ambassador
     });
   };
 
@@ -236,7 +238,8 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
       salary_currency: 'IDR',
       category: initialType === 'Player' ? 'Player' : (categories[0] || 'BA'),
       status: 'active',
-      joined_date: new Date().toISOString().split('T')[0]
+      joined_date: new Date().toISOString().split('T')[0],
+      is_brand_ambassador: false
     });
   };
 
@@ -499,6 +502,11 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                         }`}>
                           {m.category || m.member_type || 'Staff'}
                         </span>
+                        {m.is_brand_ambassador && (
+                          <span className="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> BA Public
+                          </span>
+                        )}
                         <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${
                           isActive
                             ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
@@ -630,6 +638,23 @@ export const MemberModal = ({ isOpen, onClose, onMembersUpdated }) => {
                   className="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-cyan-300 font-mono font-bold cursor-pointer"
                 />
               </div>
+            </div>
+
+            {/* BA Showcase Toggle Switch */}
+            <div className="p-3 bg-purple-950/40 rounded-xl border border-purple-500/30 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Star className={`w-4 h-4 ${formData.is_brand_ambassador ? 'text-amber-400 fill-amber-400' : 'text-slate-500'}`} />
+                <div>
+                  <span className="text-xs font-bold text-purple-200 block">Tampilkan di Showcase Publik Brand Ambassador ⭐</span>
+                  <span className="text-[11px] text-slate-400 block">Otomatis daftarkan/hubungkan anggota ini ke menu & profil publik Brand Ambassador.</span>
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                checked={!!formData.is_brand_ambassador}
+                onChange={(e) => setFormData({ ...formData, is_brand_ambassador: e.target.checked })}
+                className="w-5 h-5 rounded text-purple-600 focus:ring-purple-500 bg-slate-950 border-slate-700 cursor-pointer"
+              />
             </div>
 
             {/* PLAYER FORM (Streamlined & Simple) */}

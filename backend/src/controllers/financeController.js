@@ -5,6 +5,7 @@ import { memberRepository } from '../repositories/memberRepository.js';
 import { eventRepository } from '../repositories/eventRepository.js';
 import { prizeRepository } from '../repositories/prizeRepository.js';
 import { settingRepository } from '../repositories/settingRepository.js';
+import { brandAmbassadorRepository } from '../repositories/brandAmbassadorRepository.js';
 import { loggerService } from '../services/loggerService.js';
 import { currencyService } from '../services/currencyService.js';
 
@@ -378,6 +379,10 @@ export const createMember = (req, res) => {
   const bank_account_number = primaryAccount.bank_account_number || req.body.bank_account_number || '';
   const bank_account_name = primaryAccount.bank_account_name || req.body.bank_account_name || '';
 
+  const is_brand_ambassador = req.body.is_brand_ambassador !== undefined
+    ? !!req.body.is_brand_ambassador
+    : (categories.some(c => String(c).toLowerCase().includes('ba') || String(c).toLowerCase().includes('ambassador')));
+
   const newMember = memberRepository.create({
     full_name: req.body.full_name,
     member_type: req.body.member_type || (req.body.category === 'Player' ? 'Player' : 'Staff'),
@@ -398,8 +403,33 @@ export const createMember = (req, res) => {
     categories,
     role_salaries,
     status: req.body.status || 'active',
-    joined_date: req.body.joined_date || new Date().toISOString().split('T')[0]
+    joined_date: req.body.joined_date || new Date().toISOString().split('T')[0],
+    is_brand_ambassador
   });
+
+  // Auto-sync showcase entry in brand_ambassadors.json if is_brand_ambassador is true
+  if (is_brand_ambassador) {
+    const existingBAs = brandAmbassadorRepository.readAll();
+    const baItem = existingBAs.find(b => b.member_id === newMember.id || (b.roblox_username || '').toLowerCase() === (newMember.ign_tag || '').toLowerCase());
+    if (!baItem) {
+      brandAmbassadorRepository.create({
+        member_id: newMember.id,
+        display_name: newMember.full_name,
+        roblox_username: newMember.ign_tag || newMember.full_name,
+        title: 'Official Brand Ambassador',
+        short_intro: 'Influencer & Official Brand Ambassador AG School.',
+        bio: '',
+        motto: '',
+        joined_date: newMember.joined_date,
+        display_order: existingBAs.length + 1,
+        status: 'public',
+        is_featured: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    }
+  }
+
   loggerService.logActivity(req.user.id, 'CREATE_MEMBER', 'Member', newMember.id, { full_name: newMember.full_name });
   res.status(201).json({ success: true, data: newMember });
 };
@@ -445,6 +475,10 @@ export const updateMember = (req, res) => {
   const bank_account_number = primaryAccount.bank_account_number || req.body.bank_account_number || '';
   const bank_account_name = primaryAccount.bank_account_name || req.body.bank_account_name || '';
 
+  const is_brand_ambassador = req.body.is_brand_ambassador !== undefined
+    ? !!req.body.is_brand_ambassador
+    : (categories.some(c => String(c).toLowerCase().includes('ba') || String(c).toLowerCase().includes('ambassador')));
+
   const updated = memberRepository.update(id, {
     full_name: req.body.full_name,
     member_type: req.body.member_type || (req.body.category === 'Player' ? 'Player' : 'Staff'),
@@ -465,9 +499,41 @@ export const updateMember = (req, res) => {
     categories,
     role_salaries,
     status: req.body.status || 'active',
-    joined_date: req.body.joined_date
+    joined_date: req.body.joined_date,
+    is_brand_ambassador
   });
   if (!updated) return res.status(404).json({ success: false, message: 'Member not found.' });
+
+  // Auto-sync showcase entry in brand_ambassadors.json if is_brand_ambassador is true
+  if (is_brand_ambassador) {
+    const existingBAs = brandAmbassadorRepository.readAll();
+    const baItem = existingBAs.find(b => b.member_id === updated.id);
+    if (!baItem) {
+      brandAmbassadorRepository.create({
+        member_id: updated.id,
+        display_name: updated.full_name,
+        roblox_username: updated.ign_tag || updated.full_name,
+        title: 'Official Brand Ambassador',
+        short_intro: 'Influencer & Official Brand Ambassador AG School.',
+        bio: '',
+        motto: '',
+        joined_date: updated.joined_date,
+        display_order: existingBAs.length + 1,
+        status: 'public',
+        is_featured: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    } else {
+      brandAmbassadorRepository.update(baItem.id, {
+        display_name: updated.full_name,
+        roblox_username: updated.ign_tag || updated.full_name,
+        discord_username: updated.discord_username,
+        joined_date: updated.joined_date,
+        updated_at: new Date().toISOString()
+      });
+    }
+  }
   loggerService.logActivity(req.user.id, 'UPDATE_MEMBER', 'Member', id, req.body);
   res.json({ success: true, data: updated });
 };

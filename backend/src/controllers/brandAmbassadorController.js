@@ -1,4 +1,5 @@
 import { brandAmbassadorRepository } from '../repositories/brandAmbassadorRepository.js';
+import { memberRepository } from '../repositories/memberRepository.js';
 import { loggerService } from '../services/loggerService.js';
 
 // --- Public Endpoints ---
@@ -8,6 +9,7 @@ export const getPublicBrandAmbassadors = (req, res) => {
     // Sanitize to public exposed fields only
     const sanitized = list.map(b => ({
       id: b.id,
+      member_id: b.member_id || null,
       display_name: b.display_name,
       roblox_username: b.roblox_username,
       roblox_user_id: b.roblox_user_id,
@@ -38,14 +40,17 @@ export const getPublicBrandAmbassadors = (req, res) => {
 export const getPublicBrandAmbassadorDetail = (req, res) => {
   try {
     const { id } = req.params;
-    const item = brandAmbassadorRepository.findById(id);
+    const rawItem = brandAmbassadorRepository.findById(id);
 
-    if (!item || item.status !== 'public' || item.deleted_at) {
+    if (!rawItem || rawItem.status !== 'public' || rawItem.deleted_at) {
       return res.status(404).json({ success: false, message: 'Brand Ambassador not found or not public' });
     }
 
+    const item = brandAmbassadorRepository.resolveLinkedData(rawItem);
+
     const sanitized = {
       id: item.id,
+      member_id: item.member_id || null,
       display_name: item.display_name,
       roblox_username: item.roblox_username,
       roblox_user_id: item.roblox_user_id,
@@ -87,7 +92,7 @@ export const getInternalBrandAmbassadors = (req, res) => {
 export const createBrandAmbassador = (req, res) => {
   try {
     const {
-      display_name, roblox_username, roblox_user_id, avatar_url,
+      member_id, display_name, roblox_username, roblox_user_id, avatar_url,
       title, short_intro, bio, nickname, motto, favorite_game,
       specialty, joined_date, display_order, status, is_featured,
       instagram, tiktok, youtube, discord_username
@@ -97,7 +102,35 @@ export const createBrandAmbassador = (req, res) => {
       return res.status(400).json({ success: false, message: 'Display Name, Roblox Username, and Role/Title are required.' });
     }
 
+    let linkedMemberId = member_id ? Number(member_id) : null;
+
+    if (linkedMemberId) {
+      const m = memberRepository.findById(linkedMemberId);
+      if (m) {
+        memberRepository.update(m.id, { is_brand_ambassador: true, updated_at: new Date().toISOString() });
+      }
+    } else {
+      // Auto register to master members.json
+      const newMember = memberRepository.create({
+        name: display_name.trim(),
+        entity_type: 'Staff',
+        categories: ['Official BA'],
+        role: 'Official BA',
+        ign_tag: roblox_username.trim(),
+        discord_username: discord_username ? discord_username.trim() : '',
+        bank_accounts: [],
+        monthly_salary_idr: 0,
+        joined_date: joined_date || new Date().toISOString().split('T')[0],
+        status: 'active',
+        is_brand_ambassador: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+      linkedMemberId = newMember.id;
+    }
+
     const payload = {
+      member_id: linkedMemberId,
       display_name: display_name.trim(),
       roblox_username: roblox_username.trim(),
       roblox_user_id: roblox_user_id ? String(roblox_user_id).trim() : null,
@@ -125,7 +158,7 @@ export const createBrandAmbassador = (req, res) => {
     const created = brandAmbassadorRepository.create(payload);
     loggerService.logActivity(req.user.id, 'CREATE_BRAND_AMBASSADOR', 'BrandAmbassador', created.id, { name: created.display_name });
 
-    res.status(201).json({ success: true, data: created, message: 'Brand Ambassador created successfully.' });
+    res.status(201).json({ success: true, data: created, message: 'Brand Ambassador created & synced successfully.' });
   } catch (err) {
     console.error('Error creating brand ambassador:', err);
     res.status(500).json({ success: false, message: err.message || 'Error creating brand ambassador' });
@@ -141,13 +174,23 @@ export const updateBrandAmbassador = (req, res) => {
     }
 
     const {
-      display_name, roblox_username, roblox_user_id, avatar_url,
+      member_id, display_name, roblox_username, roblox_user_id, avatar_url,
       title, short_intro, bio, nickname, motto, favorite_game,
       specialty, joined_date, display_order, status, is_featured,
       instagram, tiktok, youtube, discord_username
     } = req.body;
 
+    let targetMemberId = member_id !== undefined ? (member_id ? Number(member_id) : null) : existing.member_id;
+
+    if (targetMemberId) {
+      const m = memberRepository.findById(targetMemberId);
+      if (m && !m.is_brand_ambassador) {
+        memberRepository.update(m.id, { is_brand_ambassador: true, updated_at: new Date().toISOString() });
+      }
+    }
+
     const payload = {
+      member_id: targetMemberId,
       display_name: display_name !== undefined ? display_name.trim() : existing.display_name,
       roblox_username: roblox_username !== undefined ? roblox_username.trim() : existing.roblox_username,
       roblox_user_id: roblox_user_id !== undefined ? (roblox_user_id ? String(roblox_user_id).trim() : null) : existing.roblox_user_id,

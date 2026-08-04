@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Users, Plus, Trash2, Edit, UserCheck, Settings, X, Gamepad2, Video, Search, Filter, Phone, Mail, DollarSign, CreditCard, MessageSquare, Trophy, Calendar, CheckCircle2, XCircle } from 'lucide-react';
+import { Users, Plus, Trash2, Edit, UserCheck, Settings, X, Gamepad2, Video, Search, Filter, Phone, Mail, DollarSign, CreditCard, MessageSquare, Trophy, Calendar, CheckCircle2, XCircle, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -373,6 +373,11 @@ export const MemberPage = () => {
               {row.member_type || 'Staff'}
             </span>
             <span className="text-xs text-slate-300 font-semibold">{row.category}</span>
+            {row.is_brand_ambassador && (
+              <span className="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm flex items-center gap-1">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> BA Public
+              </span>
+            )}
           </div>
         );
       }
