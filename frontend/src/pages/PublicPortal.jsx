@@ -97,7 +97,7 @@ export const PublicPortal = () => {
           </h1>
 
           <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Selamat datang di Portal Resmi AG School. Temukan informasi acara komunitas, turnamen game (Roblox, MLBB, dll), poster resmi, status pendaftaran, klasemen poin liga, rekor <strong className="text-amber-300 font-extrabold">Best Time Played</strong>, dan transparansi daftar pemenang.
+            Selamat datang di Portal Resmi AG School. Temukan informasi acara komunitas, turnamen game (Roblox, MLBB, dll), poster resmi, status pendaftaran, klasemen poin liga, dan transparansi daftar pemenang.
           </p>
 
           {/* Community Feature Pills */}
@@ -107,9 +107,6 @@ export const PublicPortal = () => {
             </span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-blue-500/30 text-blue-300 flex items-center gap-1.5">
               <Trophy className="w-3.5 h-3.5 text-blue-400" /> MLBB & Esports
-            </span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-amber-500/30 text-amber-300 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-amber-400" /> ⏱️ Top 10 Best Time Played
             </span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-cyan-500/30 text-cyan-300 flex items-center gap-1.5">
               <Zap className="w-3.5 h-3.5 text-cyan-400" /> Poin Liga & Standings
