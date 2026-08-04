@@ -22,11 +22,11 @@ export const PublicNavbar = () => {
             />
           </div>
           <div>
-            <span className="font-extrabold text-sm sm:text-base bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent block">
-              AG School
+            <span className="font-extrabold text-sm sm:text-base bg-gradient-to-r from-white via-purple-200 to-cyan-300 bg-clip-text text-transparent block">
+              AG School Roblox
             </span>
-            <span className="text-[9px] sm:text-[10px] font-semibold tracking-wider text-cyan-400 uppercase block truncate max-w-[130px] sm:max-w-none">
-              {t('transparency_portal')}
+            <span className="text-[9px] sm:text-[10px] font-bold tracking-wider text-purple-400 uppercase block truncate max-w-[130px] sm:max-w-none">
+              Portal Event & Turnamen
             </span>
           </div>
         </Link>
