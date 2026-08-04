@@ -18,6 +18,12 @@ export const EventCard = ({ event }) => {
             ● Berlangsung
           </span>
         );
+      case 'Payment Pending':
+        return (
+          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+            <Clock className="w-3.5 h-3.5 text-purple-400 animate-pulse" /> Payment Pending
+          </span>
+        );
       case 'Completed':
         return (
           <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">

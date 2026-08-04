@@ -51,9 +51,10 @@ export const getInternalEvents = (req, res) => {
     const s = String(status || '').trim().toLowerCase();
     if (s === 'ongoing' || s === 'berlangsung') return 1;
     if (s === 'scheduled' || s === 'dijadwalkan') return 2;
-    if (s === 'completed' || s === 'selesai') return 3;
-    if (s === 'cancelled' || s === 'dibatalkan') return 4;
-    return 5;
+    if (s === 'payment pending' || s === 'payment_pending' || s === 'pending') return 3;
+    if (s === 'completed' || s === 'selesai') return 4;
+    if (s === 'cancelled' || s === 'dibatalkan') return 5;
+    return 6;
   };
 
   const sorted = events.sort((a, b) => {

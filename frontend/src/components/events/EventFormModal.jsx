@@ -202,6 +202,7 @@ export const EventFormModal = ({ isOpen, onClose, event, onSave }) => {
               <option value="Draft">Draft (Internal Only)</option>
               <option value="Scheduled">Scheduled</option>
               <option value="Ongoing">Ongoing</option>
+              <option value="Payment Pending">Payment Pending (Proses Pencairan Hadiah)</option>
               <option value="Completed">Completed</option>
               <option value="Cancelled">Cancelled</option>
             </select>

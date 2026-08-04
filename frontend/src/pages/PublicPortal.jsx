@@ -27,9 +27,10 @@ export const PublicPortal = () => {
           const s = String(status || '').trim().toLowerCase();
           if (s === 'ongoing' || s === 'berlangsung') return 1;
           if (s === 'scheduled' || s === 'dijadwalkan') return 2;
-          if (s === 'completed' || s === 'selesai') return 3;
-          if (s === 'cancelled' || s === 'dibatalkan') return 4;
-          return 5;
+          if (s === 'payment pending' || s === 'payment_pending' || s === 'pending') return 3;
+          if (s === 'completed' || s === 'selesai') return 4;
+          if (s === 'cancelled' || s === 'dibatalkan') return 5;
+          return 6;
         };
 
         const sortedEvents = [...rawEvents].sort((a, b) => {
@@ -105,6 +106,7 @@ export const PublicPortal = () => {
               <option value="">Semua Status Event</option>
               <option value="Scheduled">Dijadwalkan</option>
               <option value="Ongoing">Berlangsung</option>
+              <option value="Payment Pending">Payment Pending</option>
               <option value="Completed">Selesai</option>
             </select>
           </div>

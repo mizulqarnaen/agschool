@@ -108,6 +108,10 @@ export const EventManagementPage = () => {
             ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
             : row.event_status === 'Ongoing'
             ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+            : row.event_status === 'Payment Pending'
+            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold'
+            : row.event_status === 'Cancelled'
+            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
             : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
         }`}>
           {row.event_status}
