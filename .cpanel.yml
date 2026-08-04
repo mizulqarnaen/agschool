@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/ztpwvawx/agschool
+    - /bin/cp -rf backend $DEPLOYPATH/
+    - /bin/cp -rf frontend/dist $DEPLOYPATH/frontend/dist
