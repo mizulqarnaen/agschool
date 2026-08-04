@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingDown, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag, UserCheck, UserPlus, CreditCard } from 'lucide-react';
+import { Plus, Trash2, Edit, Copy, TrendingDown, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag, UserCheck, UserPlus, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -132,6 +132,31 @@ export const ExpensePage = () => {
           : prev.notes
       }));
     }
+  };
+
+  const handleDuplicate = (expense) => {
+    setSaveRecipientToDirectory(false);
+    setNewRecipientBank('');
+    setNewRecipientAccount('');
+    setNewRecipientType('Player');
+    setRecipientSearchQuery('');
+    setIsRecipientDropdownOpen(false);
+
+    setEditingId(null);
+    setFormData({
+      transaction_date: new Date().toISOString().split('T')[0],
+      category: expense.category,
+      description: expense.description || '',
+      amount: expense.amount || '',
+      currency: expense.currency || 'IDR',
+      payment_status: expense.payment_status || 'Paid',
+      related_event_id: expense.related_event_id || '',
+      recipient_member_id: expense.recipient_member_id || '',
+      recipient_name: expense.recipient_name || '',
+      notes: expense.notes || ''
+    });
+    setModalOpen(true);
+    toast.success('Form pengeluaran terisi dari data duplikat!');
   };
 
   const handleOpenModal = (expense = null) => {
@@ -396,13 +421,22 @@ export const ExpensePage = () => {
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
+            onClick={() => handleDuplicate(row)}
+            title="Duplikat Data (Copy)"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition-colors"
+          >
+            <Copy className="w-4 h-4" />
+          </button>
+          <button
             onClick={() => handleOpenModal(row)}
+            title="Edit Data"
             className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDelete(row.id)}
+            title="Hapus Data"
             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
           >
             <Trash2 className="w-4 h-4" />

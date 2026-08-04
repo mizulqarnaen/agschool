@@ -3,7 +3,7 @@ import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
-import { Plus, Trash2, Edit, TrendingUp, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag } from 'lucide-react';
+import { Plus, Trash2, Edit, Copy, TrendingUp, Search, Filter, Calendar, CheckCircle2, Clock, XCircle, Tag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -61,6 +61,22 @@ export const IncomePage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDuplicate = (income) => {
+    setEditingId(null);
+    setFormData({
+      transaction_date: new Date().toISOString().split('T')[0],
+      category: income.category,
+      source: income.source || '',
+      description: income.description || '',
+      amount: income.amount || '',
+      currency: income.currency || 'IDR',
+      payment_status: income.payment_status || 'Paid',
+      notes: income.notes || ''
+    });
+    setModalOpen(true);
+    toast.success('Form terisi dari data duplikat!');
   };
 
   const handleOpenModal = (income = null) => {
@@ -255,13 +271,22 @@ export const IncomePage = () => {
       render: (row) => (
         <div className="flex items-center gap-2">
           <button
+            onClick={() => handleDuplicate(row)}
+            title="Duplikat Data (Copy)"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition-colors"
+          >
+            <Copy className="w-4 h-4" />
+          </button>
+          <button
             onClick={() => handleOpenModal(row)}
+            title="Edit Data"
             className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDelete(row.id)}
+            title="Hapus Data"
             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
           >
             <Trash2 className="w-4 h-4" />

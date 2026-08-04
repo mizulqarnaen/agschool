@@ -109,6 +109,10 @@
 - **Feature**: Supports adding multiple bank accounts and e-wallets (BCA, Mandiri, DANA, GoPay, OVO, etc.) for each player or staff member with a **`⭐ Utama (Primary)`** badge toggle and dynamic add/remove items (`+ Tambah Rekening Lain`).
 - **Backward Compatibility**: Fully backward compatible with legacy single-account records (`bank_name`, `bank_account_number`, `bank_account_name`).
 
+### 19. Duplicate Transaction Feature (1-Click Copy & Pre-fill)
+- **Location**: Menu **`Pemasukan`** (`/internal/incomes` -> [IncomePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/IncomePage.jsx)) and **`Pengeluaran`** (`/internal/expenses` -> [ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx)).
+- **Feature**: Adds a **`Copy (Duplikat)`** icon button in the table actions column. Clicking it instantly opens the entry modal pre-filled with all data from the selected record (category, amount, currency, description, recipient, notes), automatically setting transaction date to today for rapid entry.
+
 ---
 
 ## API Endpoints Summary
