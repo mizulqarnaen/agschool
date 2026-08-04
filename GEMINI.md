@@ -49,6 +49,7 @@ frontend/
 2. **Immutable Financial Snapshots**: Recorded transactions (Incomes, Expenses, Payments, Logs) store exact snapshot values (`exchange_rate_used`, `base_amount_idr`, `amount`, `currency`, `member_name`) captured at the transaction time. Subsequent changes to settings, exchange rates, or member profiles MUST NEVER retroactively modify historical financial entries.
 
 ## Recent Changes
+- 021-staff-only-searchable-select-and-duplicate-notes-fix: Filtered payout recipient list to Staff members only in `PaymentPage.jsx`, added real-time Searchable Staff Select dropdown, and fixed duplicate notes doubling when changing recipient members in `ExpensePage.jsx`.
 - 020-duplicate-transaction-feature: Implemented 1-click Duplicate (Copy) action button in `IncomePage.jsx` and `ExpensePage.jsx` tables, pre-filling modal forms with existing transaction details for rapid entry.
 - 019-multiple-bank-accounts-per-member: Implemented multiple bank accounts and e-wallets support per player/staff member with primary account selection, dynamic add/remove, and backward compatibility in `financeController.js`, `MemberPage.jsx`, and `MemberModal.jsx`.
 - 018-user-management-and-password-reset: Implemented self password change (`PUT /api/auth/change-password`) and admin user password reset & user management (`PUT /api/internal/admin/users/:id/password`, status toggling, and new account creation) directly inside `SettingsPage.jsx`.

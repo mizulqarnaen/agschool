@@ -111,7 +111,11 @@
 
 ### 19. Duplicate Transaction Feature (1-Click Copy & Pre-fill)
 - **Location**: Menu **`Pemasukan`** (`/internal/incomes` -> [IncomePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/IncomePage.jsx)) and **`Pengeluaran`** (`/internal/expenses` -> [ExpensePage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/ExpensePage.jsx)).
-- **Feature**: Adds a **`Copy (Duplikat)`** icon button in the table actions column. Clicking it instantly opens the entry modal pre-filled with all data from the selected record (category, amount, currency, description, recipient, notes), automatically setting transaction date to today for rapid entry.
+- **Feature**: Adds a **`Copy (Duplikat)`** icon button in the table actions column. Clicking it instantly opens the entry modal pre-filled with all data from the selected record (category, amount, currency, description, recipient, notes), automatically setting transaction date to today for rapid entry. Cleanly overwrites bank notes when changing recipients.
+
+### 20. Staff-Only Searchable Member Select for Payouts
+- **Location**: Menu **`Pembayaran Honor Anggota`** (`/internal/payments` -> [PaymentPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PaymentPage.jsx)).
+- **Feature**: Filters payout recipient list to strictly show **Staff** members only (excluding players). Includes a real-time Searchable Select dropdown (searchable by full name, role, IGN, or bank account number) with auto-fill benchmark salaries.
 
 ---
 

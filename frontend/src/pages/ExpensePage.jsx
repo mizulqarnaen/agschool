@@ -123,14 +123,28 @@ export const ExpensePage = () => {
     const m = directoryMembers.find(item => item.id === Number(memberId));
     if (m) {
       const name = m.ign_tag || m.roblox_username || m.full_name;
-      setFormData(prev => ({
-        ...prev,
-        recipient_member_id: m.id,
-        recipient_name: name,
-        notes: m.bank_account_number
-          ? (prev.notes ? `${prev.notes} (Rek: ${m.bank_name} ${m.bank_account_number})` : `Rek: ${m.bank_name} ${m.bank_account_number} a.n ${m.bank_account_name || name}`)
-          : prev.notes
-      }));
+      const primaryBank = (Array.isArray(m.bank_accounts) && m.bank_accounts.find(a => a.is_primary)) || (m.bank_accounts?.[0]) || {
+        bank_name: m.bank_name,
+        bank_account_number: m.bank_account_number,
+        bank_account_name: m.bank_account_name
+      };
+
+      const bankStr = primaryBank && primaryBank.bank_account_number
+        ? `Rek: ${primaryBank.bank_name || 'Bank'} ${primaryBank.bank_account_number} a.n ${primaryBank.bank_account_name || name}`
+        : '';
+
+      setFormData(prev => {
+        // Strip previous bank account note string to prevent doubling when selecting a new member
+        const cleanNotes = (prev.notes || '').replace(/\(?Rek:[^)\n]+\)?/gi, '').trim();
+        const updatedNotes = bankStr ? (cleanNotes ? `${cleanNotes} (${bankStr})` : bankStr) : cleanNotes;
+
+        return {
+          ...prev,
+          recipient_member_id: m.id,
+          recipient_name: name,
+          notes: updatedNotes
+        };
+      });
     }
   };
 

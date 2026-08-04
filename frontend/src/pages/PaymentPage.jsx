@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
 import { Sidebar } from '../components/common/Sidebar';
 import { Table } from '../components/common/Table';
 import { Modal } from '../components/common/Modal';
 import { MemberModal } from '../components/common/MemberModal';
-import { Plus, Trash2, Edit, Users, UserPlus, Settings, X, CreditCard } from 'lucide-react';
+import { Plus, Trash2, Edit, Users, UserPlus, Settings, X, CreditCard, Search, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -19,6 +19,24 @@ export const PaymentPage = () => {
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [newPaymentCatName, setNewPaymentCatName] = useState('');
   const [editingId, setEditingId] = useState(null);
+
+  // Searchable Staff Member Select Dropdown State & Ref
+  const [memberSearchQuery, setMemberSearchQuery] = useState('');
+  const [isMemberDropdownOpen, setIsMemberDropdownOpen] = useState(false);
+  const memberSelectRef = useRef(null);
+
+  // Click outside handler for closing member dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (memberSelectRef.current && !memberSelectRef.current.contains(event.target)) {
+        setIsMemberDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const [formData, setFormData] = useState({
     member_id: '',
@@ -35,6 +53,25 @@ export const PaymentPage = () => {
     fetchMembers();
     fetchPaymentCategories();
   }, []);
+
+  // Filter members to only show Staff (exclude Players) for payouts
+  const staffMembers = members.filter(m => {
+    const mType = String(m.type || m.member_type || '').toLowerCase();
+    const isPlayerType = mType === 'player';
+    const isPlayerCategory = Array.isArray(m.categories) && m.categories.length === 1 && m.categories[0].toLowerCase() === 'player';
+    return !isPlayerType && !isPlayerCategory;
+  });
+
+  // Filtered staff members based on search query
+  const filteredStaffMembers = staffMembers.filter(m => {
+    if (!memberSearchQuery.trim()) return true;
+    const q = memberSearchQuery.toLowerCase();
+    const nameMatch = (m.full_name || '').toLowerCase().includes(q);
+    const ignMatch = (m.ign_tag || '').toLowerCase().includes(q);
+    const roleMatch = (m.category || (Array.isArray(m.categories) ? m.categories.join(' ') : '')).toLowerCase().includes(q);
+    const bankMatch = (m.bank_account_number || '').toLowerCase().includes(q);
+    return nameMatch || ignMatch || roleMatch || bankMatch;
+  });
 
   const fetchPayments = async () => {
     setLoading(true);
@@ -55,8 +92,13 @@ export const PaymentPage = () => {
       const response = await api.get('/internal/finance/members');
       if (response.data.success) {
         setMembers(response.data.data);
-        if (response.data.data.length > 0 && !formData.member_id) {
-          setFormData(prev => ({ ...prev, member_id: response.data.data[0].id }));
+        const staffOnly = response.data.data.filter(m => {
+          const mType = String(m.type || m.member_type || '').toLowerCase();
+          const isPlayerCategory = Array.isArray(m.categories) && m.categories.length === 1 && m.categories[0].toLowerCase() === 'player';
+          return mType !== 'player' && !isPlayerCategory;
+        });
+        if (staffOnly.length > 0 && !formData.member_id) {
+          setFormData(prev => ({ ...prev, member_id: staffOnly[0].id }));
         }
       }
     } catch (_) {}
@@ -393,21 +435,101 @@ export const PaymentPage = () => {
 
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? 'Edit Member Payment' : t('record_member_payment')}>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">{t('select_member')} *</label>
-              <select
-                value={formData.member_id}
-                onChange={(e) => handleMemberSelect(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500"
-              >
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.full_name} ({m.category})
-                  </option>
-                ))}
-              </select>
+            {/* Searchable Staff Member Selection */}
+            <div className="p-3 bg-slate-900/90 rounded-2xl border border-purple-500/30 space-y-2.5 relative">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-purple-300 uppercase flex items-center gap-1">
+                  <UserCheck className="w-3.5 h-3.5 text-purple-400" /> {t('select_member')} (Staff Sahaja) *
+                </label>
+                {(() => {
+                  const selected = staffMembers.find(m => m.id === Number(formData.member_id));
+                  if (!selected) return null;
+                  return (
+                    <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                      ✓ {selected.full_name} ({selected.category || (selected.categories?.join(', ') || 'Staff')})
+                    </span>
+                  );
+                })()}
+              </div>
+
+              <div ref={memberSelectRef} className="relative">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Cari staff terdaftar (nama, role/kategori, rekening)..."
+                    value={memberSearchQuery}
+                    onChange={(e) => {
+                      setMemberSearchQuery(e.target.value);
+                      setIsMemberDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsMemberDropdownOpen(true)}
+                    className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-medium"
+                  />
+                  {memberSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMemberSearchQuery('');
+                        setIsMemberDropdownOpen(true);
+                      }}
+                      className="absolute right-3 top-2 text-slate-400 hover:text-white text-xs font-bold"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* Dropdown List */}
+                {isMemberDropdownOpen && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-purple-500/40 rounded-xl shadow-2xl max-h-56 overflow-y-auto z-50 p-1.5 space-y-1 divide-y divide-slate-800/60 scrollbar-thin">
+                    {filteredStaffMembers.length > 0 ? (
+                      filteredStaffMembers.map((m) => {
+                        const isSelected = Number(formData.member_id) === m.id;
+                        return (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => {
+                              handleMemberSelect(m.id);
+                              setMemberSearchQuery('');
+                              setIsMemberDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex items-center justify-between gap-2 ${
+                              isSelected
+                                ? 'bg-purple-500/20 text-purple-200 border border-purple-500/40 font-bold'
+                                : 'hover:bg-slate-800/90 text-slate-200'
+                            }`}
+                          >
+                            <div>
+                              <div className="font-bold text-white flex items-center gap-1.5">
+                                <span>{m.full_name}</span>
+                                <span className="text-[10px] text-purple-300 bg-purple-500/10 px-1.5 py-0.2 rounded border border-purple-500/20">
+                                  {m.category || (m.categories?.join(', ') || 'Staff')}
+                                </span>
+                              </div>
+                              {m.bank_account_number && (
+                                <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                                  {m.bank_name || 'Bank'}: {m.bank_account_number} {m.bank_account_name ? `(a.n ${m.bank_account_name})` : ''}
+                                </div>
+                              )}
+                            </div>
+                            {isSelected && <span className="text-xs text-purple-400 font-bold">✓</span>}
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="px-3 py-3 text-center text-xs text-slate-500">
+                        Tidak ada staff terdaftar yang cocok dengan &quot;{memberSearchQuery}&quot;
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Selected Staff Member Bank Card Badge */}
               {(() => {
-                const selectedMember = members.find(m => m.id === Number(formData.member_id));
+                const selectedMember = staffMembers.find(m => m.id === Number(formData.member_id));
                 if (!selectedMember || (!selectedMember.bank_name && !selectedMember.bank_account_number)) return null;
                 return (
                   <div className="mt-2 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center gap-2 text-xs text-amber-300">
