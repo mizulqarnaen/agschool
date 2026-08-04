@@ -63,7 +63,7 @@ export class BrandAmbassadorRepository extends JsonRepository {
       }
 
       if (ambassadorsUpdated) {
-        this.writeAll(ambassadors);
+        this.saveAll(ambassadors);
       }
     } catch (err) {
       console.error('Error during autoLinkExistingData:', err);
