@@ -78,11 +78,11 @@ export const EventManagementPage = () => {
     {
       header: t('title'),
       render: (row) => (
-        <div>
-          <span className="font-bold text-white block">{row.title}</span>
-          <span className="text-[11px] text-slate-400 line-clamp-1">{row.description}</span>
+        <div className="min-w-[240px] max-w-sm">
+          <span className="font-bold text-white block text-sm leading-snug">{row.title}</span>
+          <span className="text-[11px] text-slate-400 line-clamp-2 mt-0.5 leading-relaxed">{row.description}</span>
           {Array.isArray(row.live_standings) && row.live_standings.length > 0 && (
-            <span className="inline-flex items-center gap-1 text-[10px] text-purple-300 font-extrabold bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20 mt-1">
+            <span className="inline-flex items-center gap-1 text-[10px] text-purple-300 font-extrabold bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20 mt-1.5 whitespace-nowrap">
               <Radio className="w-3 h-3 text-purple-400 animate-pulse" /> Live Standings Aktif ({row.live_standings.length} Sesi)
             </span>
           )}
@@ -92,7 +92,7 @@ export const EventManagementPage = () => {
     {
       header: t('type'),
       render: (row) => (
-        <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+        <span className="inline-block px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300 border border-slate-700 whitespace-nowrap">
           {row.event_type}
         </span>
       )
@@ -100,16 +100,16 @@ export const EventManagementPage = () => {
     {
       header: t('dates'),
       render: (row) => (
-        <div className="text-xs text-slate-300">
-          <div><span className="text-slate-500">Mulai:</span> {row.start_date}</div>
-          <div><span className="text-slate-500">Selesai:</span> {row.end_date}</div>
+        <div className="text-xs text-slate-300 whitespace-nowrap font-mono space-y-0.5">
+          <div><span className="text-slate-500 font-sans">Mulai:</span> {row.start_date}</div>
+          <div><span className="text-slate-500 font-sans">Selesai:</span> {row.end_date}</div>
         </div>
       )
     },
     {
       header: t('status'),
       render: (row) => (
-        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
+        <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
           row.event_status === 'Completed'
             ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
             : row.event_status === 'Ongoing'
@@ -127,15 +127,15 @@ export const EventManagementPage = () => {
     {
       header: 'Poster',
       render: (row) => row.poster_url ? (
-        <span className="text-xs text-emerald-400 font-semibold">Ada Poster</span>
+        <span className="text-xs text-emerald-400 font-semibold whitespace-nowrap">Ada Poster</span>
       ) : (
-        <span className="text-xs text-slate-500">Tanpa Poster</span>
+        <span className="text-xs text-slate-500 whitespace-nowrap">Tanpa Poster</span>
       )
     },
     {
       header: t('prize_pool'),
       render: (row) => (
-        <span className="font-bold text-amber-300">
+        <span className="font-bold text-amber-300 font-mono whitespace-nowrap text-xs sm:text-sm">
           {row.currency || 'IDR'} {Number(row.total_prize_pool || 0).toLocaleString()}
         </span>
       )
@@ -143,11 +143,11 @@ export const EventManagementPage = () => {
     {
       header: t('actions'),
       render: (row) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <button
             onClick={() => handleManageLiveStandings(row)}
             title="Update Live Standings & Rekor Harian"
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded-lg border border-purple-500/40 transition-colors shadow-sm"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded-lg border border-purple-500/40 transition-colors shadow-sm whitespace-nowrap"
           >
             <Radio className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
             Live Standings
@@ -155,7 +155,7 @@ export const EventManagementPage = () => {
           {row.is_league && (
             <button
               onClick={() => handleManageStandings(row)}
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 rounded-lg border border-purple-500/30 transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 rounded-lg border border-purple-500/30 transition-colors whitespace-nowrap"
             >
               <Sparkles className="w-3.5 h-3.5 text-purple-400" />
               Poin Liga
@@ -163,19 +163,21 @@ export const EventManagementPage = () => {
           )}
           <button
             onClick={() => handleManagePrizes(row)}
-            className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg border border-amber-500/30 transition-colors"
+            className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg border border-amber-500/30 transition-colors whitespace-nowrap"
           >
             <Trophy className="w-3.5 h-3.5" />
             {t('manage_prizes')}
           </button>
           <button
             onClick={() => handleEdit(row)}
+            title="Edit Event"
             className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-colors"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDelete(row.id)}
+            title="Hapus Event"
             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
