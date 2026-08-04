@@ -127,10 +127,12 @@ export const BrandAmbassadorPage = () => {
       header: 'Brand Ambassador',
       render: (row) => {
         const avatarUrl = row.avatar_url && row.avatar_url.trim()
-          ? row.avatar_url
+          ? row.avatar_url.trim()
           : (row.roblox_user_id
-              ? `https://thumbs.roblox.com/v1/users/avatar-headshot?userIds=${row.roblox_user_id}&size=420x420&format=Png&isCircular=false`
-              : 'https://images.rbxcdn.com/30x30_icon_Roblox.png');
+              ? `/api/public/brand-ambassadors/avatar-headshot?userId=${row.roblox_user_id}`
+              : (row.roblox_username
+                  ? `/api/public/brand-ambassadors/avatar-headshot?username=${encodeURIComponent(row.roblox_username)}`
+                  : 'https://images.rbxcdn.com/30x30_icon_Roblox.png'));
 
         return (
           <div className="flex items-center gap-3 min-w-[220px]">

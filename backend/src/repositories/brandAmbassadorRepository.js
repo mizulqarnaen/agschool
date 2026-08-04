@@ -156,7 +156,10 @@ export class BrandAmbassadorRepository extends JsonRepository {
       return customUrl.trim();
     }
     if (userId && String(userId).trim()) {
-      return `https://thumbs.roblox.com/v1/users/avatar-headshot?userIds=${String(userId).trim()}&size=420x420&format=Png&isCircular=false`;
+      return `/api/public/brand-ambassadors/avatar-headshot?userId=${String(userId).trim()}`;
+    }
+    if (username && String(username).trim()) {
+      return `/api/public/brand-ambassadors/avatar-headshot?username=${encodeURIComponent(String(username).trim())}`;
     }
     return `https://images.rbxcdn.com/30x30_icon_Roblox.png`;
   }

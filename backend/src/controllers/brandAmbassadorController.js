@@ -2,6 +2,53 @@ import { brandAmbassadorRepository } from '../repositories/brandAmbassadorReposi
 import { memberRepository } from '../repositories/memberRepository.js';
 import { loggerService } from '../services/loggerService.js';
 
+// --- Roblox Avatar Resolution Helper ---
+export const getRobloxAvatarHeadshot = async (req, res) => {
+  try {
+    const { userId, username, json } = req.query;
+    let targetUserId = userId ? String(userId).trim() : null;
+
+    if (!targetUserId && username && String(username).trim()) {
+      try {
+        const uRes = await fetch('https://users.roblox.com/v1/usernames/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usernames: [String(username).trim()], excludeBannedUsers: true })
+        });
+        const uData = await uRes.json();
+        if (uData && uData.data && uData.data.length > 0) {
+          targetUserId = String(uData.data[0].id);
+        }
+      } catch (e) {
+        console.error('Failed to resolve Roblox username:', e);
+      }
+    }
+
+    if (!targetUserId) {
+      if (json === 'true') return res.json({ success: false, message: 'User ID or Username not found' });
+      return res.redirect('https://images.rbxcdn.com/30x30_icon_Roblox.png');
+    }
+
+    const tRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${targetUserId}&size=420x420&format=Png&isCircular=false`);
+    const tData = await tRes.json();
+
+    let imageUrl = 'https://images.rbxcdn.com/30x30_icon_Roblox.png';
+    if (tData && tData.data && tData.data.length > 0 && tData.data[0].imageUrl) {
+      imageUrl = tData.data[0].imageUrl;
+    }
+
+    if (json === 'true') {
+      return res.json({ success: true, userId: targetUserId, imageUrl });
+    }
+
+    return res.redirect(imageUrl);
+  } catch (err) {
+    console.error('Error fetching Roblox avatar headshot:', err.message);
+    if (req.query.json === 'true') return res.json({ success: false, message: err.message });
+    return res.redirect('https://images.rbxcdn.com/30x30_icon_Roblox.png');
+  }
+};
+
 // --- Public Endpoints ---
 export const getPublicBrandAmbassadors = (req, res) => {
   try {

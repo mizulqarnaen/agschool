@@ -123,11 +123,27 @@ export const BrandAmbassadorModal = ({ isOpen, onClose, item, onSave }) => {
     toast.success(`Terhubung dengan ${m.full_name || m.name}`);
   };
 
+  useEffect(() => {
+    if (!formData.roblox_user_id && formData.roblox_username && formData.roblox_username.trim()) {
+      const timer = setTimeout(async () => {
+        try {
+          const res = await api.get(`/public/brand-ambassadors/avatar-headshot?username=${encodeURIComponent(formData.roblox_username.trim())}&json=true`);
+          if (res.data && res.data.success && res.data.userId) {
+            setFormData(prev => ({ ...prev, roblox_user_id: String(res.data.userId) }));
+          }
+        } catch (_) {}
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [formData.roblox_username, formData.roblox_user_id]);
+
   const previewAvatar = formData.avatar_url && formData.avatar_url.trim()
-    ? formData.avatar_url
+    ? formData.avatar_url.trim()
     : (formData.roblox_user_id && formData.roblox_user_id.trim()
-        ? `https://thumbs.roblox.com/v1/users/avatar-headshot?userIds=${formData.roblox_user_id.trim()}&size=420x420&format=Png&isCircular=false`
-        : null);
+        ? `/api/public/brand-ambassadors/avatar-headshot?userId=${formData.roblox_user_id.trim()}`
+        : (formData.roblox_username && formData.roblox_username.trim()
+            ? `/api/public/brand-ambassadors/avatar-headshot?username=${encodeURIComponent(formData.roblox_username.trim())}`
+            : null));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
