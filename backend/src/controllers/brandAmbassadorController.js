@@ -268,8 +268,19 @@ export const updateBrandAmbassador = (req, res) => {
       if (linkedMember) {
         const memberSync = { updated_at: new Date().toISOString() };
         if (payload.display_name) memberSync.name = payload.display_name;
-        if (payload.roblox_username) memberSync.ign_tag = payload.roblox_username;
-        if (payload.discord_username !== undefined) memberSync.discord_username = payload.discord_username || linkedMember.discord_username;
+        if (payload.roblox_username) {
+          memberSync.roblox_username = payload.roblox_username;
+          memberSync.ign_tag = payload.roblox_username;
+        }
+        if (payload.discord_username !== undefined) {
+          memberSync.discord_username = payload.discord_username || linkedMember.discord_username || '';
+        }
+        // Extract TikTok handle from full URL (e.g. https://tiktok.com/@user → @user)
+        if (payload.tiktok !== undefined && payload.tiktok) {
+          const tiktokUrl = payload.tiktok.trim();
+          const handleMatch = tiktokUrl.match(/@([\w.]+)/);
+          memberSync.tiktok_handle = handleMatch ? `@${handleMatch[1]}` : tiktokUrl;
+        }
         memberRepository.update(targetMemberId, memberSync);
       }
     }
