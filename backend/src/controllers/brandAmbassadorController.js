@@ -261,6 +261,19 @@ export const updateBrandAmbassador = (req, res) => {
     };
 
     const updated = brandAmbassadorRepository.update(id, payload);
+
+    // --- Sync social fields back to linked member ---
+    if (targetMemberId) {
+      const linkedMember = memberRepository.findById(targetMemberId);
+      if (linkedMember) {
+        const memberSync = { updated_at: new Date().toISOString() };
+        if (payload.display_name) memberSync.name = payload.display_name;
+        if (payload.roblox_username) memberSync.ign_tag = payload.roblox_username;
+        if (payload.discord_username !== undefined) memberSync.discord_username = payload.discord_username || linkedMember.discord_username;
+        memberRepository.update(targetMemberId, memberSync);
+      }
+    }
+
     loggerService.logActivity(req.user.id, 'UPDATE_BRAND_AMBASSADOR', 'BrandAmbassador', id, { name: updated.display_name });
 
     res.json({ success: true, data: updated, message: 'Brand Ambassador updated successfully.' });

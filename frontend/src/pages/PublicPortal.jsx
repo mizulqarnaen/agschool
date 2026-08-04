@@ -6,8 +6,9 @@ import { PublicFooter } from '../components/public/PublicFooter';
 import { EventCard } from '../components/public/EventCard';
 import {
   Search, Filter, ShieldCheck, Trophy, Sparkles, Gamepad2, Zap, Clock, Gift,
-  Award, Star, UserCheck, Instagram, Youtube, MessageSquare, ArrowRight, ExternalLink
+  Award, Star, UserCheck, ArrowRight, ExternalLink
 } from 'lucide-react';
+import { TikTokIcon, DiscordIcon, InstagramIcon, YoutubeIcon } from '../components/common/SocialIcons';
 
 export const PublicPortal = () => {
   const [events, setEvents] = useState([]);
@@ -254,22 +255,22 @@ export const PublicPortal = () => {
                     <div className="flex items-center gap-1.5 text-slate-400">
                       {ba.instagram && (
                         <a href={ba.instagram} target="_blank" rel="noreferrer" title="Instagram Profile">
-                          <Instagram className="w-3.5 h-3.5 text-pink-400 hover:scale-110 transition-transform" />
+                          <InstagramIcon className="w-3.5 h-3.5 text-pink-400 hover:scale-110 transition-transform" />
                         </a>
                       )}
                       {ba.tiktok && (
                         <a href={ba.tiktok} target="_blank" rel="noreferrer" title="TikTok Profile">
-                          <Sparkles className="w-3.5 h-3.5 text-cyan-400 hover:scale-110 transition-transform" />
+                          <TikTokIcon className="w-3.5 h-3.5 text-slate-300 hover:scale-110 transition-transform" />
                         </a>
                       )}
                       {ba.youtube && (
                         <a href={ba.youtube} target="_blank" rel="noreferrer" title="YouTube Channel">
-                          <Youtube className="w-3.5 h-3.5 text-rose-500 hover:scale-110 transition-transform" />
+                          <YoutubeIcon className="w-3.5 h-3.5 text-rose-500 hover:scale-110 transition-transform" />
                         </a>
                       )}
                       {ba.discord_username && (
                         <span title={`Discord: ${ba.discord_username}`}>
-                          <MessageSquare className="w-3.5 h-3.5 text-indigo-400" />
+                          <DiscordIcon className="w-3.5 h-3.5 text-indigo-400" />
                         </span>
                       )}
                     </div>

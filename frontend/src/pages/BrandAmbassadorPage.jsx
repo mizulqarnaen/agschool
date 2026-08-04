@@ -4,9 +4,10 @@ import { Table } from '../components/common/Table';
 import { BrandAmbassadorModal } from '../components/common/BrandAmbassadorModal';
 import {
   Award, Plus, Search, Filter, Star, Eye, EyeOff, Edit, Trash2,
-  Instagram, Youtube, MessageSquare, ExternalLink, ArrowUp, ArrowDown,
+  ExternalLink, ArrowUp, ArrowDown,
   Sparkles, CheckCircle2, AlertCircle, ShieldAlert
 } from 'lucide-react';
+import { TikTokIcon, DiscordIcon, InstagramIcon, YoutubeIcon } from '../components/common/SocialIcons';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -205,22 +206,22 @@ export const BrandAmbassadorPage = () => {
         <div className="flex items-center gap-1.5 whitespace-nowrap text-slate-400">
           {row.instagram && (
             <a href={row.instagram} target="_blank" rel="noreferrer" title="Instagram Profile">
-              <Instagram className="w-4 h-4 text-pink-400 hover:scale-110 transition-transform" />
+              <InstagramIcon className="w-4 h-4 text-pink-400 hover:scale-110 transition-transform" />
             </a>
           )}
           {row.tiktok && (
             <a href={row.tiktok} target="_blank" rel="noreferrer" title="TikTok Profile">
-              <Sparkles className="w-4 h-4 text-cyan-400 hover:scale-110 transition-transform" />
+              <TikTokIcon className="w-4 h-4 text-slate-300 hover:scale-110 transition-transform" />
             </a>
           )}
           {row.youtube && (
             <a href={row.youtube} target="_blank" rel="noreferrer" title="YouTube Channel">
-              <Youtube className="w-4 h-4 text-rose-500 hover:scale-110 transition-transform" />
+              <YoutubeIcon className="w-4 h-4 text-rose-500 hover:scale-110 transition-transform" />
             </a>
           )}
           {row.discord_username && (
             <span title={`Discord: ${row.discord_username}`}>
-              <MessageSquare className="w-4 h-4 text-indigo-400" />
+              <DiscordIcon className="w-4 h-4 text-indigo-400" />
             </span>
           )}
         </div>

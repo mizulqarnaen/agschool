@@ -161,7 +161,7 @@ export const LiveStandingsModal = ({ isOpen, onClose, event, onSuccess }) => {
   const badgePresets = ['🥇 Rekor Tercepat', '🟢 Lolos Final', '🟢 Top 10 Finalis', '🟡 Safe Zone', '🔴 Tereliminasi', '⚡ Best Summit'];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`🔴 Update Live Standings - ${event.title}`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`🔴 Update Live Standings - ${event.title}`} maxWidth="max-w-5xl">
       <div className="space-y-5 max-w-4xl w-full">
         {/* Preset Selector Banner */}
         <div className="p-3.5 bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-slate-900 rounded-2xl border border-purple-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

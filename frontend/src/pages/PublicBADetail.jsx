@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PublicNavbar } from '../components/public/PublicNavbar';
 import { PublicFooter } from '../components/public/PublicFooter';
+import { TikTokIcon, DiscordIcon, InstagramIcon, YoutubeIcon } from '../components/common/SocialIcons';
 import {
-  Award, Star, ArrowLeft, Instagram, Youtube, MessageSquare,
-  Sparkles, Calendar, Gamepad2, Trophy, ShieldCheck, ExternalLink, UserCheck
+  Award, Star, ArrowLeft, ExternalLink,
+  Sparkles, Calendar, Gamepad2, Trophy, ShieldCheck, UserCheck
 } from 'lucide-react';
 import api from '../services/api';
 import { formatDateDisplay } from '../utils/dateFormatter';
@@ -176,7 +177,7 @@ export const PublicBADetail = () => {
                   >
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 rounded-xl bg-pink-500/10 text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors">
-                        <Instagram className="w-5 h-5" />
+                        <InstagramIcon className="w-5 h-5" />
                       </div>
                       <div>
                         <span className="text-xs font-bold text-white block">Instagram</span>
@@ -196,7 +197,7 @@ export const PublicBADetail = () => {
                   >
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-colors">
-                        <Sparkles className="w-5 h-5" />
+                        <TikTokIcon className="w-5 h-5" />
                       </div>
                       <div>
                         <span className="text-xs font-bold text-white block">TikTok</span>
@@ -216,7 +217,7 @@ export const PublicBADetail = () => {
                   >
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-500 group-hover:bg-rose-500 group-hover:text-white transition-colors">
-                        <Youtube className="w-5 h-5" />
+                        <YoutubeIcon className="w-5 h-5" />
                       </div>
                       <div>
                         <span className="text-xs font-bold text-white block">YouTube</span>
@@ -230,7 +231,7 @@ export const PublicBADetail = () => {
                 {ambassador.discord_username && (
                   <div className="p-4 rounded-2xl bg-slate-900/90 border border-indigo-500/30 flex items-center gap-3">
                     <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
-                      <MessageSquare className="w-5 h-5" />
+                      <DiscordIcon className="w-5 h-5" />
                     </div>
                     <div>
                       <span className="text-xs font-bold text-white block">Discord</span>
