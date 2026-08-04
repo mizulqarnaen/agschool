@@ -202,7 +202,7 @@ export const PublicPortal = () => {
                 Perwakilan Resmi AG School
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Wajah resmi AG School yang memandu jalannya kompetisi, menginspirasi komunitas player Roblox, dan memimpin rekor kejuaraan.
+                Wajah resmi AG School yang mempromosikan setiap event, menginspirasi komunitas player Roblox, dan memperluas jangkauan AG School.
               </p>
             </div>
 
