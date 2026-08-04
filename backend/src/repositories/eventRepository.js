@@ -21,7 +21,21 @@ export class EventRepository extends JsonRepository {
       events = events.filter(e => e.title.toLowerCase().includes(q) || e.description.toLowerCase().includes(q));
     }
 
+    const getStatusPriority = (status) => {
+      switch (status) {
+        case 'Ongoing': return 1;
+        case 'Scheduled': return 2;
+        case 'Completed': return 3;
+        case 'Cancelled': return 4;
+        default: return 5;
+      }
+    };
+
     return events.sort((a, b) => {
+      const prioA = getStatusPriority(a.event_status);
+      const prioB = getStatusPriority(b.event_status);
+      if (prioA !== prioB) return prioA - prioB;
+
       const dateA = a.start_date ? new Date(a.start_date).getTime() : 0;
       const dateB = b.start_date ? new Date(b.start_date).getTime() : 0;
       if (dateB !== dateA) return dateB - dateA;
