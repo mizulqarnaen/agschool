@@ -15,41 +15,43 @@ import { validateIncome, validateExpense, validatePayment } from '../middleware/
 
 const router = express.Router();
 
-// Allow Finance and Administrator roles
-router.use(authorizeRoles('administrator', 'finance'));
+// Routes accessible by Administrator, Finance, and Secretary
+const internalTeam = authorizeRoles('administrator', 'finance', 'secretary');
+const financeOnly = authorizeRoles('administrator', 'finance');
 
-router.get('/dashboard', getDashboardSummary);
+// Dashboard summary accessible by all internal roles
+router.get('/dashboard', internalTeam, getDashboardSummary);
 
-// Incomes
-router.get('/incomes/categories', getIncomeCategories);
-router.post('/incomes/categories', updateIncomeCategories);
-router.get('/incomes', getIncomes);
-router.post('/incomes', validateIncome, createIncome);
-router.put('/incomes/:id', validateIncome, updateIncome);
-router.delete('/incomes/:id', deleteIncome);
+// Members directory accessible by all internal roles
+router.get('/members/categories', internalTeam, getMemberCategories);
+router.post('/members/categories', internalTeam, updateMemberCategories);
+router.get('/members', internalTeam, getMembers);
+router.post('/members', internalTeam, createMember);
+router.put('/members/:id', internalTeam, updateMember);
+router.delete('/members/:id', internalTeam, deleteMember);
 
-// Expenses
-router.get('/expenses/categories', getExpenseCategories);
-router.post('/expenses/categories', updateExpenseCategories);
-router.get('/expenses', getExpenses);
-router.post('/expenses', validateExpense, createExpense);
-router.put('/expenses/:id', validateExpense, updateExpense);
-router.delete('/expenses/:id', deleteExpense);
+// Incomes (Finance & Administrator only)
+router.get('/incomes/categories', financeOnly, getIncomeCategories);
+router.post('/incomes/categories', financeOnly, updateIncomeCategories);
+router.get('/incomes', financeOnly, getIncomes);
+router.post('/incomes', financeOnly, validateIncome, createIncome);
+router.put('/incomes/:id', financeOnly, validateIncome, updateIncome);
+router.delete('/incomes/:id', financeOnly, deleteIncome);
 
-// Internal Member Payments
-router.get('/payments/categories', getPaymentCategories);
-router.post('/payments/categories', updatePaymentCategories);
-router.get('/payments', getPayments);
-router.post('/payments', validatePayment, createPayment);
-router.put('/payments/:id', validatePayment, updatePayment);
-router.delete('/payments/:id', deletePayment);
+// Expenses (Finance & Administrator only)
+router.get('/expenses/categories', financeOnly, getExpenseCategories);
+router.post('/expenses/categories', financeOnly, updateExpenseCategories);
+router.get('/expenses', financeOnly, getExpenses);
+router.post('/expenses', financeOnly, validateExpense, createExpense);
+router.put('/expenses/:id', financeOnly, validateExpense, updateExpense);
+router.delete('/expenses/:id', financeOnly, deleteExpense);
 
-// Internal Staff Members
-router.get('/members/categories', getMemberCategories);
-router.post('/members/categories', updateMemberCategories);
-router.get('/members', getMembers);
-router.post('/members', createMember);
-router.put('/members/:id', updateMember);
-router.delete('/members/:id', deleteMember);
+// Internal Member Payments (Finance & Administrator only)
+router.get('/payments/categories', financeOnly, getPaymentCategories);
+router.post('/payments/categories', financeOnly, updatePaymentCategories);
+router.get('/payments', financeOnly, getPayments);
+router.post('/payments', financeOnly, validatePayment, createPayment);
+router.put('/payments/:id', financeOnly, validatePayment, updatePayment);
+router.delete('/payments/:id', financeOnly, deletePayment);
 
 export default router;
