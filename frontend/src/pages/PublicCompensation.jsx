@@ -70,9 +70,9 @@ export const PublicCompensation = () => {
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= (pagination.total_pages || 1)) {
+    if (newPage >= 1 && newPage <= (pagination.total_pages || 1) && newPage !== pagination.current_page) {
       setPagination(prev => ({ ...prev, current_page: newPage }));
-      window.scrollTo({ top: 300, behavior: 'smooth' });
+      // In-place smooth page switching without jarring scroll jumps
     }
   };
 
@@ -328,34 +328,59 @@ export const PublicCompensation = () => {
 
         {/* Pagination Controls */}
         {pagination.total_pages > 1 && (
-          <div className="flex items-center justify-center gap-2 pt-4">
+          <div className="flex items-center justify-center gap-1.5 pt-6 flex-wrap">
+            {/* Prev Button */}
             <button
               type="button"
               onClick={() => handlePageChange(pagination.current_page - 1)}
               disabled={pagination.current_page === 1}
-              className={`p-2 rounded-xl border transition-all ${
+              className={`p-2 rounded-xl border transition-all text-xs font-bold flex items-center gap-1 ${
                 pagination.current_page === 1
-                  ? 'opacity-40 cursor-not-allowed border-slate-800'
-                  : 'hover:bg-slate-200 dark:hover:bg-slate-800 border-slate-300 dark:border-slate-700'
+                  ? 'opacity-30 cursor-not-allowed border-slate-800'
+                  : isDark
+                    ? 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-200'
+                    : 'bg-white hover:bg-slate-100 border-slate-300 text-slate-800 shadow-xs'
               }`}
             >
               <ChevronLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Prev</span>
             </button>
 
-            <span className="text-xs font-bold px-3">
-              Halaman {pagination.current_page} dari {pagination.total_pages}
-            </span>
+            {/* Numeric Page Buttons */}
+            {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((pageNum) => {
+              const isCurrent = pageNum === pagination.current_page;
+              return (
+                <button
+                  key={pageNum}
+                  type="button"
+                  onClick={() => handlePageChange(pageNum)}
+                  className={`w-9 h-9 rounded-xl border text-xs font-black transition-all ${
+                    isCurrent
+                      ? 'bg-cyan-600 border-cyan-500 text-white shadow-md scale-105'
+                      : isDark
+                        ? 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
+                        : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
 
+            {/* Next Button */}
             <button
               type="button"
               onClick={() => handlePageChange(pagination.current_page + 1)}
               disabled={pagination.current_page === pagination.total_pages}
-              className={`p-2 rounded-xl border transition-all ${
+              className={`p-2 rounded-xl border transition-all text-xs font-bold flex items-center gap-1 ${
                 pagination.current_page === pagination.total_pages
-                  ? 'opacity-40 cursor-not-allowed border-slate-800'
-                  : 'hover:bg-slate-200 dark:hover:bg-slate-800 border-slate-300 dark:border-slate-700'
+                  ? 'opacity-30 cursor-not-allowed border-slate-800'
+                  : isDark
+                    ? 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-200'
+                    : 'bg-white hover:bg-slate-100 border-slate-300 text-slate-800 shadow-xs'
               }`}
             >
+              <span className="hidden sm:inline">Next</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
