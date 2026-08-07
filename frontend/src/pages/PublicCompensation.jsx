@@ -4,7 +4,7 @@ import { PublicFooter } from '../components/public/PublicFooter';
 import { TikTokIcon, DiscordIcon } from '../components/common/SocialIcons';
 import {
   Search, ShieldCheck, CheckCircle2, Clock, Filter,
-  ChevronLeft, ChevronRight, Gamepad2, ArrowUpRight, Award, DollarSign
+  ChevronLeft, ChevronRight, Gamepad2, ArrowUpRight, Award, DollarSign, Loader2
 } from 'lucide-react';
 import api from '../services/api';
 import { useTranslation } from 'react-i18next';
@@ -32,17 +32,20 @@ export const PublicCompensation = () => {
     limit: 12
   });
 
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [selectedCampaign, setSelectedCampaign] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
 
   useEffect(() => {
     fetchPublicData();
   }, [search, statusFilter, selectedCampaign, pagination.current_page]);
 
   const fetchPublicData = async () => {
-    setLoading(true);
+    if (records.length === 0) {
+      setInitialLoading(true);
+    } else {
+      setPageLoading(true);
+    }
+
     try {
       const res = await api.get('/public/compensations', {
         params: {
@@ -65,14 +68,14 @@ export const PublicCompensation = () => {
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
+      setPageLoading(false);
     }
   };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= (pagination.total_pages || 1) && newPage !== pagination.current_page) {
       setPagination(prev => ({ ...prev, current_page: newPage }));
-      // In-place smooth page switching without jarring scroll jumps
     }
   };
 
@@ -220,111 +223,125 @@ export const PublicCompensation = () => {
           </div>
         </div>
 
-        {/* Recipients Responsive Cards Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className={`h-44 rounded-2xl animate-pulse ${isDark ? 'bg-slate-900/50' : 'bg-slate-200/60'}`} />
-            ))}
-          </div>
-        ) : records.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {records.map((rec) => (
-              <div
-                key={rec.id}
-                className={`glass-card p-5 rounded-2xl border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between space-y-4 ${
-                  isDark
-                    ? 'border-slate-800 hover:border-slate-700'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
-                }`}
-              >
-                {/* Member Details */}
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      {/* Avatar */}
-                      <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-black text-base border shrink-0 ${
-                        isDark ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-slate-100 border-slate-200 text-slate-800'
-                      }`}>
-                        {rec.avatar_url ? (
-                          <img src={rec.avatar_url} alt={rec.full_name} className="w-full h-full object-cover" />
-                        ) : (
-                          rec.full_name ? rec.full_name.charAt(0) : 'M'
-                        )}
+        {/* Recipients Responsive Cards Grid with Seamless Loading Overlay */}
+        <div className="relative min-h-[300px]">
+          {/* Smooth Centered Loading Overlay during Page Change */}
+          {pageLoading && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/20 backdrop-blur-[2px] rounded-3xl transition-all duration-300">
+              <div className="px-5 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-cyan-400 font-extrabold text-xs flex items-center gap-3 shadow-2xl animate-scale-up">
+                <Loader2 className="w-5 h-5 animate-spin text-cyan-400" />
+                <span>Memuat data halaman...</span>
+              </div>
+            </div>
+          )}
+
+          {initialLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <div key={n} className={`h-44 rounded-2xl animate-pulse ${isDark ? 'bg-slate-900/50' : 'bg-slate-200/60'}`} />
+              ))}
+            </div>
+          ) : records.length > 0 ? (
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 transition-opacity duration-300 ${
+              pageLoading ? 'opacity-40 pointer-events-none' : 'opacity-100'
+            }`}>
+              {records.map((rec) => (
+                <div
+                  key={rec.id}
+                  className={`glass-card p-5 rounded-2xl border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between space-y-4 ${
+                    isDark
+                      ? 'border-slate-800 hover:border-slate-700'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
+                  }`}
+                >
+                  {/* Member Details */}
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        {/* Avatar */}
+                        <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-black text-base border shrink-0 ${
+                          isDark ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-slate-100 border-slate-200 text-slate-800'
+                        }`}>
+                          {rec.avatar_url ? (
+                            <img src={rec.avatar_url} alt={rec.full_name} className="w-full h-full object-cover" />
+                          ) : (
+                            rec.full_name ? rec.full_name.charAt(0) : 'M'
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <h3 className={`font-black text-sm truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            {rec.full_name}
+                          </h3>
+                          <span className="text-[11px] text-slate-400 font-medium block truncate">
+                            {rec.campaign_name || 'AGCL Compensation'}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="min-w-0">
-                        <h3 className={`font-black text-sm truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          {rec.full_name}
-                        </h3>
-                        <span className="text-[11px] text-slate-400 font-medium block truncate">
-                          {rec.campaign_name || 'AGCL Compensation'}
+                      <div className="shrink-0">
+                        {getStatusBadge(rec.payment_status)}
+                      </div>
+                    </div>
+
+                    {/* Discord & Roblox Handles */}
+                    <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${
+                      isDark ? 'bg-slate-950/60 border-slate-800/80' : 'bg-slate-50 border-slate-200/80'
+                    }`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-400 font-medium flex items-center gap-1">
+                          <DiscordIcon className="w-3.5 h-3.5 text-indigo-500" /> Discord:
+                        </span>
+                        <span className={`font-mono font-bold truncate ${isDark ? 'text-indigo-300' : 'text-indigo-700'}`}>
+                          {rec.discord_username ? `@${rec.discord_username}` : '-'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-400 font-medium flex items-center gap-1">
+                          <Gamepad2 className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> Roblox:
+                        </span>
+                        <span className={`font-mono font-bold truncate ${isDark ? 'text-cyan-300' : 'text-slate-800'}`}>
+                          {rec.roblox_username || '-'}
                         </span>
                       </div>
                     </div>
-
-                    <div className="shrink-0">
-                      {getStatusBadge(rec.payment_status)}
-                    </div>
                   </div>
 
-                  {/* Discord & Roblox Handles */}
-                  <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${
-                    isDark ? 'bg-slate-950/60 border-slate-800/80' : 'bg-slate-50 border-slate-200/80'
+                  {/* Footer Amount & Proof Link */}
+                  <div className={`pt-3 border-t flex items-center justify-between gap-2 ${
+                    isDark ? 'border-slate-800/80' : 'border-slate-200'
                   }`}>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-slate-400 font-medium flex items-center gap-1">
-                        <DiscordIcon className="w-3.5 h-3.5 text-indigo-500" /> Discord:
-                      </span>
-                      <span className={`font-mono font-bold truncate ${isDark ? 'text-indigo-300' : 'text-indigo-700'}`}>
-                        {rec.discord_username ? `@${rec.discord_username}` : '-'}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-slate-400 font-medium flex items-center gap-1">
-                        <Gamepad2 className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> Roblox:
-                      </span>
-                      <span className={`font-mono font-bold truncate ${isDark ? 'text-cyan-300' : 'text-slate-800'}`}>
-                        {rec.roblox_username || '-'}
-                      </span>
-                    </div>
+                    {rec.proof_url ? (
+                      <a
+                        href={rec.proof_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+                      >
+                        <span>📜 {t('transfer_proof')}</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </a>
+                    ) : (
+                      <span className="text-xs font-semibold text-slate-400">Compensation:</span>
+                    )}
+                    <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                      IDR {Number(rec.amount || 0).toLocaleString()}
+                    </span>
                   </div>
                 </div>
-
-                {/* Footer Amount & Proof Link */}
-                <div className={`pt-3 border-t flex items-center justify-between gap-2 ${
-                  isDark ? 'border-slate-800/80' : 'border-slate-200'
-                }`}>
-                  {rec.proof_url ? (
-                    <a
-                      href={rec.proof_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
-                    >
-                      <span>📜 {t('transfer_proof')}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                  ) : (
-                    <span className="text-xs font-semibold text-slate-400">Compensation:</span>
-                  )}
-                  <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
-                    IDR {Number(rec.amount || 0).toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={`text-center py-16 rounded-3xl border ${
-            isDark ? 'glass-panel border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600 shadow-xs'
-          }`}>
-            <ShieldCheck className="w-12 h-12 stroke-1 text-slate-400 mx-auto mb-3" />
-            <h3 className="font-extrabold text-base mb-1">{t('no_compensations_found')}</h3>
-            <p className="text-xs text-slate-400">Coba cari dengan Discord handle atau Username Roblox lainnya.</p>
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className={`text-center py-16 rounded-3xl border ${
+              isDark ? 'glass-panel border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600 shadow-xs'
+            }`}>
+              <ShieldCheck className="w-12 h-12 stroke-1 text-slate-400 mx-auto mb-3" />
+              <h3 className="font-extrabold text-base mb-1">{t('no_compensations_found')}</h3>
+              <p className="text-xs text-slate-400">Coba cari dengan Discord handle atau Username Roblox lainnya.</p>
+            </div>
+          )}
+        </div>
 
         {/* Pagination Controls */}
         {pagination.total_pages > 1 && (
