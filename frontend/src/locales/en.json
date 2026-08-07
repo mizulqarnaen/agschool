@@ -104,5 +104,16 @@
   "activity_logs": "Activity Audit Logs",
   "bank_name": "Bank Name / E-Wallet",
   "bank_account_number": "Account Number",
-  "bank_account_name": "Account Holder Name"
+  "bank_account_name": "Account Holder Name",
+  "compensation": "AGCL Compensation",
+  "compensation_title": "AGCL Compensation",
+  "compensation_hero_desc": "Official public transparency portal to verify compensation eligibility and disbursement status for AG School community members.",
+  "total_recipients": "Total Recipients",
+  "completed_payments": "Completed Payments",
+  "pending_payments": "Pending Payments",
+  "search_compensation_placeholder": "Search Discord (@username) or Roblox username...",
+  "all_campaigns": "All Campaigns",
+  "all_transfer_statuses": "All Transfer Statuses",
+  "transfer_proof": "Payment Proof",
+  "no_compensations_found": "No compensation records match your search."
 }

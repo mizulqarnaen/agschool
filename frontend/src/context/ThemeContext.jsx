@@ -3,10 +3,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Default theme is 'light' as requested by the user
+  // Default theme is 'dark'
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem('portal_theme');
-    return savedTheme ? savedTheme : 'light';
+    return savedTheme ? savedTheme : 'dark';
   });
 
   useEffect(() => {

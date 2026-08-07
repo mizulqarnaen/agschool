@@ -104,5 +104,16 @@
   "activity_logs": "Log Audit Aktivitas",
   "bank_name": "Nama Bank / E-Wallet",
   "bank_account_number": "Nomor Rekening",
-  "bank_account_name": "Nama Pemilik Rekening"
+  "bank_account_name": "Nama Pemilik Rekening",
+  "compensation": "Kompensasi AGCL",
+  "compensation_title": "AGCL Compensation",
+  "compensation_hero_desc": "Portal transparansi resmi publik untuk verifikasi hak kompensasi dan status pencairan dana anggota komunitas AG School.",
+  "total_recipients": "Total Penerima",
+  "completed_payments": "Pembayaran Selesai",
+  "pending_payments": "Menunggu Pencairan",
+  "search_compensation_placeholder": "Cari Discord (@username) atau Roblox username...",
+  "all_campaigns": "Semua Kampanye",
+  "all_transfer_statuses": "Semua Status Transfer",
+  "transfer_proof": "Bukti Transfer",
+  "no_compensations_found": "Tidak ada data kompensasi yang cocok dengan pencarian Anda."
 }

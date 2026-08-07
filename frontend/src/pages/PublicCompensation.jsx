@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 
 export const PublicCompensation = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -38,63 +38,55 @@ export const PublicCompensation = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCompensations(1);
-  }, [search, statusFilter, selectedCampaign]);
+    fetchPublicData();
+  }, [search, statusFilter, selectedCampaign, pagination.current_page]);
 
-  const fetchCompensations = async (page = 1) => {
+  const fetchPublicData = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/public/compensations', {
+      const res = await api.get('/public/compensations', {
         params: {
           search,
           status: statusFilter,
           campaign_id: selectedCampaign,
-          page,
-          limit: 12
+          page: pagination.current_page,
+          limit: pagination.limit
         }
       });
 
-      if (response.data.success) {
-        const { stats, campaigns, pagination, records } = response.data.data;
-        setStats(stats || {});
-        setCampaigns(campaigns || []);
-        setPagination(pagination || { current_page: 1, total_pages: 1 });
-        setRecords(records || []);
+      if (res.data.success) {
+        setRecords(res.data.data.records || []);
+        setStats(res.data.data.stats || {});
+        setCampaigns(res.data.data.campaigns || []);
+        if (res.data.data.pagination) {
+          setPagination(res.data.data.pagination);
+        }
       }
     } catch (err) {
-      console.error('Failed to fetch compensations', err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= pagination.total_pages) {
-      fetchCompensations(newPage);
-      window.scrollTo({ top: 300, behavior: 'smooth' });
-    }
-  };
-
-  // Status Badge Helper
   const getStatusBadge = (status) => {
-    const s = String(status || '').toLowerCase();
-    if (s === 'completed' || s === 'selesai') {
+    if (status === 'Completed') {
       return (
         <span className="badge-status badge-status-success">
-          <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+          <CheckCircle2 className="w-3.5 h-3.5" /> {t('completed')}
         </span>
       );
     }
-    if (s === 'processing' || s === 'diproses') {
+    if (status === 'Processing') {
       return (
         <span className="badge-status badge-status-info">
-          <Clock className="w-3.5 h-3.5 animate-spin" /> Processing
+          <Clock className="w-3.5 h-3.5 animate-spin" /> {t('processing')}
         </span>
       );
     }
     return (
       <span className="badge-status badge-status-warning">
-        <Clock className="w-3.5 h-3.5" /> Pending
+        <Clock className="w-3.5 h-3.5" /> {t('unpaid')}
       </span>
     );
   };
@@ -115,19 +107,19 @@ export const PublicCompensation = () => {
               isDark ? 'bg-slate-900 border border-slate-700 text-cyan-400' : 'bg-slate-100 border border-slate-300 text-slate-900'
             }`}>
               <ShieldCheck className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-              <span>Transparansi Kompensasi AGCL</span>
+              <span>{t('verified_public')} - {t('compensation')}</span>
             </div>
 
             <h1 className={`text-3xl sm:text-5xl font-black tracking-tight ${
               isDark ? 'text-white' : 'text-slate-900'
             }`}>
-              AGCL Compensation
+              {t('compensation_title')}
             </h1>
 
             <p className={`text-sm sm:text-base leading-relaxed ${
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}>
-              Official transparency page for AGCL Compensation recipients. Search your Discord or Roblox username to verify your compensation status.
+              {t('compensation_hero_desc')}
             </p>
           </div>
 
@@ -137,7 +129,7 @@ export const PublicCompensation = () => {
             <div className={`p-5 rounded-2xl border text-center space-y-1 transition-all ${
               isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-slate-50 border-slate-200 shadow-xs'
             }`}>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Total Recipients</span>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">{t('total_recipients')}</span>
               <div className={`text-2xl sm:text-3xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {stats.total_recipients || 0} Member
               </div>
@@ -147,9 +139,9 @@ export const PublicCompensation = () => {
             <div className={`p-5 rounded-2xl border text-center space-y-1 transition-all ${
               isDark ? 'bg-emerald-950/30 border-emerald-800/40' : 'bg-emerald-50/80 border-emerald-200 shadow-xs'
             }`}>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Completed Payments</span>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{t('completed_payments')}</span>
               <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
-                {stats.completed_count || 0} Selesai
+                {stats.completed_count || 0} {t('completed')}
               </div>
             </div>
 
@@ -157,44 +149,36 @@ export const PublicCompensation = () => {
             <div className={`p-5 rounded-2xl border text-center space-y-1 transition-all ${
               isDark ? 'bg-amber-950/30 border-amber-800/40' : 'bg-amber-50/80 border-amber-200 shadow-xs'
             }`}>
-              <span className="text-xs font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">Pending Payments</span>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">{t('pending_payments')}</span>
               <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
-                {(stats.pending_count || 0) + (stats.processing_count || 0)} Pending
+                {stats.pending_count || 0} Record
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
-        {/* Search & Filters */}
-        <div className={`glass-panel p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 ${
-          isDark ? 'border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-        }`}>
-          {/* Prominent Search Bar */}
+      {/* Content Section */}
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full space-y-8">
+        {/* Search & Filter Bar */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          {/* Prominent Search Input */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+            <Search className="w-5 h-5 absolute left-4 top-3.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Search Discord or Roblox Username..."
+              placeholder={t('search_compensation_placeholder')}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className={`w-full pl-10 pr-10 py-2.5 border rounded-xl text-xs sm:text-sm font-medium transition-colors ${
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPagination(prev => ({ ...prev, current_page: 1 }));
+              }}
+              className={`w-full pl-12 pr-4 py-3 rounded-2xl border text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
                 isDark
-                  ? 'bg-slate-900 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-cyan-500'
-                  : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-cyan-600'
+                  ? 'bg-slate-900 border-slate-800 text-white placeholder-slate-500'
+                  : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 shadow-xs'
               }`}
             />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch('')}
-                className="absolute right-3 top-3 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold"
-              >
-                Clear
-              </button>
-            )}
           </div>
 
           {/* Filter Dropdowns */}
@@ -207,7 +191,7 @@ export const PublicCompensation = () => {
                   isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-slate-50 border-slate-300 text-slate-800'
                 }`}
               >
-                <option value="">Semua Kampanye</option>
+                <option value="">{t('all_campaigns')}</option>
                 {campaigns.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
@@ -221,10 +205,10 @@ export const PublicCompensation = () => {
                 isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-slate-50 border-slate-300 text-slate-800'
               }`}
             >
-              <option value="">Semua Status Transfer</option>
-              <option value="Completed">Completed (Selesai)</option>
-              <option value="Processing">Processing (Diproses)</option>
-              <option value="Pending">Pending (Menunggu)</option>
+              <option value="">{t('all_transfer_statuses')}</option>
+              <option value="Completed">{t('completed')}</option>
+              <option value="Processing">{t('processing')}</option>
+              <option value="Pending">{t('unpaid')}</option>
             </select>
           </div>
         </div>
@@ -249,32 +233,37 @@ export const PublicCompensation = () => {
               >
                 {/* Member Details */}
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className={`w-10 h-10 rounded-xl overflow-hidden border p-0.5 shrink-0 flex items-center justify-center font-extrabold text-sm ${
-                        isDark ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-300 text-slate-800'
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      {/* Avatar */}
+                      <div className={`w-12 h-12 rounded-2xl overflow-hidden flex items-center justify-center font-black text-base border shrink-0 ${
+                        isDark ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-slate-100 border-slate-200 text-slate-800'
                       }`}>
                         {rec.avatar_url ? (
-                          <img src={rec.avatar_url} alt={rec.full_name} className="w-full h-full object-cover rounded-lg" />
+                          <img src={rec.avatar_url} alt={rec.full_name} className="w-full h-full object-cover" />
                         ) : (
-                          rec.full_name ? rec.full_name.charAt(0).toUpperCase() : 'M'
+                          rec.full_name ? rec.full_name.charAt(0) : 'M'
                         )}
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className={`text-sm font-extrabold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
+
+                      <div className="min-w-0">
+                        <h3 className={`font-black text-sm truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
                           {rec.full_name}
                         </h3>
-                        <span className="text-[11px] font-semibold text-slate-400 block truncate">
-                          Recipient Member
+                        <span className="text-[11px] text-slate-400 font-medium block truncate">
+                          {rec.campaign_name || 'AGCL Compensation'}
                         </span>
                       </div>
                     </div>
-                    {getStatusBadge(rec.payment_status)}
+
+                    <div className="shrink-0">
+                      {getStatusBadge(rec.payment_status)}
+                    </div>
                   </div>
 
-                  {/* Discord & Roblox Username Details */}
+                  {/* Discord & Roblox Handles */}
                   <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${
-                    isDark ? 'bg-slate-950/80 border-slate-800/80' : 'bg-slate-50 border-slate-200'
+                    isDark ? 'bg-slate-950/60 border-slate-800/80' : 'bg-slate-50 border-slate-200/80'
                   }`}>
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-slate-400 font-medium flex items-center gap-1">
@@ -307,7 +296,7 @@ export const PublicCompensation = () => {
                       rel="noreferrer"
                       className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
                     >
-                      <span>📜 Bukti Transfer</span>
+                      <span>📜 {t('transfer_proof')}</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                   ) : (
@@ -325,12 +314,8 @@ export const PublicCompensation = () => {
             isDark ? 'glass-panel border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600 shadow-xs'
           }`}>
             <ShieldCheck className="w-12 h-12 stroke-1 text-slate-400 mx-auto mb-3" />
-            <h3 className={`text-base font-bold mb-1 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
-              Belum Ada Data Kompensasi Dipublikasikan
-            </h3>
-            <p className="text-xs max-w-md mx-auto text-slate-500">
-              No compensation recipients have been published yet matching your search criteria.
-            </p>
+            <h3 className="font-extrabold text-base mb-1">{t('no_compensations_found')}</h3>
+            <p className="text-xs text-slate-400">Coba cari dengan Discord handle atau Username Roblox lainnya.</p>
           </div>
         )}
 
