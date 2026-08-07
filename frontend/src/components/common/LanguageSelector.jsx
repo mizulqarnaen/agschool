@@ -14,11 +14,37 @@ export const LanguageSelector = ({ variant = 'full' }) => {
     // Fallback if rendered outside ThemeProvider
   }
 
+  const currentLang = (i18n.language || 'id').toLowerCase().startsWith('en') ? 'en' : 'id';
+
+  const toggleLanguage = () => {
+    const nextLang = currentLang === 'id' ? 'en' : 'id';
+    i18n.changeLanguage(nextLang);
+    localStorage.setItem('app_lang', nextLang);
+  };
+
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     i18n.changeLanguage(newLang);
     localStorage.setItem('app_lang', newLang);
   };
+
+  if (variant === 'toggle' || variant === 'icon') {
+    return (
+      <button
+        type="button"
+        onClick={toggleLanguage}
+        className={`px-2.5 py-1.5 rounded-xl border text-xs font-black transition-all flex items-center gap-1 ${
+          isDark
+            ? 'bg-slate-900 border-slate-800 text-cyan-400 hover:bg-slate-800 hover:border-slate-700'
+            : 'bg-slate-100 border-slate-200 text-cyan-800 hover:bg-slate-200'
+        }`}
+        title="Ganti Bahasa (Switch Language)"
+      >
+        <Globe className="w-3.5 h-3.5 text-cyan-500" />
+        <span className="uppercase">{currentLang}</span>
+      </button>
+    );
+  }
 
   if (variant === 'compact') {
     return (
@@ -29,7 +55,7 @@ export const LanguageSelector = ({ variant = 'full' }) => {
       }`}>
         <Globe className={`w-4 h-4 shrink-0 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} />
         <select
-          value={i18n.language || 'id'}
+          value={currentLang}
           onChange={handleLanguageChange}
           className={`bg-transparent focus:outline-none cursor-pointer font-bold text-xs ${
             isDark ? 'text-cyan-300' : 'text-cyan-800'
@@ -53,7 +79,7 @@ export const LanguageSelector = ({ variant = 'full' }) => {
         <span className={`text-[11px] uppercase font-semibold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Language</span>
       </div>
       <select
-        value={i18n.language || 'id'}
+        value={currentLang}
         onChange={handleLanguageChange}
         className={`bg-transparent focus:outline-none cursor-pointer font-bold text-xs pl-2 text-right ${
           isDark ? 'text-cyan-300' : 'text-cyan-800'

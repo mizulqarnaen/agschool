@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Lock, Menu, X, Award, Calendar, Sparkles } from 'lucide-react';
+import { Shield, Lock, Menu, X, Award, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../common/LanguageSelector';
@@ -17,7 +17,7 @@ export const PublicNavbar = () => {
   const isDark = theme === 'dark';
 
   const navLinks = [
-    { label: t('events') || 'Acara & Turnamen', path: '/', icon: Calendar },
+    { label: t('events') || 'Acara & Hadiah', path: '/', icon: Calendar },
     { label: 'Brand Ambassador', path: '/#brand-ambassador', icon: Award },
     { label: t('compensation') || 'Kompensasi AGCL', path: '/compensation', icon: Shield },
   ];
@@ -58,8 +58,8 @@ export const PublicNavbar = () => {
           </div>
         </Link>
 
-        {/* Center Main Navigation Links (Desktop) */}
-        <nav className="hidden md:flex items-center gap-1 bg-slate-900/40 dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/60">
+        {/* Center Main Navigation Links (Clean Minimalist Text Style) */}
+        <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.replace('/', ''));
@@ -68,43 +68,43 @@ export const PublicNavbar = () => {
               <a
                 key={link.path}
                 href={link.path}
-                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`py-2 text-xs font-bold transition-all flex items-center gap-1.5 border-b-2 ${
                   isActive
-                    ? 'bg-cyan-600 text-white shadow-md'
+                    ? 'border-cyan-400 text-cyan-400 font-extrabold'
                     : isDark
-                      ? 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'border-transparent text-slate-400 hover:text-white hover:border-slate-700'
+                      : 'border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
                 <span>{link.label}</span>
               </a>
             );
           })}
         </nav>
 
-        {/* Right Controls & Action Buttons */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Theme Switcher Button */}
-          <ThemeToggle />
+        {/* Right Minimal Controls & Action CTA */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {/* Theme Switcher Button (Icon Only) */}
+          <ThemeToggle iconOnly={true} />
 
-          {/* Language Selector */}
-          <LanguageSelector variant="compact" />
+          {/* Language Selector Button (ID / EN Only) */}
+          <LanguageSelector variant="toggle" />
 
           {/* Login / Dashboard CTA */}
           {user ? (
             <Link
               to="/internal/dashboard"
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black text-xs shadow-md glow-cyan transition-all transform active:scale-95 shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black text-xs shadow-md glow-cyan transition-all transform active:scale-95 shrink-0"
             >
-              <Shield className="w-4 h-4" />
+              <Shield className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{t('dashboard')}</span>
               <span className="sm:hidden">Dashboard</span>
             </Link>
           ) : (
             <Link
               to="/login"
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs shadow-md transition-all transform active:scale-95 shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs shadow-md transition-all transform active:scale-95 shrink-0"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>{t('sign_in')}</span>
