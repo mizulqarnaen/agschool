@@ -147,8 +147,8 @@ export const CompensationPage = () => {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex">
       <Sidebar />
 
-      {/* Main Content Area (offset lg:ml-64 to prevent sidebar truncation) */}
-      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8 w-full max-w-7xl space-y-6">
+      {/* Main Content Area (Full Stretch Responsive) */}
+      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8 w-full space-y-6">
         {/* Page Top Title Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
