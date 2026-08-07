@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import memberRepository from './memberRepository.js';
+import { memberRepository } from './memberRepository.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,7 +78,7 @@ class CompensationRepository {
   // --- Record Methods (with dynamic Member Join) ---
   async getAllRecords() {
     const data = await this._readData();
-    const members = await memberRepository.getAllMembers();
+    const members = memberRepository.readAll() || [];
     const memberMap = new Map(members.map(m => [m.id, m]));
 
     return (data.records || []).map(r => {
