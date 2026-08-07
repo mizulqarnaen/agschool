@@ -7,7 +7,7 @@ import { EventCard } from '../components/public/EventCard';
 import { useTheme } from '../context/ThemeContext';
 import {
   Search, Filter, ShieldCheck, Trophy, Sparkles, Gamepad2, Zap, Gift,
-  Award, Star, UserCheck, ArrowRight, ChevronDown, ChevronUp
+  Award, Star, UserCheck, ArrowRight, ChevronDown, ChevronUp, CheckCircle2, DollarSign, Users
 } from 'lucide-react';
 import { TikTokIcon, DiscordIcon, InstagramIcon, YoutubeIcon } from '../components/common/SocialIcons';
 
@@ -17,6 +17,11 @@ export const PublicPortal = () => {
 
   const [events, setEvents] = useState([]);
   const [ambassadors, setAmbassadors] = useState([]);
+  const [compStats, setCompStats] = useState({
+    total_recipients: 0,
+    completed_count: 0,
+    total_amount: 0
+  });
   const [loading, setLoading] = useState(true);
   const [baLoading, setBaLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -26,7 +31,17 @@ export const PublicPortal = () => {
   useEffect(() => {
     fetchEvents();
     fetchAmbassadors();
+    fetchCompStats();
   }, [search, statusFilter]);
+
+  const fetchCompStats = async () => {
+    try {
+      const res = await api.get('/public/compensations', { params: { limit: 1 } });
+      if (res.data.success && res.data.data.stats) {
+        setCompStats(res.data.data.stats);
+      }
+    } catch (_) {}
+  };
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -92,21 +107,21 @@ export const PublicPortal = () => {
       <PublicNavbar />
 
       {/* Hero Header Section */}
-      <section className={`relative overflow-hidden pt-8 sm:pt-14 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b transition-colors duration-300 ${
+      <section className={`relative overflow-hidden pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 border-b transition-colors duration-300 ${
         isDark ? 'border-slate-800/60' : 'border-slate-200/90 bg-gradient-to-b from-cyan-50/50 via-white to-slate-50'
       }`}>
         <div className={`absolute inset-0 pointer-events-none ${
           isDark ? 'bg-gradient-to-b from-cyan-500/10 via-purple-500/5 to-transparent' : 'bg-gradient-to-b from-cyan-500/5 via-blue-500/5 to-transparent'
         }`} />
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold mb-4 sm:mb-6 shadow-sm ${
+        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm ${
             isDark ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400' : 'bg-cyan-100/80 border border-cyan-300 text-cyan-800'
           }`}>
             <ShieldCheck className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
             <span>Portal Resmi Acara AG School</span>
           </div>
 
-          <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-tight ${
+          <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight ${
             isDark
               ? 'bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent'
               : 'text-slate-900'
@@ -117,33 +132,64 @@ export const PublicPortal = () => {
           <p className={`text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed ${
             isDark ? 'text-slate-300' : 'text-slate-600'
           }`}>
-            Selamat datang di Portal Resmi AG School. Temukan informasi acara komunitas, turnamen game (Roblox, MLBB, dll), poster resmi, status pendaftaran, klasemen poin liga, dan transparansi daftar pemenang.
+            Selamat datang di Portal Resmi AG School. Temukan informasi acara komunitas, turnamen game (Roblox, MLBB, dll), klasemen poin liga, dan transparansi kompensasi.
           </p>
 
-          {/* Community Feature Pills */}
-          <div className={`flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-8 pt-6 border-t text-xs font-bold ${
-            isDark ? 'border-slate-800/60 text-slate-300' : 'border-slate-200 text-slate-700'
+          {/* FEATURED FIRST: AGCL Compensation Transparency Showcase Banner */}
+          <div className={`mt-6 p-6 sm:p-8 rounded-3xl border transition-all text-left max-w-4xl mx-auto shadow-2xl relative overflow-hidden ${
+            isDark
+              ? 'bg-gradient-to-r from-cyan-950/80 via-slate-900 to-slate-900 border-cyan-700/50'
+              : 'bg-gradient-to-r from-cyan-50 via-white to-cyan-50/50 border-cyan-200 shadow-md'
           }`}>
-            <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
-            }`}>
-              <Gamepad2 className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> Roblox (Obby & Speedrun)
-            </span>
-            <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
-            }`}>
-              <Trophy className="w-3.5 h-3.5 text-amber-500" /> MLBB & Esports
-            </span>
-            <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
-            }`}>
-              <Zap className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> Poin Liga & Standings
-            </span>
-            <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
-            }`}>
-              <Gift className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Transparansi Hadiah
-            </span>
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-3 flex-1">
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black border ${
+                  isDark ? 'bg-cyan-900/60 border-cyan-700 text-cyan-300' : 'bg-cyan-100 border-cyan-300 text-cyan-900'
+                }`}>
+                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>TRANSPARANSI UTAMA AGCL</span>
+                </div>
+
+                <h2 className={`text-xl sm:text-2xl font-black ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}>
+                  AGCL Compensation Status
+                </h2>
+
+                <p className={`text-xs sm:text-sm leading-relaxed ${
+                  isDark ? 'text-slate-300' : 'text-slate-600'
+                }`}>
+                  Cek & verifikasi status pencairan kompensasi kamu secara terbuka dengan memasukkan Username Discord atau Roblox di portal transparansi AG School.
+                </p>
+
+                {/* Live Real-time Stat Pills */}
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <div className={`px-3 py-1.5 rounded-xl border text-xs font-black flex items-center gap-2 ${
+                    isDark ? 'bg-slate-950/80 border-slate-800 text-emerald-400' : 'bg-white border-slate-200 text-emerald-700 shadow-xs'
+                  }`}>
+                    <DollarSign className="w-4 h-4 text-emerald-400" />
+                    <span>Total Kompensasi: IDR {Number(compStats.total_amount || 0).toLocaleString()}</span>
+                  </div>
+
+                  <div className={`px-3 py-1.5 rounded-xl border text-xs font-black flex items-center gap-2 ${
+                    isDark ? 'bg-slate-950/80 border-slate-800 text-cyan-300' : 'bg-white border-slate-200 text-cyan-800 shadow-xs'
+                  }`}>
+                    <Users className="w-4 h-4 text-cyan-400" />
+                    <span>{compStats.total_recipients || 0} Member Penerima</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Directly Accessible CTA Button */}
+              <div className="shrink-0 flex items-center">
+                <Link
+                  to="/compensation"
+                  className="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
+                >
+                  <span>Cek Nama & Status Kompensasi &rarr;</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -257,7 +303,7 @@ export const PublicPortal = () => {
         </div>
 
         {/* Section 2: Official Brand Ambassador Showcase */}
-        <div className="pt-6 border-t border-slate-800/40">
+        <div className="pt-6 border-t border-slate-800/40" id="brand-ambassador">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
               <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold mb-2 border ${
@@ -348,43 +394,6 @@ export const PublicPortal = () => {
               <p className="text-xs">Belum ada data Brand Ambassador yang ditampilkan secara publik.</p>
             </div>
           )}
-        </div>
-
-        {/* Section 3: AGCL Compensation Transparency Feature */}
-        <div className="pt-6 border-t border-slate-800/40">
-          <div className={`p-6 sm:p-8 rounded-3xl border transition-all flex flex-col md:flex-row items-center justify-between gap-6 ${
-            isDark
-              ? 'bg-slate-900/80 border-slate-800'
-              : 'bg-white border-slate-200 shadow-sm'
-          }`}>
-            <div className="space-y-2 text-center md:text-left">
-              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold mb-1 border ${
-                isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-slate-100 border-slate-300 text-slate-900 shadow-xs'
-              }`}>
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-                <span>Fitur Transparansi Komunitas</span>
-              </div>
-
-              <h2 className={`text-xl sm:text-2xl font-black ${
-                isDark ? 'text-white' : 'text-slate-900'
-              }`}>
-                AGCL Compensation Status
-              </h2>
-
-              <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${
-                isDark ? 'text-slate-400' : 'text-slate-600'
-              }`}>
-                Cek dan verifikasi status pencairan kompensasi kamu secara transparan dengan memasukkan Username Discord atau Roblox di portal transparansi resmi AG School.
-              </p>
-            </div>
-
-            <Link
-              to="/compensation"
-              className="px-6 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-700 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all shrink-0 flex items-center gap-2"
-            >
-              <span>Cek Status Kompensasi &rarr;</span>
-            </Link>
-          </div>
         </div>
       </main>
 
