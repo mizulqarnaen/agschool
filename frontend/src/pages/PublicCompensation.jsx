@@ -32,6 +32,9 @@ export const PublicCompensation = () => {
     limit: 12
   });
 
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [selectedCampaign, setSelectedCampaign] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
   const [pageLoading, setPageLoading] = useState(false);
 
