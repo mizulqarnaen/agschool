@@ -131,8 +131,32 @@ export const getAdminRecords = async (req, res) => {
 
 export const createAdminRecord = async (req, res) => {
   try {
-    const record = await compensationRepository.createRecord(req.body);
+    let proof_url = req.body.proof_url || null;
+    if (req.file) {
+      proof_url = `/uploads/${req.file.filename}`;
+    }
+    const record = await compensationRepository.createRecord({
+      ...req.body,
+      proof_url
+    });
     return res.status(201).json({ success: true, data: record });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const bulkCreateAdminRecords = async (req, res) => {
+  try {
+    const { records = [] } = req.body;
+    if (!Array.isArray(records) || records.length === 0) {
+      return res.status(400).json({ success: false, message: 'No records provided for bulk import' });
+    }
+    const createdRecords = await compensationRepository.bulkCreateRecords(records);
+    return res.status(201).json({
+      success: true,
+      message: `${createdRecords.length} records imported successfully`,
+      data: createdRecords
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -140,7 +164,11 @@ export const createAdminRecord = async (req, res) => {
 
 export const updateAdminRecord = async (req, res) => {
   try {
-    const record = await compensationRepository.updateRecord(req.params.id, req.body);
+    let updateData = { ...req.body };
+    if (req.file) {
+      updateData.proof_url = `/uploads/${req.file.filename}`;
+    }
+    const record = await compensationRepository.updateRecord(req.params.id, updateData);
     if (!record) return res.status(404).json({ success: false, message: 'Record not found' });
     return res.json({ success: true, data: record });
   } catch (error) {

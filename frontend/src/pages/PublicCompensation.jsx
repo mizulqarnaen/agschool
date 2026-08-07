@@ -296,11 +296,23 @@ export const PublicCompensation = () => {
                   </div>
                 </div>
 
-                {/* Footer Amount */}
+                {/* Footer Amount & Proof Link */}
                 <div className={`pt-3 border-t flex items-center justify-between gap-2 ${
                   isDark ? 'border-slate-800/80' : 'border-slate-200'
                 }`}>
-                  <span className="text-xs font-semibold text-slate-400">Compensation:</span>
+                  {rec.proof_url ? (
+                    <a
+                      href={rec.proof_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+                    >
+                      <span>📜 Bukti Transfer</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  ) : (
+                    <span className="text-xs font-semibold text-slate-400">Compensation:</span>
+                  )}
                   <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
                     IDR {Number(rec.amount || 0).toLocaleString()}
                   </span>

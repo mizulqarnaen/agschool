@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '../components/common/Sidebar';
 import { CampaignModal, RecordModal } from '../components/compensation/CompensationModal';
+import { ExcelImportModal } from '../components/compensation/ExcelImportModal';
 import {
   ShieldCheck, Plus, Search, Filter, Edit, Trash2,
-  CheckCircle2, Clock, DollarSign, UserCheck, RefreshCw, Eye, EyeOff, Info, HelpCircle
+  CheckCircle2, Clock, DollarSign, UserCheck, RefreshCw, Eye, EyeOff, Info, HelpCircle,
+  FileSpreadsheet, Upload, Download, Image as ImageIcon
 } from 'lucide-react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
@@ -22,6 +24,7 @@ export const CompensationPage = () => {
 
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
+  const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -84,13 +87,27 @@ export const CompensationPage = () => {
     }
   };
 
-  const handleSaveRecord = async (recordData) => {
+  const handleSaveRecord = async (recordData, proofFile) => {
     try {
+      const formData = new FormData();
+      Object.keys(recordData).forEach(key => {
+        if (recordData[key] !== null && recordData[key] !== undefined) {
+          formData.append(key, recordData[key]);
+        }
+      });
+      if (proofFile) {
+        formData.append('proof', proofFile);
+      }
+
       if (editingRecord) {
-        await api.put(`/internal/compensations/records/${editingRecord.id}`, recordData);
+        await api.put(`/internal/compensations/records/${editingRecord.id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
         toast.success('Record kompensasi diperbarui');
       } else {
-        await api.post('/internal/compensations/records', recordData);
+        await api.post('/internal/compensations/records', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
         toast.success('Penerima kompensasi ditambahkan');
       }
       fetchData();
@@ -161,6 +178,15 @@ export const CompensationPage = () => {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              disabled={!selectedCampaignId}
+              onClick={() => setIsExcelModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-700/60 text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition-colors disabled:opacity-50"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> Import Excel (.xlsx)
+            </button>
+
             <button
               type="button"
               onClick={() => { setEditingCampaign(null); setIsCampaignModalOpen(true); }}
@@ -418,6 +444,15 @@ export const CompensationPage = () => {
         campaignId={selectedCampaignId}
         defaultAmount={selectedCampaign?.default_amount || 50000}
         onSave={handleSaveRecord}
+      />
+
+      {/* Excel Import Modal */}
+      <ExcelImportModal
+        isOpen={isExcelModalOpen}
+        onClose={() => setIsExcelModalOpen(false)}
+        campaignId={selectedCampaignId}
+        campaignName={selectedCampaign?.name}
+        onSuccess={fetchData}
       />
     </div>
   );
