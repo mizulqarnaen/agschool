@@ -248,114 +248,66 @@ export const PublicPortal = () => {
           </div>
 
           {baLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((n) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {[1, 2, 3, 4].map((n) => (
                 <div key={n} className={`h-64 rounded-3xl animate-pulse ${isDark ? 'bg-slate-900/50' : 'bg-slate-200/60'}`} />
               ))}
             </div>
           ) : ambassadors.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {ambassadors.map((ba) => (
-                <div
+                <Link
                   key={ba.id}
-                  className={`glass-card rounded-3xl p-5 border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group relative overflow-hidden ${
+                  to={`/brand-ambassadors/${ba.id}`}
+                  className={`glass-card rounded-3xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1.5 flex flex-col items-center text-center justify-between group cursor-pointer ${
                     isDark
-                      ? 'border-slate-800 hover:border-slate-700'
-                      : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
+                      ? 'border-slate-800 hover:border-cyan-500/50'
+                      : 'border-slate-200 bg-white hover:border-cyan-300 hover:shadow-md'
                   }`}
                 >
-                  {/* Top Featured Badge Overlay */}
-                  {ba.is_featured && (
-                    <div className="absolute top-3 right-3 z-10">
-                      <span className="px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md">
-                        <Star className="w-3 h-3 fill-slate-950" /> Featured
-                      </span>
-                    </div>
-                  )}
-
-                  <div>
-                    {/* BA Avatar & Basic Details */}
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className={`w-16 h-16 rounded-2xl overflow-hidden border-2 p-0.5 shrink-0 shadow-sm group-hover:scale-105 transition-transform ${
-                        isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-300'
-                      }`}>
-                        <img
-                          src={ba.avatar_url || `https://images.rbxcdn.com/30x30_icon_Roblox.png`}
-                          alt={ba.display_name}
-                          className="w-full h-full object-cover rounded-xl"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'https://images.rbxcdn.com/30x30_icon_Roblox.png';
-                          }}
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className={`text-base font-bold truncate transition-colors ${
-                          isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-900 group-hover:text-cyan-700'
-                        }`}>
-                          {ba.display_name}
-                        </h3>
-                        <p className={`text-xs font-extrabold truncate mb-1 ${
-                          isDark ? 'text-slate-300' : 'text-slate-700'
-                        }`}>
-                          {ba.title || 'Official Brand Ambassador'}
-                        </p>
-                        <span className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg border font-mono font-bold ${
-                          isDark ? 'bg-slate-900/90 text-cyan-300 border-slate-800' : 'bg-slate-100 text-slate-800 border-slate-300'
-                        }`}>
-                          <UserCheck className="w-3 h-3 text-cyan-600 dark:text-cyan-500" /> @{ba.roblox_username}
-                        </span>
-                      </div>
+                  <div className="flex flex-col items-center w-full">
+                    {/* Large Circular Avatar */}
+                    <div className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 p-1 shrink-0 mb-4 transition-transform duration-300 group-hover:scale-105 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 group-hover:border-cyan-400'
+                        : 'bg-slate-100 border-slate-300 group-hover:border-cyan-600 shadow-sm'
+                    }`}>
+                      <img
+                        src={ba.avatar_url || `https://images.rbxcdn.com/30x30_icon_Roblox.png`}
+                        alt={ba.display_name}
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.rbxcdn.com/30x30_icon_Roblox.png';
+                        }}
+                      />
                     </div>
 
-                    {/* Bio / Motto Snippet */}
-                    {ba.motto && (
-                      <p className={`text-[11px] font-semibold italic line-clamp-1 p-2 rounded-xl border mb-3 ${
-                        isDark ? 'text-amber-300 bg-amber-500/5 border-amber-500/20' : 'text-slate-700 bg-slate-50 border-slate-200'
-                      }`}>
-                        "{ba.motto}"
-                      </p>
-                    )}
+                    {/* Display Name */}
+                    <h3 className={`text-base sm:text-lg font-extrabold truncate w-full mb-1 transition-colors ${
+                      isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-900 group-hover:text-cyan-700'
+                    }`}>
+                      {ba.display_name}
+                    </h3>
+
+                    {/* Official BA Title */}
+                    <p className={`text-xs font-semibold truncate w-full mb-4 ${
+                      isDark ? 'text-slate-400' : 'text-slate-600'
+                    }`}>
+                      {ba.title || 'Official Brand Ambassador'}
+                    </p>
                   </div>
 
-                  {/* Footer Actions & Medsos */}
-                  <div className={`pt-4 mt-2 border-t flex items-center justify-between gap-2 ${
-                    isDark ? 'border-slate-800/80' : 'border-slate-200'
+                  {/* Interaction Indicator */}
+                  <div className={`pt-3 w-full border-t flex items-center justify-center gap-1 text-xs font-black transition-all ${
+                    isDark
+                      ? 'border-slate-800/80 text-cyan-400 group-hover:text-cyan-300'
+                      : 'border-slate-100 text-cyan-700 group-hover:text-cyan-900'
                   }`}>
-                    <div className="flex items-center gap-2 text-slate-400">
-                      {ba.instagram && (
-                        <a href={ba.instagram} target="_blank" rel="noreferrer" title="Instagram Profile">
-                          <InstagramIcon className="w-4 h-4 text-pink-500 hover:scale-110 transition-transform" />
-                        </a>
-                      )}
-                      {ba.tiktok && (
-                        <a href={ba.tiktok} target="_blank" rel="noreferrer" title="TikTok Profile">
-                          <TikTokIcon className={`w-4 h-4 hover:scale-110 transition-transform ${isDark ? 'text-slate-200' : 'text-slate-800'}`} />
-                        </a>
-                      )}
-                      {ba.youtube && (
-                        <a href={ba.youtube} target="_blank" rel="noreferrer" title="YouTube Channel">
-                          <YoutubeIcon className="w-4 h-4 text-rose-500 hover:scale-110 transition-transform" />
-                        </a>
-                      )}
-                      {ba.discord_username && (
-                        <span title={`Discord: ${ba.discord_username}`}>
-                          <DiscordIcon className="w-4 h-4 text-indigo-500" />
-                        </span>
-                      )}
-                    </div>
-
-                    <Link
-                      to={`/brand-ambassadors/${ba.id}`}
-                      className={`inline-flex items-center gap-1 text-xs font-black transition-all hover:underline ${
-                        isDark ? 'text-cyan-400 hover:text-white' : 'text-cyan-700 hover:text-cyan-900'
-                      }`}
-                    >
-                      <span>Lihat Profil</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    <span>Lihat Profil</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (

@@ -58,14 +58,14 @@ export const PublicBADetail = () => {
             isDark ? 'text-slate-400 hover:text-cyan-400' : 'text-slate-600 hover:text-cyan-700'
           }`}
         >
-          <ArrowLeft className="w-4 h-4" /> Kembali ke Portal Utama
+          <ArrowLeft className="w-4 h-4" /> &larr; Kembali ke Gallery Brand Ambassador
         </Link>
 
         {loading ? (
           <div className={`glass-panel p-12 rounded-3xl text-center space-y-4 border animate-pulse ${
             isDark ? 'border-slate-800' : 'bg-white border-slate-200'
           }`}>
-            <div className={`w-28 h-28 rounded-3xl mx-auto ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+            <div className={`w-28 h-28 rounded-full mx-auto ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
             <div className={`h-6 rounded max-w-xs mx-auto ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
             <div className={`h-4 rounded max-w-md mx-auto ${isDark ? 'bg-slate-800/60' : 'bg-slate-200/60'}`} />
           </div>
@@ -79,7 +79,7 @@ export const PublicBADetail = () => {
             <Link
               to="/"
               className={`inline-block px-5 py-2 rounded-xl text-xs font-bold ${
-                isDark ? 'bg-slate-800 hover:bg-slate-700 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'
+                isDark ? 'bg-slate-800 hover:bg-slate-700 text-white' : 'bg-cyan-600 hover:bg-cyan-700 text-white'
               }`}
             >
               Kembali ke Beranda
@@ -92,14 +92,14 @@ export const PublicBADetail = () => {
               isDark ? 'border-slate-800' : 'border-slate-200 bg-white shadow-sm'
             }`}>
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 relative z-10">
-                {/* Large Roblox Avatar */}
-                <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-3xl border-2 overflow-hidden shrink-0 relative shadow-md p-1 ${
+                {/* Large Circular Roblox Avatar */}
+                <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-2 overflow-hidden shrink-0 relative shadow-md p-1 ${
                   isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-300'
                 }`}>
                   <img
                     src={ambassador.avatar_url}
                     alt={ambassador.display_name}
-                    className="w-full h-full object-cover rounded-2xl"
+                    className="w-full h-full object-cover rounded-full"
                   />
                   {ambassador.is_featured && (
                     <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black flex items-center gap-1 shadow-md">
