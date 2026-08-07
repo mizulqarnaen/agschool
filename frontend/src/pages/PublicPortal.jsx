@@ -5,13 +5,15 @@ import { PublicNavbar } from '../components/public/PublicNavbar';
 import { PublicFooter } from '../components/public/PublicFooter';
 import { EventCard } from '../components/public/EventCard';
 import { useTheme } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import {
   Search, Filter, ShieldCheck, Trophy, Sparkles, Gamepad2, Zap, Gift,
-  Award, Star, UserCheck, ArrowRight, ChevronDown, ChevronUp, CheckCircle2, DollarSign, Users
+  Award, Star, UserCheck, ArrowRight, ChevronDown, ChevronUp, CheckCircle2, Users
 } from 'lucide-react';
 import { TikTokIcon, DiscordIcon, InstagramIcon, YoutubeIcon } from '../components/common/SocialIcons';
 
 export const PublicPortal = () => {
+  const { t, i18n } = useTranslation();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
@@ -118,7 +120,7 @@ export const PublicPortal = () => {
             isDark ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400' : 'bg-cyan-100/80 border border-cyan-300 text-cyan-800'
           }`}>
             <ShieldCheck className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-            <span>Portal Resmi Acara AG School</span>
+            <span>{t('verified_public')} - AG School</span>
           </div>
 
           <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight ${
@@ -126,65 +128,94 @@ export const PublicPortal = () => {
               ? 'bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent'
               : 'text-slate-900'
           }`}>
-            AG School Event & Turnamen
+            {t('hero_title')}
           </h1>
 
           <p className={`text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed ${
             isDark ? 'text-slate-300' : 'text-slate-600'
           }`}>
-            Selamat datang di Portal Resmi AG School. Temukan informasi acara komunitas, turnamen game (Roblox, MLBB, dll), klasemen poin liga, dan transparansi kompensasi.
+            {t('hero_subtitle')}
           </p>
 
-          {/* FEATURED FIRST: AGCL Compensation Transparency Showcase Banner */}
-          <div className={`mt-6 p-6 sm:p-8 rounded-3xl border transition-all text-left max-w-4xl mx-auto shadow-2xl relative overflow-hidden ${
-            isDark
-              ? 'bg-gradient-to-r from-cyan-950/80 via-slate-900 to-slate-900 border-cyan-700/50'
-              : 'bg-gradient-to-r from-cyan-50 via-white to-cyan-50/50 border-cyan-200 shadow-md'
+          {/* Restored Community Feature Pills */}
+          <div className={`flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2 text-xs font-bold ${
+            isDark ? 'text-slate-300' : 'text-slate-700'
           }`}>
+            <span className={`px-3.5 py-1.5 rounded-full border flex items-center gap-1.5 transition-all ${
+              isDark ? 'bg-slate-900/90 border-slate-700 text-slate-300' : 'bg-white border-slate-300 text-slate-800 shadow-xs'
+            }`}>
+              <Gamepad2 className="w-3.5 h-3.5 text-cyan-500" /> Roblox (Obby & Speedrun)
+            </span>
+            <span className={`px-3.5 py-1.5 rounded-full border flex items-center gap-1.5 transition-all ${
+              isDark ? 'bg-slate-900/90 border-slate-700 text-slate-300' : 'bg-white border-slate-300 text-slate-800 shadow-xs'
+            }`}>
+              <Trophy className="w-3.5 h-3.5 text-amber-500" /> MLBB & Esports
+            </span>
+            <span className={`px-3.5 py-1.5 rounded-full border flex items-center gap-1.5 transition-all ${
+              isDark ? 'bg-slate-900/90 border-slate-700 text-slate-300' : 'bg-white border-slate-300 text-slate-800 shadow-xs'
+            }`}>
+              <Zap className="w-3.5 h-3.5 text-cyan-500" /> Poin Liga & Standings
+            </span>
+            <span className={`px-3.5 py-1.5 rounded-full border flex items-center gap-1.5 transition-all ${
+              isDark ? 'bg-slate-900/90 border-slate-700 text-slate-300' : 'bg-white border-slate-300 text-slate-800 shadow-xs'
+            }`}>
+              <Gift className="w-3.5 h-3.5 text-emerald-500" /> Transparansi Hadiah
+            </span>
+          </div>
+
+          {/* FEATURED: Highlighted Full Stretch Widescreen AGCL Compensation Banner with Animated Glowing Border */}
+          <div className={`mt-8 p-6 sm:p-8 rounded-3xl border text-left w-full max-w-5xl mx-auto relative overflow-hidden transition-all duration-500 ${
+            isDark
+              ? 'bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-950/80 border-cyan-500/80 shadow-[0_0_35px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:border-cyan-400'
+              : 'bg-gradient-to-r from-cyan-50 via-white to-cyan-50 border-cyan-400 shadow-xl hover:shadow-2xl'
+          }`}>
+            {/* Subtle Glowing Background Pulse Accent */}
+            <div className="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 relative z-10">
               <div className="space-y-3 flex-1">
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black border ${
-                  isDark ? 'bg-cyan-900/60 border-cyan-700 text-cyan-300' : 'bg-cyan-100 border-cyan-300 text-cyan-900'
+                <div className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-black border ${
+                  isDark ? 'bg-cyan-950 border-cyan-500/60 text-cyan-300 shadow-xs' : 'bg-cyan-100 border-cyan-300 text-cyan-900'
                 }`}>
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>TRANSPARANSI UTAMA AGCL</span>
+                  <ShieldCheck className="w-4 h-4 text-cyan-400 animate-bounce" />
+                  <span>{t('verified_public')} - {t('compensation')}</span>
                 </div>
 
-                <h2 className={`text-xl sm:text-2xl font-black ${
+                <h2 className={`text-2xl sm:text-3xl font-black ${
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}>
-                  AGCL Compensation Status
+                  {t('compensation_title')} Status
                 </h2>
 
-                <p className={`text-xs sm:text-sm leading-relaxed ${
+                <p className={`text-xs sm:text-sm leading-relaxed max-w-2xl ${
                   isDark ? 'text-slate-300' : 'text-slate-600'
                 }`}>
-                  Cek & verifikasi status pencairan kompensasi kamu secara terbuka dengan memasukkan Username Discord atau Roblox di portal transparansi AG School.
+                  {t('compensation_hero_desc')}
                 </p>
 
-                {/* Live Real-time Stat Pills */}
+                {/* Live Real-time Stat Pills (No Dollar Icon) */}
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <div className={`px-3 py-1.5 rounded-xl border text-xs font-black flex items-center gap-2 ${
-                    isDark ? 'bg-slate-950/80 border-slate-800 text-emerald-400' : 'bg-white border-slate-200 text-emerald-700 shadow-xs'
+                  <div className={`px-3.5 py-2 rounded-2xl border text-xs font-black flex items-center gap-2 ${
+                    isDark ? 'bg-slate-950/90 border-emerald-500/40 text-emerald-400' : 'bg-white border-emerald-300 text-emerald-700 shadow-xs'
                   }`}>
-                    <DollarSign className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     <span>Total Kompensasi: IDR {Number(compStats.total_amount || 0).toLocaleString()}</span>
                   </div>
 
-                  <div className={`px-3 py-1.5 rounded-xl border text-xs font-black flex items-center gap-2 ${
-                    isDark ? 'bg-slate-950/80 border-slate-800 text-cyan-300' : 'bg-white border-slate-200 text-cyan-800 shadow-xs'
+                  <div className={`px-3.5 py-2 rounded-2xl border text-xs font-black flex items-center gap-2 ${
+                    isDark ? 'bg-slate-950/90 border-cyan-500/40 text-cyan-300' : 'bg-white border-cyan-300 text-cyan-800 shadow-xs'
                   }`}>
                     <Users className="w-4 h-4 text-cyan-400" />
-                    <span>{compStats.total_recipients || 0} Member Penerima</span>
+                    <span>{compStats.total_recipients || 0} Member Terdaftar</span>
                   </div>
                 </div>
               </div>
 
-              {/* Directly Accessible CTA Button */}
+              {/* Directly Accessible High-Visibility CTA Button */}
               <div className="shrink-0 flex items-center">
                 <Link
                   to="/compensation"
-                  className="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs sm:text-sm shadow-xl transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
+                  className="w-full md:w-auto px-7 py-4 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs sm:text-sm shadow-2xl transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95 glow-cyan"
                 >
                   <span>Cek Nama & Status Kompensasi &rarr;</span>
                 </Link>
