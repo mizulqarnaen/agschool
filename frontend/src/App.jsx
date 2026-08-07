@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { PublicPortal } from './pages/PublicPortal';
 import { PublicEventDetail } from './pages/PublicEventDetail';
 import { PublicBADetail } from './pages/PublicBADetail';
+import { PublicCompensation } from './pages/PublicCompensation';
 import { LoginPage } from './pages/LoginPage';
 import { InternalDashboard } from './pages/InternalDashboard';
 import { IncomePage } from './pages/IncomePage';
@@ -15,6 +16,7 @@ import { PaymentPage } from './pages/PaymentPage';
 import { MemberPage } from './pages/MemberPage';
 import { EventManagementPage } from './pages/EventManagementPage';
 import { BrandAmbassadorPage } from './pages/BrandAmbassadorPage';
+import { CompensationPage } from './pages/CompensationPage';
 import { UserManagementPage } from './pages/UserManagementPage';
 import { ReportPage } from './pages/ReportPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -46,6 +48,7 @@ export default function App() {
         <Route path="/" element={<PublicPortal />} />
         <Route path="/events/:id" element={<PublicEventDetail />} />
         <Route path="/brand-ambassadors/:id" element={<PublicBADetail />} />
+        <Route path="/compensation" element={<PublicCompensation />} />
         <Route path="/login" element={<LoginPage />} />
 
         {/* Protected Internal Management Routes */}
@@ -102,6 +105,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['administrator', 'finance', 'secretary']}>
               <BrandAmbassadorPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/internal/compensation"
+          element={
+            <ProtectedRoute allowedRoles={['administrator', 'finance', 'secretary']}>
+              <CompensationPage />
             </ProtectedRoute>
           }
         />

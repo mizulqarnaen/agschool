@@ -25,6 +25,7 @@ export const Sidebar = () => {
     { label: 'Direktori Pemain & Staff', path: '/internal/members', icon: UserCheck, roles: ['administrator', 'finance', 'secretary'] },
     { label: t('events'), path: '/internal/events', icon: Calendar, roles: ['administrator', 'secretary'] },
     { label: 'Brand Ambassador', path: '/internal/brand-ambassadors', icon: Award, roles: ['administrator', 'finance', 'secretary'] },
+    { label: 'Kompensasi AGCL', path: '/internal/compensation', icon: Shield, roles: ['administrator', 'finance', 'secretary'] },
     { label: t('users'), path: '/internal/users', icon: Shield, roles: ['administrator'] },
     { label: t('reports'), path: '/internal/reports', icon: FileText, roles: ['administrator', 'finance'] },
     { label: t('settings'), path: '/internal/settings', icon: Settings, roles: ['administrator'] },

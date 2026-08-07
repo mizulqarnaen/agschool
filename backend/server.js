@@ -13,6 +13,7 @@ import financeRoutes from './src/routes/financeRoutes.js';
 import eventRoutes from './src/routes/eventRoutes.js';
 import adminRoutes from './src/routes/adminRoutes.js';
 import brandAmbassadorRoutes from './src/routes/brandAmbassadorRoutes.js';
+import compensationRoutes from './src/routes/compensationRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -147,6 +148,9 @@ fallbackDistPaths.forEach(distDir => {
     app.use(express.static(distDir));
   }
 });
+
+// Compensation API Routes
+app.use('/api', compensationRoutes);
 
 // SPA wildcard route fallback for all non-API requests
 app.get('*', (req, res, next) => {

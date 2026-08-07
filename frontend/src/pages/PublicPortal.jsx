@@ -349,6 +349,43 @@ export const PublicPortal = () => {
             </div>
           )}
         </div>
+
+        {/* Section 3: AGCL Compensation Transparency Feature */}
+        <div className="pt-6 border-t border-slate-800/40">
+          <div className={`p-6 sm:p-8 rounded-3xl border transition-all flex flex-col md:flex-row items-center justify-between gap-6 ${
+            isDark
+              ? 'bg-slate-900/80 border-slate-800'
+              : 'bg-white border-slate-200 shadow-sm'
+          }`}>
+            <div className="space-y-2 text-center md:text-left">
+              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold mb-1 border ${
+                isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-slate-100 border-slate-300 text-slate-900 shadow-xs'
+              }`}>
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+                <span>Fitur Transparansi Komunitas</span>
+              </div>
+
+              <h2 className={`text-xl sm:text-2xl font-black ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
+                AGCL Compensation Status
+              </h2>
+
+              <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${
+                isDark ? 'text-slate-400' : 'text-slate-600'
+              }`}>
+                Cek dan verifikasi status pencairan kompensasi kamu secara transparan dengan memasukkan Username Discord atau Roblox di portal transparansi resmi AG School.
+              </p>
+            </div>
+
+            <Link
+              to="/compensation"
+              className="px-6 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-700 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all shrink-0 flex items-center gap-2"
+            >
+              <span>Cek Status Kompensasi &rarr;</span>
+            </Link>
+          </div>
+        </div>
       </main>
 
       <PublicFooter />

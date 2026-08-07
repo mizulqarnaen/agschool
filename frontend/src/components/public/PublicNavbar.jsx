@@ -52,6 +52,18 @@ export const PublicNavbar = () => {
 
         {/* Right Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Link
+            to="/compensation"
+            className={`px-3 py-1.5 rounded-xl border text-xs font-extrabold transition-all hidden sm:inline-flex items-center gap-1.5 ${
+              isDark
+                ? 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-cyan-300'
+                : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+            }`}
+          >
+            <Shield className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+            <span>Kompensasi AGCL</span>
+          </Link>
+
           {/* Theme Switcher Button */}
           <ThemeToggle />
 
