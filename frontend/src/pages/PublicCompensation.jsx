@@ -69,6 +69,13 @@ export const PublicCompensation = () => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= (pagination.total_pages || 1)) {
+      setPagination(prev => ({ ...prev, current_page: newPage }));
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+  };
+
   const getStatusBadge = (status) => {
     if (status === 'Completed') {
       return (
