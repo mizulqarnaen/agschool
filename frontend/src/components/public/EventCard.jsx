@@ -11,66 +11,62 @@ export const EventCard = ({ event }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  // Event Execution Status (Scheduled, Ongoing, Completed, Cancelled)
+  // Execution Status Badges
   const getEventStatusBadge = (status) => {
     switch (status) {
       case 'Ongoing':
         return (
-          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+          <span className="badge-status badge-status-success">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
             ● Berlangsung
           </span>
         );
       case 'Payment Pending':
         return (
-          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
-            <Clock className="w-3.5 h-3.5 text-purple-400 animate-pulse" /> Payment Pending
+          <span className="badge-status badge-status-purple">
+            <Clock className="w-3.5 h-3.5 animate-pulse" /> Payment Pending
           </span>
         );
       case 'Completed':
         return (
-          <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full backdrop-blur-md flex items-center gap-1 shadow-sm ${
-            isDark ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40' : 'bg-cyan-100 text-cyan-800 border border-cyan-300'
-          }`}>
-            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500" /> Selesai
+          <span className="badge-status badge-status-info">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Selesai
           </span>
         );
       case 'Cancelled':
         return (
-          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
-            <AlertCircle className="w-3.5 h-3.5 text-rose-400" /> Dibatalkan
+          <span className="badge-status badge-status-error">
+            <AlertCircle className="w-3.5 h-3.5" /> Dibatalkan
           </span>
         );
       default:
         return (
-          <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full backdrop-blur-md flex items-center gap-1 shadow-sm ${
-            isDark ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-amber-100 text-amber-900 border border-amber-300'
-          }`}>
-            <Calendar className="w-3.5 h-3.5 text-amber-500" /> Dijadwalkan
+          <span className="badge-status badge-status-warning">
+            <Calendar className="w-3.5 h-3.5" /> Dijadwalkan
           </span>
         );
     }
   };
 
-  // Registration Status (Open, Closed, Upcoming)
+  // Registration Status Badges
   const getRegistrationBadge = (regStatus) => {
     switch (regStatus) {
       case 'Open':
         return (
-          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-500 text-slate-950 shadow-md flex items-center gap-1">
+          <span className="px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-emerald-600 text-white shadow-xs flex items-center gap-1">
             🟢 Pendaftaran Buka
           </span>
         );
       case 'Closed':
         return (
-          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-slate-950/80 text-rose-300 border border-rose-500/40 backdrop-blur-md flex items-center gap-1">
+          <span className="px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-slate-900/90 text-rose-300 border border-rose-500/40 backdrop-blur-md flex items-center gap-1">
             <Lock className="w-3.5 h-3.5 text-rose-400" /> Pendaftaran Ditutup
           </span>
         );
       default:
         return (
-          <span className="px-2.5 py-1 text-[11px] font-bold rounded-full bg-purple-950/80 text-purple-200 border border-purple-500/40 backdrop-blur-md flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-purple-400" /> Segera Dibuka
+          <span className="px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-purple-900/90 text-purple-200 border border-purple-500/40 backdrop-blur-md flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-purple-300" /> Segera Dibuka
           </span>
         );
     }
