@@ -394,58 +394,66 @@ export const PublicEventDetail = () => {
               </div>
 
               {event.prizes && event.prizes.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {event.prizes.map((prize, idx) => {
-                    const prizeAmountNum = Number(prize.amount || prize.reward_amount || 0);
-                    const formattedPrizeAmount = isNaN(prizeAmountNum) ? '0' : prizeAmountNum.toLocaleString();
-                    const rankLabel = prize.placement_rank ? `Juara #${prize.placement_rank}` : (prize.title || 'Pemenang');
+                <div className={`overflow-x-auto rounded-2xl border shadow-inner ${
+                  isDark ? 'border-slate-800 bg-slate-950/90' : 'border-slate-200 bg-white'
+                }`}>
+                  <table className="w-full text-left text-xs sm:text-sm">
+                    <thead className={`text-[11px] sm:text-xs uppercase font-extrabold border-b ${
+                      isDark ? 'bg-slate-900/90 text-slate-300 border-slate-800' : 'bg-slate-100 text-slate-700 border-slate-200'
+                    }`}>
+                      <tr>
+                        <th className="px-4 py-3.5 w-44">Kategori Hadiah</th>
+                        <th className="px-4 py-3.5">Nama Pemenang / Tim</th>
+                        <th className="px-4 py-3.5">Deskripsi Hadiah</th>
+                        <th className="px-4 py-3.5 text-right sm:text-left w-44">Status Pembayaran</th>
+                      </tr>
+                    </thead>
+                    <tbody className={`divide-y ${isDark ? 'divide-slate-800/60' : 'divide-slate-200'}`}>
+                      {event.prizes.map((prize, idx) => {
+                        const prizeAmountNum = Number(prize.amount || prize.reward_amount || 0);
+                        const formattedPrizeAmount = isNaN(prizeAmountNum) ? '' : `${event.currency || 'IDR'} ${prizeAmountNum.toLocaleString()}`;
+                        const rankLabel = prize.placement_rank ? `Juara ${prize.placement_rank}` : (prize.title || 'Pemenang');
 
-                    return (
-                      <div
-                        key={idx}
-                        className={`p-4 sm:p-5 rounded-2xl border transition-all duration-300 flex flex-col justify-between space-y-4 ${
-                          isDark
-                            ? 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
-                            : 'bg-white border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-md'
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between gap-2 mb-3">
-                            <span className={`px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider border shadow-xs ${
-                              prize.placement_rank === 1
-                                ? (isDark ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-amber-100 text-amber-900 border-amber-300')
-                                : prize.placement_rank === 2
-                                ? (isDark ? 'bg-slate-300/20 text-slate-300 border-slate-400/40' : 'bg-slate-200 text-slate-900 border-slate-300')
-                                : prize.placement_rank === 3
-                                ? (isDark ? 'bg-amber-800/20 text-amber-300 border-amber-700/40' : 'bg-amber-50 text-amber-900 border-amber-300')
-                                : (isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-cyan-50 text-cyan-900 border-cyan-200')
-                            }`}>
-                              {rankLabel} {prize.title && prize.placement_rank ? `- ${prize.title}` : ''}
-                            </span>
-                            <span className={`text-xs font-black ${isDark ? 'text-amber-300' : 'text-amber-700'}`}>
-                              {event.currency || 'IDR'} {formattedPrizeAmount}
-                            </span>
-                          </div>
+                        return (
+                          <tr key={idx} className={`transition-colors ${
+                            isDark ? 'hover:bg-slate-900/60' : 'hover:bg-slate-50'
+                          }`}>
+                            {/* Kategori Hadiah */}
+                            <td className="px-4 py-3.5 font-bold whitespace-nowrap">
+                              <span className="inline-flex items-center gap-1.5 text-amber-500 font-extrabold">
+                                <Trophy className="w-4 h-4 text-amber-500 shrink-0" />
+                                <span>{rankLabel}</span>
+                              </span>
+                            </td>
 
-                          <div className="space-y-1">
-                            <span className={`text-[11px] font-extrabold uppercase block ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                              Nama Pemenang / Tim:
-                            </span>
-                            <h4 className={`text-base font-extrabold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                              {prize.winner_name || <span className="text-slate-400 italic font-normal">Belum Ditentukan</span>}
-                            </h4>
-                          </div>
-                        </div>
+                            {/* Nama Pemenang / Tim */}
+                            <td className="px-4 py-3.5 font-bold">
+                              {prize.winner_name ? (
+                                <span className={isDark ? 'text-cyan-400' : 'text-cyan-800'}>
+                                  {prize.winner_name}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 italic font-normal">Belum Ditentukan</span>
+                              )}
+                            </td>
 
-                        <div className={`pt-3 border-t flex items-center justify-between gap-2 ${
-                          isDark ? 'border-slate-800/60' : 'border-slate-200'
-                        }`}>
-                          <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Status Payout:</span>
-                          {getPaymentBadge(prize.payment_status || 'Unpaid', prize.paid_at)}
-                        </div>
-                      </div>
-                    );
-                  })}
+                            {/* Deskripsi Hadiah */}
+                            <td className="px-4 py-3.5 font-medium">
+                              <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
+                                {prize.title || `Hadiah Peringkat ${prize.placement_rank || idx + 1}`}
+                                {formattedPrizeAmount ? ` (${formattedPrizeAmount})` : ''}
+                              </span>
+                            </td>
+
+                            {/* Status Pembayaran */}
+                            <td className="px-4 py-3.5 text-right sm:text-left whitespace-nowrap">
+                              {getPaymentBadge(prize.payment_status || 'Unpaid', prize.paid_at)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
                 <div className={`text-center py-12 rounded-2xl border ${
