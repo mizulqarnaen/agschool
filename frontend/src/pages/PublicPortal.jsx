@@ -7,7 +7,7 @@ import { EventCard } from '../components/public/EventCard';
 import { useTheme } from '../context/ThemeContext';
 import {
   Search, Filter, ShieldCheck, Trophy, Sparkles, Gamepad2, Zap, Gift,
-  Award, Star, UserCheck, ArrowRight
+  Award, Star, UserCheck, ArrowRight, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { TikTokIcon, DiscordIcon, InstagramIcon, YoutubeIcon } from '../components/common/SocialIcons';
 
@@ -21,6 +21,7 @@ export const PublicPortal = () => {
   const [baLoading, setBaLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [showAllEvents, setShowAllEvents] = useState(false);
 
   useEffect(() => {
     fetchEvents();
@@ -210,10 +211,39 @@ export const PublicPortal = () => {
               ))}
             </div>
           ) : events.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {events.map((evt) => (
-                <EventCard key={evt.id} event={evt} />
-              ))}
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(showAllEvents ? events : events.slice(0, 6)).map((evt) => (
+                  <EventCard key={evt.id} event={evt} />
+                ))}
+              </div>
+
+              {/* Show All / Show Less Toggle Button */}
+              {events.length > 6 && (
+                <div className="text-center pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAllEvents(!showAllEvents)}
+                    className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold transition-all shadow-sm ${
+                      isDark
+                        ? 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-cyan-400 hover:text-cyan-300'
+                        : 'bg-white hover:bg-slate-50 border-slate-300 text-cyan-700 hover:text-cyan-800'
+                    }`}
+                  >
+                    {showAllEvents ? (
+                      <>
+                        <span>Tampilkan Lebih Sedikit</span>
+                        <ChevronUp className="w-4 h-4" />
+                      </>
+                    ) : (
+                      <>
+                        <span>Tampilkan Semua Event ({events.length})</span>
+                        <ChevronDown className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className={`text-center py-16 rounded-3xl border ${
