@@ -3,34 +3,67 @@
 @layer base {
   :root {
     --color-brand-primary: #06b6d4;
-    --color-brand-secondary: #3b82f6;
-    --color-brand-accent: #8b5cf6;
+    --color-brand-secondary: #2563eb;
+    --color-brand-accent: #7c3aed;
   }
   body {
     font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
-/* Glassmorphism & Visual Aesthetics */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
+/* Light Theme Styling (Default) */
+html.light body, body:not(.dark) {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.light .glass-panel, body:not(.dark) .glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+html.light .glass-card, body:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.04);
+}
+
+/* Dark Theme Styling */
+html.dark body {
+  background-color: #030712;
+  color: #f8fafc;
+}
+
+html.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
 }
 
-.glass-card {
+html.dark .glass-card {
   background: rgba(30, 41, 59, 0.6);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Glow Utilities */
 .glow-cyan {
-  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.35);
 }
 
 .glow-blue {
-  box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 25px -5px rgba(37, 99, 235, 0.35);
+}
+
+.glow-purple {
+  box-shadow: 0 0 25px -5px rgba(124, 58, 237, 0.35);
 }
 
 /* Custom Scrollbar */
@@ -38,13 +71,24 @@
   width: 8px;
   height: 8px;
 }
-::-webkit-scrollbar-track {
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+html.dark ::-webkit-scrollbar-track {
   background: #0f172a;
 }
-::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
+html.dark ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }

@@ -34,10 +34,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
+import { ThemeProvider } from './context/ThemeContext';
+
 export default function App() {
   return (
-    <AuthProvider>
-      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+    <ThemeProvider>
+      <AuthProvider>
+        <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Routes>
         {/* Public Transparency Portal Routes */}
         <Route path="/" element={<PublicPortal />} />
@@ -139,5 +142,6 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AuthProvider>
-  );
+  </ThemeProvider>
+);
 }
