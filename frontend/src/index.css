@@ -5,13 +5,10 @@
     /* Brand Accent Tokens */
     --brand-cyan: #0891b2;
     --brand-cyan-light: #06b6d4;
-    --brand-blue: #2563eb;
-    --brand-purple: #7c3aed;
-    --brand-purple-dark: #5b21b6;
-    --brand-amber: #d97706;
-    --brand-amber-light: #f59e0b;
+    --brand-blue: #0284c7;
+    --brand-dark: #0f172a;
 
-    /* Semantic Light Theme (Default) */
+    /* Semantic Light Theme (Clean, Minimal, High Contrast) */
     --portal-bg: #f8fafc;
     --portal-surface: #ffffff;
     --portal-surface-hover: #f1f5f9;
@@ -20,37 +17,37 @@
     --portal-border-hover: #cbd5e1;
 
     --portal-text-main: #0f172a;
-    --portal-text-secondary: #475569;
+    --portal-text-secondary: #334155;
     --portal-text-muted: #64748b;
 
-    --portal-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-    --portal-shadow-md: 0 4px 14px 0 rgba(0, 0, 0, 0.05);
+    --portal-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --portal-shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
     --portal-shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
 
     /* Glass Effect Light */
-    --portal-glass-bg: rgba(255, 255, 255, 0.92);
+    --portal-glass-bg: rgba(255, 255, 255, 0.95);
     --portal-glass-border: rgba(226, 232, 240, 0.9);
 
-    /* Status Colors Light */
-    --status-success-bg: #dcfce7;
-    --status-success-text: #14532d;
-    --status-success-border: #86efac;
+    /* Status Colors Light (Crisp & High Contrast) */
+    --status-success-bg: #ecfdf5;
+    --status-success-text: #047857;
+    --status-success-border: #a7f3d0;
 
-    --status-warning-bg: #fef3c7;
-    --status-warning-text: #78350f;
-    --status-warning-border: #fcd34d;
+    --status-warning-bg: #fffbeb;
+    --status-warning-text: #b45309;
+    --status-warning-border: #fde68a;
 
-    --status-error-bg: #ffe4e6;
-    --status-error-text: #881337;
-    --status-error-border: #fda4af;
+    --status-error-bg: #fff1f2;
+    --status-error-text: #be123c;
+    --status-error-border: #fecdd3;
 
-    --status-info-bg: #e0f2fe;
-    --status-info-text: #075985;
-    --status-info-border: #7dd3fc;
+    --status-info-bg: #f0f9ff;
+    --status-info-text: #0369a1;
+    --status-info-border: #bae6fd;
 
-    --status-purple-bg: #f3e8ff;
-    --status-purple-text: #581c87;
-    --status-purple-border: #d8b4fe;
+    --status-neutral-bg: #f1f5f9;
+    --status-neutral-text: #0f172a;
+    --status-neutral-border: #cbd5e1;
   }
 
   /* Dark Theme Variable Overrides */
@@ -91,16 +88,16 @@
     --status-info-text: #67e8f9;
     --status-info-border: rgba(6, 182, 212, 0.4);
 
-    --status-purple-bg: rgba(168, 85, 247, 0.2);
-    --status-purple-text: #e9d5ff;
-    --status-purple-border: rgba(168, 85, 247, 0.4);
+    --status-neutral-bg: rgba(51, 65, 85, 0.4);
+    --status-neutral-text: #e2e8f0;
+    --status-neutral-border: rgba(100, 116, 139, 0.4);
   }
 
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--portal-bg);
     color: var(--portal-text-main);
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
@@ -117,7 +114,7 @@
   background: var(--portal-surface);
   border: 1px solid var(--portal-border);
   box-shadow: var(--portal-shadow-sm);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-card:hover {
@@ -162,31 +159,10 @@
   border-color: var(--status-info-border);
 }
 
-.badge-status-purple {
-  background-color: var(--status-purple-bg);
-  color: var(--status-purple-text);
-  border-color: var(--status-purple-border);
-}
-
-/* Reusable Form Inputs */
-.portal-input {
-  background-color: var(--portal-surface);
-  border: 1px solid var(--portal-border);
-  color: var(--portal-text-main);
-  border-radius: 0.75rem;
-  padding: 0.5rem 0.875rem;
-  font-size: 0.8125rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.portal-input::placeholder {
-  color: var(--portal-text-muted);
-}
-
-.portal-input:focus {
-  outline: none;
-  border-color: var(--brand-cyan);
-  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.15);
+.badge-status-neutral {
+  background-color: var(--status-neutral-bg);
+  color: var(--status-neutral-text);
+  border-color: var(--status-neutral-border);
 }
 
 /* Custom Scrollbar */

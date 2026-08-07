@@ -89,14 +89,12 @@ export const PublicBADetail = () => {
           <div className="space-y-8">
             {/* Top Profile Hero Card */}
             <div className={`glass-panel p-6 sm:p-10 rounded-3xl border relative overflow-hidden ${
-              isDark ? 'border-purple-500/30' : 'border-purple-200 bg-white/95 shadow-sm'
+              isDark ? 'border-slate-800' : 'border-slate-200 bg-white shadow-sm'
             }`}>
-              <div className="absolute right-0 top-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 relative z-10">
                 {/* Large Roblox Avatar */}
-                <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-3xl border-2 overflow-hidden shrink-0 relative shadow-2xl p-1 ${
-                  isDark ? 'bg-slate-900 border-purple-500/50 glow-purple' : 'bg-slate-100 border-purple-300'
+                <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-3xl border-2 overflow-hidden shrink-0 relative shadow-md p-1 ${
+                  isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-300'
                 }`}>
                   <img
                     src={ambassador.avatar_url}
@@ -113,22 +111,20 @@ export const PublicBADetail = () => {
                 {/* Profile Main Info */}
                 <div className="flex-1 text-center md:text-left space-y-3">
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                    <span className={`px-3 py-1 rounded-full border text-xs font-extrabold flex items-center gap-1.5 shadow-sm ${
-                      isDark ? 'bg-purple-500/20 text-purple-300 border-purple-500/40' : 'bg-purple-100 text-purple-800 border-purple-200'
+                    <span className={`px-3 py-1 rounded-full border text-xs font-extrabold flex items-center gap-1.5 shadow-xs ${
+                      isDark ? 'bg-slate-900 text-slate-300 border-slate-800' : 'bg-slate-100 text-slate-900 border-slate-300'
                     }`}>
-                      <Award className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" /> {ambassador.title}
+                      <Award className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> {ambassador.title}
                     </span>
-                    <span className={`px-3 py-1 rounded-full border text-xs font-mono font-bold ${
-                      isDark ? 'bg-slate-900 text-cyan-300 border-cyan-500/30' : 'bg-slate-100 text-cyan-800 border-cyan-300'
+                    <span className={`px-3 py-1 rounded-full border text-xs font-mono font-extrabold ${
+                      isDark ? 'bg-slate-900 text-cyan-300 border-slate-800' : 'bg-slate-100 text-slate-900 border-slate-300'
                     }`}>
                       @{ambassador.roblox_username}
                     </span>
                   </div>
 
                   <h1 className={`text-3xl sm:text-4xl font-black ${
-                    isDark
-                      ? 'bg-gradient-to-r from-white via-slate-100 to-purple-300 bg-clip-text text-transparent'
-                      : 'text-slate-900'
+                    isDark ? 'text-white' : 'text-slate-900'
                   }`}>
                     {ambassador.display_name}
                   </h1>
@@ -140,8 +136,8 @@ export const PublicBADetail = () => {
                   </p>
 
                   {ambassador.motto && (
-                    <div className={`p-3 sm:p-4 rounded-2xl border text-xs sm:text-sm font-semibold italic max-w-xl shadow-inner ${
-                      isDark ? 'bg-slate-900/80 border-amber-500/30 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-900'
+                    <div className={`p-3 sm:p-4 rounded-2xl border text-xs sm:text-sm font-semibold italic max-w-xl ${
+                      isDark ? 'bg-slate-900/80 border-slate-800 text-amber-300' : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}>
                       "{ambassador.motto}"
                     </div>
@@ -151,7 +147,7 @@ export const PublicBADetail = () => {
                     isDark ? 'text-slate-400' : 'text-slate-500'
                   }`}>
                     <div className="flex items-center gap-1.5">
-                      <Calendar className="w-4 h-4 text-purple-500" />
+                      <Calendar className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                       <span>Official Member Sejak: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{formatDateDisplay(ambassador.joined_date, lang)}</strong></span>
                     </div>
                   </div>
@@ -165,7 +161,7 @@ export const PublicBADetail = () => {
                 <div className={`glass-panel p-5 rounded-2xl border space-y-2 ${
                   isDark ? 'border-slate-800' : 'bg-white border-slate-200 shadow-sm'
                 }`}>
-                  <span className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-extrabold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
                     <Gamepad2 className="w-4 h-4" /> Game Roblox Favorit
                   </span>
                   <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>{ambassador.favorite_game}</p>
@@ -176,7 +172,7 @@ export const PublicBADetail = () => {
                 <div className={`glass-panel p-5 rounded-2xl border space-y-2 ${
                   isDark ? 'border-slate-800' : 'bg-white border-slate-200 shadow-sm'
                 }`}>
-                  <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-extrabold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
                     <Trophy className="w-4 h-4" /> Spesialisasi & Peran Utama
                   </span>
                   <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>{ambassador.specialty}</p>
@@ -192,7 +188,7 @@ export const PublicBADetail = () => {
                 <h3 className={`text-base font-extrabold flex items-center gap-2 ${
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}>
-                  <Award className="w-5 h-5 text-purple-500" /> Profil & Biografi Singkat
+                  <Award className="w-5 h-5 text-cyan-600 dark:text-cyan-400" /> Profil & Biografi Singkat
                 </h3>
                 <p className={`text-sm leading-relaxed whitespace-pre-line ${
                   isDark ? 'text-slate-300' : 'text-slate-600'
@@ -220,8 +216,8 @@ export const PublicBADetail = () => {
                     rel="noreferrer"
                     className={`p-4 rounded-2xl border transition-all flex items-center justify-between group ${
                       isDark
-                        ? 'bg-slate-900/90 border-pink-500/30 hover:border-pink-500'
-                        : 'bg-slate-50 border-pink-200 hover:border-pink-400'
+                        ? 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-100/80'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -233,7 +229,7 @@ export const PublicBADetail = () => {
                         <span className="text-[11px] text-slate-500 block truncate max-w-[120px]">Lihat Profil ➔</span>
                       </div>
                     </div>
-                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-pink-500 transition-colors" />
+                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
                   </a>
                 )}
 
@@ -244,8 +240,8 @@ export const PublicBADetail = () => {
                     rel="noreferrer"
                     className={`p-4 rounded-2xl border transition-all flex items-center justify-between group ${
                       isDark
-                        ? 'bg-slate-900/90 border-cyan-500/30 hover:border-cyan-500'
-                        : 'bg-slate-50 border-cyan-200 hover:border-cyan-400'
+                        ? 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-100/80'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -270,8 +266,8 @@ export const PublicBADetail = () => {
                     rel="noreferrer"
                     className={`p-4 rounded-2xl border transition-all flex items-center justify-between group ${
                       isDark
-                        ? 'bg-slate-900/90 border-rose-500/30 hover:border-rose-500'
-                        : 'bg-slate-50 border-rose-200 hover:border-rose-400'
+                        ? 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-100/80'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -283,20 +279,20 @@ export const PublicBADetail = () => {
                         <span className="text-[11px] text-slate-500 block truncate max-w-[120px]">Subscribe Channel ➔</span>
                       </div>
                     </div>
-                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-rose-500 transition-colors" />
+                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
                   </a>
                 )}
 
                 {ambassador.discord_username && (
                   <div className={`p-4 rounded-2xl border flex items-center gap-3 ${
-                    isDark ? 'bg-slate-900/90 border-indigo-500/30' : 'bg-slate-50 border-indigo-200'
+                    isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50 border-slate-200'
                   }`}>
                     <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-500">
                       <DiscordIcon className="w-5 h-5" />
                     </div>
                     <div>
                       <span className={`text-xs font-bold block ${isDark ? 'text-white' : 'text-slate-900'}`}>Discord</span>
-                      <span className="text-[11px] text-indigo-600 dark:text-indigo-300 font-mono font-bold block truncate max-w-[130px]">{ambassador.discord_username}</span>
+                      <span className="text-[11px] text-slate-700 dark:text-slate-300 font-mono font-bold block truncate max-w-[130px]">{ambassador.discord_username}</span>
                     </div>
                   </div>
                 )}

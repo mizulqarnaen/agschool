@@ -124,22 +124,22 @@ export const PublicPortal = () => {
             isDark ? 'border-slate-800/60 text-slate-300' : 'border-slate-200 text-slate-700'
           }`}>
             <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-purple-500/30 text-purple-300' : 'bg-white border-purple-200 text-purple-800 shadow-xs'
+              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
             }`}>
-              <Gamepad2 className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" /> Roblox (Obby & Speedrun)
+              <Gamepad2 className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> Roblox (Obby & Speedrun)
             </span>
             <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-blue-500/30 text-blue-300' : 'bg-white border-blue-200 text-blue-800 shadow-xs'
+              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
             }`}>
-              <Trophy className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> MLBB & Esports
+              <Trophy className="w-3.5 h-3.5 text-amber-500" /> MLBB & Esports
             </span>
             <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-cyan-500/30 text-cyan-300' : 'bg-white border-cyan-200 text-cyan-800 shadow-xs'
+              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
             }`}>
               <Zap className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" /> Poin Liga & Standings
             </span>
             <span className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
-              isDark ? 'bg-slate-900/90 border-emerald-500/30 text-emerald-300' : 'bg-white border-emerald-200 text-emerald-800 shadow-xs'
+              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
             }`}>
               <Gift className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Transparansi Hadiah
             </span>
@@ -231,7 +231,7 @@ export const PublicPortal = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
               <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold mb-2 border ${
-                isDark ? 'bg-purple-500/10 border-purple-500/30 text-purple-300' : 'bg-purple-100 border-purple-300 text-purple-900 shadow-xs'
+                isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-slate-100 border-slate-300 text-slate-900 shadow-xs'
               }`}>
                 <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
                 <span>Official Ambassador Talent</span>
@@ -239,7 +239,7 @@ export const PublicPortal = () => {
               <h2 className={`text-xl sm:text-2xl font-extrabold flex items-center gap-2 ${
                 isDark ? 'text-white' : 'text-slate-900'
               }`}>
-                <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" /> Brand Ambassador AG School
+                <Award className="w-6 h-6 text-cyan-600 dark:text-cyan-400" /> Brand Ambassador AG School
               </h2>
               <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Mewakili komunitas AG School dalam promosi game Roblox, konten interaktif, dan event turnamen.
@@ -260,14 +260,14 @@ export const PublicPortal = () => {
                   key={ba.id}
                   className={`glass-card rounded-3xl p-5 border transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group relative overflow-hidden ${
                     isDark
-                      ? 'border-purple-500/20 hover:border-purple-500/50'
-                      : 'border-purple-200 bg-white hover:border-purple-300 hover:shadow-lg'
+                      ? 'border-slate-800 hover:border-slate-700'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
                   }`}
                 >
                   {/* Top Featured Badge Overlay */}
                   {ba.is_featured && (
                     <div className="absolute top-3 right-3 z-10">
-                      <span className="px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md">
+                      <span className="px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md">
                         <Star className="w-3 h-3 fill-slate-950" /> Featured
                       </span>
                     </div>
@@ -276,8 +276,8 @@ export const PublicPortal = () => {
                   <div>
                     {/* BA Avatar & Basic Details */}
                     <div className="flex items-center gap-4 mb-4">
-                      <div className={`w-16 h-16 rounded-2xl overflow-hidden border-2 p-0.5 shrink-0 shadow-lg group-hover:scale-105 transition-transform ${
-                        isDark ? 'bg-slate-900 border-purple-500/40 glow-purple' : 'bg-slate-100 border-purple-300'
+                      <div className={`w-16 h-16 rounded-2xl overflow-hidden border-2 p-0.5 shrink-0 shadow-sm group-hover:scale-105 transition-transform ${
+                        isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-300'
                       }`}>
                         <img
                           src={ba.avatar_url || `https://images.rbxcdn.com/30x30_icon_Roblox.png`}
@@ -290,16 +290,18 @@ export const PublicPortal = () => {
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className={`text-base font-bold truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors ${
-                          isDark ? 'text-white' : 'text-slate-900'
+                        <h3 className={`text-base font-bold truncate transition-colors ${
+                          isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-900 group-hover:text-cyan-700'
                         }`}>
                           {ba.display_name}
                         </h3>
-                        <p className="text-xs font-bold text-purple-900 dark:text-purple-300 truncate mb-1">
+                        <p className={`text-xs font-extrabold truncate mb-1 ${
+                          isDark ? 'text-slate-300' : 'text-slate-700'
+                        }`}>
                           {ba.title || 'Official Brand Ambassador'}
                         </p>
                         <span className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg border font-mono font-bold ${
-                          isDark ? 'bg-slate-900/90 text-cyan-300 border-cyan-500/30' : 'bg-cyan-50 text-cyan-900 border-cyan-300'
+                          isDark ? 'bg-slate-900/90 text-cyan-300 border-slate-800' : 'bg-slate-100 text-slate-800 border-slate-300'
                         }`}>
                           <UserCheck className="w-3 h-3 text-cyan-600 dark:text-cyan-500" /> @{ba.roblox_username}
                         </span>
@@ -309,7 +311,7 @@ export const PublicPortal = () => {
                     {/* Bio / Motto Snippet */}
                     {ba.motto && (
                       <p className={`text-[11px] font-semibold italic line-clamp-1 p-2 rounded-xl border mb-3 ${
-                        isDark ? 'text-amber-300 bg-amber-500/5 border-amber-500/20' : 'text-amber-800 bg-amber-50 border-amber-200'
+                        isDark ? 'text-amber-300 bg-amber-500/5 border-amber-500/20' : 'text-slate-700 bg-slate-50 border-slate-200'
                       }`}>
                         "{ba.motto}"
                       </p>
@@ -346,7 +348,7 @@ export const PublicPortal = () => {
                     <Link
                       to={`/brand-ambassadors/${ba.id}`}
                       className={`inline-flex items-center gap-1 text-xs font-black transition-all hover:underline ${
-                        isDark ? 'text-purple-300 hover:text-white' : 'text-purple-900 hover:text-purple-950'
+                        isDark ? 'text-cyan-400 hover:text-white' : 'text-cyan-700 hover:text-cyan-900'
                       }`}
                     >
                       <span>Lihat Profil</span>
