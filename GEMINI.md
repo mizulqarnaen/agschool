@@ -1,6 +1,6 @@
 # agschool Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-07-24
+Auto-generated from all feature plans. Last updated: 2026-08-08
 
 ## Active Technologies
 - Frontend: React 19, Vite, JavaScript (ES6+), Tailwind CSS, React Router, Axios, Lucide React, Chart.js, React Hot Toast, i18next, SheetJS (xlsx) (001-srs-ag-school-finance)
@@ -11,7 +11,7 @@ Auto-generated from all feature plans. Last updated: 2026-07-24
 
 ```text
 backend/
-├── data/            # JSON storage files (incomes, expenses, payments, members, events, prizes, users, settings, logs)
+├── data/            # JSON storage files (incomes, expenses, payments, members, events, prizes, compensations, users, settings, logs)
 ├── uploads/         # Server filesystem file storage
 ├── src/
 │   ├── controllers/
@@ -27,7 +27,7 @@ frontend/
 │   ├── locales/     # i18n translation dictionaries (id.json & en.json)
 │   ├── pages/       # Public & Internal pages
 │   ├── services/    # Axios REST API services
-│   └── context/     # Auth Context
+│   └── context/     # Auth & Theme Context
 ├── index.html
 └── vite.config.js
 ```
@@ -49,6 +49,7 @@ frontend/
 2. **Immutable Financial Snapshots**: Recorded transactions (Incomes, Expenses, Payments, Logs) store exact snapshot values (`exchange_rate_used`, `base_amount_idr`, `amount`, `currency`, `member_name`) captured at the transaction time. Subsequent changes to settings, exchange rates, or member profiles MUST NEVER retroactively modify historical financial entries.
 
 ## Recent Changes
+- 024-agcl-compensation-public-and-admin-module: Implemented AGCL Compensation Transparency Public Portal (`/compensation` -> `PublicCompensation.jsx`) and Internal Admin Management Module (`/internal/compensation` -> `CompensationPage.jsx` & `CompensationModal.jsx`), featuring Excel (.xlsx/.csv) bulk import parser (`ExcelImportModal.jsx`), free-text & auto-matched member directory recipients, Multer payment proof image upload (`proof_url`), full i18n localization (ID/EN), dark mode default restoration, full stretch responsive widescreen layout, and in-place smooth pagination with centered loading overlay.
 - 023-official-brand-ambassador-module: Implemented Official Brand Ambassador (BA) module (supporting Roblox avatar auto-resolution, featured BA ⭐ toggling, display reordering, status visibility, motto, bio, specialty, social links, and public showcase gallery) in `brandAmbassadorRepository.js`, `brandAmbassadorController.js`, `brandAmbassadorRoutes.js`, `BrandAmbassadorPage.jsx`, `BrandAmbassadorModal.jsx`, `PublicBADetail.jsx`, and `PublicPortal.jsx`.
 - 022-live-standings-and-best-time-updates: Implemented Live Standings & Daily Progress Updates feature (supporting Top 10 Best Time Played, Speedrun records, custom metric headers, session tabs, and glowing public badges) in `eventController.js`, `eventRoutes.js`, `LiveStandingsModal.jsx`, `EventManagementPage.jsx`, `PublicEventDetail.jsx`, and `EventCard.jsx`.
 - 021-staff-only-searchable-select-and-duplicate-notes-fix: Filtered payout recipient list to Staff members only in `PaymentPage.jsx`, added real-time Searchable Staff Select dropdown, and fixed duplicate notes doubling when changing recipient members in `ExpensePage.jsx`.

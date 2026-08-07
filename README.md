@@ -127,6 +127,16 @@
 - **Public Portal Showcase**: [PublicPortal.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicPortal.jsx) & [PublicBADetail.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicBADetail.jsx).
 - **Feature**: Dedicated module for showcasing official AG School Brand Ambassadors. Supports Roblox Avatar auto-resolution, featured BA ⭐ toggling, display reordering, status visibility (`Public`, `Hidden`, `Archived`), motto, bio, game favorites, specialty, and verified social media profile links (Instagram, TikTok, YouTube, Discord).
 
+### 23. AGCL Compensation Public Portal & Admin Management Module
+- **Public Transparency Portal**: Menu **`Kompensasi AGCL`** (`/compensation` -> [PublicCompensation.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/PublicCompensation.jsx)).
+- **Internal Admin Module**: Menu **`Kompensasi AGCL`** (`/internal/compensation` -> [CompensationPage.jsx](file:///c:/laragon/www/agschool/frontend/src/pages/CompensationPage.jsx) & [CompensationModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/compensation/CompensationModal.jsx)).
+- **Feature Highlights**:
+  - **Excel Bulk Import Parser ([ExcelImportModal.jsx](file:///c:/laragon/www/agschool/frontend/src/components/compensation/ExcelImportModal.jsx))**: Direct SheetJS (`xlsx`) upload parser supporting columns `NAMA DC`, `USN ROBLOX`, `Harga (Rp)`, `Status`, `Rekening`, live interactive preview modal, and downloadable `.xlsx` template.
+  - **Free-Text & Relational Member Entry**: Allows entering free-text Discord and Roblox usernames directly or choosing from Master Directory Members with automatic matching.
+  - **Multer Transfer Proof Image Upload**: Upload transfer proof files (`proof_url`) with a direct public verification link (`📜 Bukti Transfer`).
+  - **Full i18n Localization & Dark Mode Default**: Seamless ID/EN translation dictionaries and default dark theme.
+  - **Full Stretch Widescreen & In-Place Pagination**: Smooth responsive layout without auto-scroll jumps and centered overlay loading spinner.
+
 ---
 
 ## API Endpoints Summary
