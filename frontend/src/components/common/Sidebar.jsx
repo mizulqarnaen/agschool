@@ -109,12 +109,12 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* Footer Link & Logout */}
+        {/* Footer Link & Logout & Developer Credit */}
         <div className="p-4 border-t border-slate-800/80 space-y-2">
           <Link
             to="/"
             target="_blank"
-            className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-slate-400 hover:text-cyan-400 transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-cyan-400 transition-colors"
           >
             <span>{t('transparency_portal')} &rarr;</span>
           </Link>
@@ -125,6 +125,10 @@ export const Sidebar = () => {
             <LogOut className="w-4 h-4" />
             <span>{t('sign_out')}</span>
           </button>
+
+          <div className="pt-2 text-[10px] text-center text-slate-500 border-t border-slate-900 font-medium">
+            <span>Crafted with ❤️ by <strong className="text-slate-300 font-bold">Kang Iqbal</strong></span>
+          </div>
         </div>
       </aside>
     </>
