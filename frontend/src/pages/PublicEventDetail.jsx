@@ -402,27 +402,41 @@ export const PublicEventDetail = () => {
                       isDark ? 'bg-slate-900/90 text-slate-300 border-slate-800' : 'bg-slate-100 text-slate-700 border-slate-200'
                     }`}>
                       <tr>
-                        <th className="px-4 py-3.5 w-44">Kategori Hadiah</th>
+                        <th className="px-4 py-3.5 w-36">Kategori Hadiah</th>
                         <th className="px-4 py-3.5">Nama Pemenang / Tim</th>
                         <th className="px-4 py-3.5">Deskripsi Hadiah</th>
+                        <th className="px-4 py-3.5 w-36">Nominal Hadiah</th>
                         <th className="px-4 py-3.5 text-right sm:text-left w-44">Status Pembayaran</th>
                       </tr>
                     </thead>
                     <tbody className={`divide-y ${isDark ? 'divide-slate-800/60' : 'divide-slate-200'}`}>
                       {event.prizes.map((prize, idx) => {
-                        const prizeAmountNum = Number(prize.amount || prize.reward_amount || 0);
-                        const formattedPrizeAmount = isNaN(prizeAmountNum) ? '' : `${event.currency || 'IDR'} ${prizeAmountNum.toLocaleString()}`;
-                        const rankLabel = prize.placement_rank ? `Juara ${prize.placement_rank}` : (prize.title || 'Pemenang');
+                        // Correctly extract prize properties with proper fallbacks
+                        const rankTitle = prize.prize_title || prize.title || (prize.placement_rank ? `Juara ${prize.placement_rank}` : `Peringkat #${idx + 1}`);
+                        const descriptionText = prize.reward_description || prize.description || '-';
+                        
+                        // Extract prize amount safely
+                        const rawAmount = prize.prize_amount !== undefined && prize.prize_amount !== null && prize.prize_amount !== ''
+                          ? prize.prize_amount
+                          : (prize.amount !== undefined && prize.amount !== null && prize.amount !== '' ? prize.amount : prize.base_amount_idr);
+                        
+                        const numAmount = Number(rawAmount);
+                        const prizeCurrency = prize.currency || event.currency || 'IDR';
+                        const formattedAmount = (!isNaN(numAmount) && numAmount > 0)
+                          ? `${prizeCurrency} ${numAmount.toLocaleString()}`
+                          : null;
+
+                        const paymentDate = prize.payment_date || prize.paid_at || '';
 
                         return (
-                          <tr key={idx} className={`transition-colors ${
+                          <tr key={prize.id || idx} className={`transition-colors ${
                             isDark ? 'hover:bg-slate-900/60' : 'hover:bg-slate-50'
                           }`}>
-                            {/* Kategori Hadiah */}
+                            {/* Kategori / Title Hadiah */}
                             <td className="px-4 py-3.5 font-bold whitespace-nowrap">
                               <span className="inline-flex items-center gap-1.5 text-amber-500 font-extrabold">
                                 <Trophy className="w-4 h-4 text-amber-500 shrink-0" />
-                                <span>{rankLabel}</span>
+                                <span>{rankTitle}</span>
                               </span>
                             </td>
 
@@ -440,14 +454,24 @@ export const PublicEventDetail = () => {
                             {/* Deskripsi Hadiah */}
                             <td className="px-4 py-3.5 font-medium">
                               <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
-                                {prize.title || `Hadiah Peringkat ${prize.placement_rank || idx + 1}`}
-                                {formattedPrizeAmount ? ` (${formattedPrizeAmount})` : ''}
+                                {descriptionText}
                               </span>
+                            </td>
+
+                            {/* Nominal Hadiah */}
+                            <td className="px-4 py-3.5 font-mono font-bold whitespace-nowrap">
+                              {formattedAmount ? (
+                                <span className={isDark ? 'text-emerald-400' : 'text-emerald-700'}>
+                                  {formattedAmount}
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 font-normal">-</span>
+                              )}
                             </td>
 
                             {/* Status Pembayaran */}
                             <td className="px-4 py-3.5 text-right sm:text-left whitespace-nowrap">
-                              {getPaymentBadge(prize.payment_status || 'Unpaid', prize.paid_at)}
+                              {getPaymentBadge(prize.payment_status || 'Unpaid', paymentDate)}
                             </td>
                           </tr>
                         );
