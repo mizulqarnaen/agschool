@@ -214,7 +214,7 @@ export const PublicPortal = () => {
               {/* Directly Accessible High-Visibility CTA Button */}
               <div className="shrink-0 flex items-center">
                 <Link
-                  to="/compensation"
+                  to="/compensation?tab=kompensasi"
                   className="w-full md:w-auto px-7 py-4 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs sm:text-sm shadow-2xl transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95 glow-cyan"
                 >
                   <span>Cek Nama & Status Kompensasi &rarr;</span>
