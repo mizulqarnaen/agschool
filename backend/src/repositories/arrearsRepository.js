@@ -1,5 +1,27 @@
-import { JsonRepository } from './baseRepository.js';
-import { memberRepository } from './memberRepository.js';
+function extractMemberRoleString(m) {
+  if (!m) return 'Player';
+  if (m.entity_type === 'player' || m.type === 'player') {
+    return 'Player';
+  }
+
+  const roleList = [];
+  if (Array.isArray(m.roles) && m.roles.length > 0) {
+    roleList.push(...m.roles);
+  } else if (Array.isArray(m.categories) && m.categories.length > 0) {
+    roleList.push(...m.categories);
+  } else if (m.role) {
+    roleList.push(m.role);
+  } else if (m.category) {
+    roleList.push(m.category);
+  }
+
+  const unique = [...new Set(roleList.filter(r => Boolean(r) && String(r).trim() !== ''))];
+  if (unique.length > 0) {
+    return unique.join(', ');
+  }
+
+  return (m.entity_type === 'staff' || m.type === 'staff') ? 'Staff' : 'Player';
+}
 
 class ArrearsRepository extends JsonRepository {
   constructor() {
@@ -14,12 +36,10 @@ class ArrearsRepository extends JsonRepository {
     let result = records.map(record => {
       const matchedMember = members.find(m => Number(m.id) === Number(record.member_id));
       let rolesStr = record.role || '';
-      if (!rolesStr && matchedMember) {
-        if (Array.isArray(matchedMember.roles) && matchedMember.roles.length > 0) {
-          rolesStr = matchedMember.roles.join(', ');
-        } else if (matchedMember.role) {
-          rolesStr = matchedMember.role;
-        }
+      if ((!rolesStr || rolesStr === 'Staff') && matchedMember) {
+        rolesStr = extractMemberRoleString(matchedMember);
+      } else if (!rolesStr) {
+        rolesStr = 'Player';
       }
 
       return {
@@ -27,7 +47,7 @@ class ArrearsRepository extends JsonRepository {
         full_name: record.full_name || matchedMember?.full_name || matchedMember?.ign_tag || 'Staff / Member',
         discord_username: record.discord_username || matchedMember?.discord_username || '',
         roblox_username: record.roblox_username || matchedMember?.roblox_username || '',
-        role: rolesStr || 'Staff',
+        role: rolesStr,
         juli_amount: Number(record.juli_amount || 0),
         agustus_amount: Number(record.agustus_amount || 0),
         total_amount: Number(record.total_amount !== undefined ? record.total_amount : (Number(record.juli_amount || 0) + Number(record.agustus_amount || 0))),

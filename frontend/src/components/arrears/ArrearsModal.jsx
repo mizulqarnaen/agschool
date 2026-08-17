@@ -76,13 +76,33 @@ export const ArrearsModal = ({ isOpen, onClose, record, onSuccess }) => {
     } catch (_) {}
   };
 
-  const handleSelectMember = (m) => {
-    let roleStr = 'Staff';
-    if (Array.isArray(m.roles) && m.roles.length > 0) {
-      roleStr = m.roles.join(', ');
-    } else if (m.role) {
-      roleStr = m.role;
+  const getMemberRoleString = (m) => {
+    if (!m) return 'Player';
+    if (m.entity_type === 'player' || m.type === 'player') {
+      return 'Player';
     }
+
+    const roleList = [];
+    if (Array.isArray(m.roles) && m.roles.length > 0) {
+      roleList.push(...m.roles);
+    } else if (Array.isArray(m.categories) && m.categories.length > 0) {
+      roleList.push(...m.categories);
+    } else if (m.role) {
+      roleList.push(m.role);
+    } else if (m.category) {
+      roleList.push(m.category);
+    }
+
+    const unique = [...new Set(roleList.filter(r => Boolean(r) && String(r).trim() !== ''))];
+    if (unique.length > 0) {
+      return unique.join(', ');
+    }
+
+    return (m.entity_type === 'staff' || m.type === 'staff') ? 'Staff' : 'Player';
+  };
+
+  const handleSelectMember = (m) => {
+    const roleStr = getMemberRoleString(m);
 
     setFormData(prev => ({
       ...prev,
@@ -93,7 +113,7 @@ export const ArrearsModal = ({ isOpen, onClose, record, onSuccess }) => {
       role: roleStr
     }));
     setShowDropdown(false);
-    toast.success(`Data ${m.full_name || m.ign_tag} berhasil dipilih!`);
+    toast.success(`Data ${m.full_name || m.ign_tag} (${roleStr}) berhasil dipilih!`);
   };
 
   const calculatedTotal = Number(formData.juli_amount || 0) + Number(formData.agustus_amount || 0);
@@ -180,7 +200,7 @@ export const ArrearsModal = ({ isOpen, onClose, record, onSuccess }) => {
                   <div>
                     <div className="text-xs font-extrabold text-white">{m.full_name || m.ign_tag}</div>
                     <div className="text-[11px] text-slate-400">
-                      @{m.discord_username || '-'} | Role: {Array.isArray(m.roles) ? m.roles.join(', ') : m.role}
+                      @{m.discord_username || '-'} | Role: {getMemberRoleString(m)}
                     </div>
                   </div>
                   <UserCheck className="w-4 h-4 text-cyan-400 shrink-0" />
