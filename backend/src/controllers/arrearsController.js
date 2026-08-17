@@ -1,5 +1,5 @@
 import { arrearsRepository } from '../repositories/arrearsRepository.js';
-import memberRepository from '../repositories/memberRepository.js';
+import { memberRepository } from '../repositories/memberRepository.js';
 import { loggerService } from '../services/loggerService.js';
 
 // Public GET Endpoint: Fetch Arrears data & stats

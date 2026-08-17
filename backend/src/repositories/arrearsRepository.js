@@ -1,5 +1,5 @@
 import { JsonRepository } from './baseRepository.js';
-import memberRepository from './memberRepository.js';
+import { memberRepository } from './memberRepository.js';
 
 class ArrearsRepository extends JsonRepository {
   constructor() {
