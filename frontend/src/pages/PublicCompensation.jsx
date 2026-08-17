@@ -120,6 +120,12 @@ export const PublicCompensation = () => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= (compPagination.total_pages || 1) && newPage !== compPagination.current_page) {
+      setCompPagination(prev => ({ ...prev, current_page: newPage }));
+    }
+  };
+
   const getStatusBadge = (status) => {
     if (status === 'Completed' || status === 'Paid') {
       return (
@@ -475,6 +481,64 @@ export const PublicCompensation = () => {
             ) : (
               <div className="py-12 text-center text-slate-400">
                 Tidak ada data kompensasi yang ditemukan.
+              </div>
+            )}
+
+            {/* Pagination Controls Bar */}
+            {compPagination.total_pages > 1 && (
+              <div className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 ${
+                isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+              }`}>
+                <div className="text-xs text-slate-400 font-medium">
+                  Menampilkan halaman <strong className="text-white">{compPagination.current_page}</strong> dari <strong className="text-white">{compPagination.total_pages}</strong> (Total <strong className="text-white">{compPagination.total_items}</strong> penerima)
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={compPagination.current_page <= 1}
+                    onClick={() => handlePageChange(compPagination.current_page - 1)}
+                    className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1 ${
+                      compPagination.current_page <= 1
+                        ? 'opacity-40 cursor-not-allowed border-slate-800 text-slate-600'
+                        : isDark ? 'border-slate-700 bg-slate-900 text-white hover:bg-slate-800' : 'border-slate-300 bg-white text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                    <span>Sebelumnya</span>
+                  </button>
+
+                  <div className="flex items-center gap-1 overflow-x-auto max-w-[200px] sm:max-w-none py-1">
+                    {Array.from({ length: compPagination.total_pages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`w-8 h-8 rounded-xl text-xs font-extrabold transition-all shrink-0 ${
+                          pageNum === compPagination.current_page
+                            ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
+                            : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={compPagination.current_page >= compPagination.total_pages}
+                    onClick={() => handlePageChange(compPagination.current_page + 1)}
+                    className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1 ${
+                      compPagination.current_page >= compPagination.total_pages
+                        ? 'opacity-40 cursor-not-allowed border-slate-800 text-slate-600'
+                        : isDark ? 'border-slate-700 bg-slate-900 text-white hover:bg-slate-800' : 'border-slate-300 bg-white text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span>Selanjutnya</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             )}
           </div>
