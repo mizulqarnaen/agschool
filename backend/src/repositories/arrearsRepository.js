@@ -88,6 +88,10 @@ class ArrearsRepository extends JsonRepository {
       paid_count
     };
   }
+
+  delete(id) {
+    return this.softDelete(id);
+  }
 }
 
 export const arrearsRepository = new ArrearsRepository();

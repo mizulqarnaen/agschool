@@ -154,7 +154,10 @@ export const deleteAdminArrears = (req, res) => {
       return res.status(404).json({ success: false, message: 'Data tunggakan tidak ditemukan.' });
     }
 
-    arrearsRepository.delete(id);
+    const deleted = arrearsRepository.softDelete(id);
+    if (!deleted) {
+      return res.status(500).json({ success: false, message: 'Gagal menghapus data tunggakan.' });
+    }
 
     if (req.user) {
       loggerService.logActivity(req.user.id, 'DELETE_ARREARS_RECORD', 'Arrears', id, { full_name: existing.full_name });
