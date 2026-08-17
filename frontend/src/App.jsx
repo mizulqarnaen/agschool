@@ -45,8 +45,9 @@ export default function App() {
       <AuthProvider>
         <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Routes>
-        {/* Public Transparency Portal Routes */}
-        <Route path="/" element={<PublicPortal />} />
+        {/* Public Transparency Portal Routes (Default Root Route / lands on Data Tunggakan) */}
+        <Route path="/" element={<PublicCompensation />} />
+        <Route path="/events" element={<PublicPortal />} />
         <Route path="/events/:id" element={<PublicEventDetail />} />
         <Route path="/brand-ambassadors/:id" element={<PublicBADetail />} />
         <Route path="/compensation" element={<PublicCompensation />} />

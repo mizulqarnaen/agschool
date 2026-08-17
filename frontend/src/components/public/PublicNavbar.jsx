@@ -16,9 +16,9 @@ export const PublicNavbar = () => {
 
   // Determine current active tab
   const currentTab = searchParams.get('tab');
-  const isHomeActive = location.pathname === '/';
-  const isTunggakanActive = location.pathname === '/compensation' && (currentTab === 'tunggakan' || !currentTab);
+  const isHomeActive = location.pathname === '/events';
   const isKompensasiActive = location.pathname === '/compensation' && currentTab === 'kompensasi';
+  const isTunggakanActive = !isHomeActive && !isKompensasiActive;
 
   return (
     <header className={`sticky top-0 z-40 w-full transition-colors duration-300 border-b backdrop-blur-md ${
@@ -58,7 +58,7 @@ export const PublicNavbar = () => {
 
         {/* 3 CENTER NAVIGATION TABS */}
         <nav className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl border bg-slate-900/60 border-slate-800/80">
-          {/* Tab 1: Data Tunggakan */}
+          {/* Tab 1: Data Tunggakan (Default) */}
           <Link
             to="/compensation?tab=tunggakan"
             className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
@@ -90,7 +90,7 @@ export const PublicNavbar = () => {
 
           {/* Tab 3: Home / Events */}
           <Link
-            to="/"
+            to="/events"
             className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
               isHomeActive
                 ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30'

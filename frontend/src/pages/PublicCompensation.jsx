@@ -164,14 +164,14 @@ export const PublicCompensation = () => {
             <h1 className={`text-3xl sm:text-5xl font-black tracking-tight ${
               isDark ? 'text-white' : 'text-slate-900'
             }`}>
-              {activeTab === 'tunggakan' ? 'Data Tunggakan Payout Staff' : (activeTab === 'kompensasi' ? 'Portal Kompensasi AGCL' : 'Portal Resmi AG School')}
+              {activeTab === 'tunggakan' ? 'Data Tunggakan AG School' : (activeTab === 'kompensasi' ? 'Portal Kompensasi AGCL' : 'Portal Resmi AG School')}
             </h1>
 
             <p className={`text-sm sm:text-base leading-relaxed ${
               isDark ? 'text-slate-300' : 'text-slate-600'
             }`}>
               {activeTab === 'tunggakan'
-                ? 'Informasi daftar tunggakan honor pengurus, maintainer, & staff yang belum dicairkan periode Juli - Agustus, diurutkan dari nominal terbesar.'
+                ? 'Informasi daftar tunggakan honor pengurus, maintainer, staff, dan player yang belum dicairkan periode Juli - Agustus'
                 : 'Portal transparansi verifikasi pencairan kompensasi publik AG School.'}
             </p>
           </div>
@@ -247,12 +247,12 @@ export const PublicCompensation = () => {
                 <p className="text-[11px] text-slate-400 mt-1">Akumulasi Juli & Agustus</p>
               </div>
 
-              {/* Card 2: Total Member / Staff Terdampak */}
+              {/* Card 2: Total Member / Staff / Player Terdampak */}
               <div className={`p-5 rounded-3xl border transition-all ${
                 isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
               }`}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Member / Staff Terdampak</span>
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Penerima Terdampak (Staff/Player)</span>
                   <Users className="w-5 h-5 text-cyan-400" />
                 </div>
                 <div className={`text-2xl sm:text-3xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>

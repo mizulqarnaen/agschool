@@ -113,11 +113,11 @@ export const ArrearsPage = () => {
             <div className="space-y-1">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black bg-rose-500/20 text-rose-400 border border-rose-500/30">
                 <AlertTriangle className="w-4 h-4 text-rose-500" />
-                <span>Transparansi Tunggakan Staff & Pengurus</span>
+                <span>Transparansi Tunggakan Staff, Pengurus & Player</span>
               </div>
-              <h1 className="text-2xl font-black text-white">Data Tunggakan Payout (Juli - Agustus)</h1>
+              <h1 className="text-2xl font-black text-white">Data Tunggakan AG School</h1>
               <p className="text-xs text-slate-400">
-                Kelola daftar tunggakan honor pengurus, maintainer, & staff secara transparan.
+                Informasi daftar tunggakan honor pengurus, maintainer, staff, dan player yang belum dicairkan periode Juli - Agustus
               </p>
             </div>
 
