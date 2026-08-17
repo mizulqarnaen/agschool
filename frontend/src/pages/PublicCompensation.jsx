@@ -175,53 +175,6 @@ export const PublicCompensation = () => {
                 : 'Portal transparansi verifikasi pencairan kompensasi publik AG School.'}
             </p>
           </div>
-
-          {/* 3 PUBLIC NAVIGATION TABS */}
-          <div className="flex items-center justify-center max-w-2xl mx-auto mb-2">
-            <div className={`p-1.5 rounded-2xl border flex items-center justify-center gap-1.5 w-full ${
-              isDark ? 'bg-slate-950/90 border-slate-800' : 'bg-slate-100 border-slate-300'
-            }`}>
-              {/* Tab 1: Tunggakan */}
-              <button
-                type="button"
-                onClick={() => setActiveTab('tunggakan')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 ${
-                  activeTab === 'tunggakan'
-                    ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
-                    : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-900' : 'text-slate-600 hover:text-slate-900 hover:bg-white'
-                }`}
-              >
-                <AlertCircle className="w-4 h-4" />
-                <span>1. Data Tunggakan</span>
-              </button>
-
-              {/* Tab 2: Kompensasi AGCL */}
-              <button
-                type="button"
-                onClick={() => setActiveTab('kompensasi')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 ${
-                  activeTab === 'kompensasi'
-                    ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-600/30'
-                    : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-900' : 'text-slate-600 hover:text-slate-900 hover:bg-white'
-                }`}
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>2. Kompensasi AGCL</span>
-              </button>
-
-              {/* Tab 3: Home (Events) */}
-              <button
-                type="button"
-                onClick={() => navigate('/')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-2 ${
-                  isDark ? 'text-slate-400 hover:text-white hover:bg-slate-900' : 'text-slate-600 hover:text-slate-900 hover:bg-white'
-                }`}
-              >
-                <Trophy className="w-4 h-4 text-amber-500" />
-                <span>3. Home (Events)</span>
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 
