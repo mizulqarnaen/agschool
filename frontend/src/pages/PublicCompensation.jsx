@@ -251,7 +251,7 @@ export const PublicCompensation = () => {
                 <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Cari berdasarkan nama, role/jabatan, atau username..."
+                  placeholder="Cari berdasarkan nama atau role/jabatan..."
                   value={arrearsSearch}
                   onChange={(e) => setArrearsSearch(e.target.value)}
                   className={`w-full pl-10 pr-4 py-2 border rounded-xl text-xs sm:text-sm font-medium focus:outline-none ${
@@ -325,17 +325,11 @@ export const PublicCompensation = () => {
                           </span>
                         </td>
 
-                        {/* Nama Member / Staff */}
+                        {/* Nama Member / Staff / Player */}
                         <td className="px-4 py-4 font-extrabold">
                           <div className={isDark ? 'text-white' : 'text-slate-900'}>
                             {record.full_name}
                           </div>
-                          {(record.discord_username || record.roblox_username) && (
-                            <div className="text-[11px] font-normal text-slate-400 flex items-center gap-2 mt-0.5">
-                              {record.discord_username && <span>@{record.discord_username}</span>}
-                              {record.roblox_username && <span>Roblox: {record.roblox_username}</span>}
-                            </div>
-                          )}
                         </td>
 
                         {/* Role / Jabatan Column */}
