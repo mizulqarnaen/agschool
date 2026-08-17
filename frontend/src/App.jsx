@@ -17,6 +17,7 @@ import { MemberPage } from './pages/MemberPage';
 import { EventManagementPage } from './pages/EventManagementPage';
 import { BrandAmbassadorPage } from './pages/BrandAmbassadorPage';
 import { CompensationPage } from './pages/CompensationPage';
+import { ArrearsPage } from './pages/ArrearsPage';
 import { UserManagementPage } from './pages/UserManagementPage';
 import { ReportPage } from './pages/ReportPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -113,6 +114,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['administrator', 'finance', 'secretary']}>
               <CompensationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/internal/arrears"
+          element={
+            <ProtectedRoute allowedRoles={['administrator', 'finance', 'secretary']}>
+              <ArrearsPage />
             </ProtectedRoute>
           }
         />

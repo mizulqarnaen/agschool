@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, TrendingUp, TrendingDown, Users, UserCheck,
   Calendar, Shield, FileText, Settings, History,
-  LogOut, Menu, X, Award
+  LogOut, Menu, X, Award, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,7 @@ export const Sidebar = () => {
     { label: t('events'), path: '/internal/events', icon: Calendar, roles: ['administrator', 'secretary'] },
     { label: 'Brand Ambassador', path: '/internal/brand-ambassadors', icon: Award, roles: ['administrator', 'finance', 'secretary'] },
     { label: 'Kompensasi AGCL', path: '/internal/compensation', icon: Shield, roles: ['administrator', 'finance', 'secretary'] },
+    { label: 'Data Tunggakan', path: '/internal/arrears', icon: AlertCircle, roles: ['administrator', 'finance', 'secretary'] },
     { label: t('users'), path: '/internal/users', icon: Shield, roles: ['administrator'] },
     { label: t('reports'), path: '/internal/reports', icon: FileText, roles: ['administrator', 'finance'] },
     { label: t('settings'), path: '/internal/settings', icon: Settings, roles: ['administrator'] },

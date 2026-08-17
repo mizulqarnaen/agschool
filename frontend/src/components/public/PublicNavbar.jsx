@@ -1,14 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Lock } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../common/LanguageSelector';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { useTheme } from '../../context/ThemeContext';
 
 export const PublicNavbar = () => {
-  const { user } = useAuth();
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -50,32 +47,13 @@ export const PublicNavbar = () => {
           </div>
         </Link>
 
-        {/* Right Ultra-Minimal Controls & Action CTA */}
+        {/* Right Ultra-Minimal Controls (Theme & Language only - Login CTA Removed) */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           {/* Theme Switcher Button (Icon Only) */}
           <ThemeToggle iconOnly={true} />
 
           {/* Language Selector Button (ID / EN Toggle) */}
           <LanguageSelector variant="toggle" />
-
-          {/* Login / Dashboard CTA */}
-          {user ? (
-            <Link
-              to="/internal/dashboard"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black text-xs shadow-md glow-cyan transition-all transform active:scale-95 shrink-0"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>Dashboard</span>
-            </Link>
-          ) : (
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs shadow-md transition-all transform active:scale-95 shrink-0"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>Login</span>
-            </Link>
-          )}
         </div>
       </div>
     </header>

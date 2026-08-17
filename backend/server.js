@@ -14,6 +14,7 @@ import eventRoutes from './src/routes/eventRoutes.js';
 import adminRoutes from './src/routes/adminRoutes.js';
 import brandAmbassadorRoutes from './src/routes/brandAmbassadorRoutes.js';
 import compensationRoutes from './src/routes/compensationRoutes.js';
+import arrearsRoutes from './src/routes/arrearsRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -149,8 +150,9 @@ fallbackDistPaths.forEach(distDir => {
   }
 });
 
-// Compensation API Routes
+// Compensation & Arrears API Routes
 app.use('/api', compensationRoutes);
+app.use('/api', arrearsRoutes);
 
 // SPA wildcard route fallback for all non-API requests
 app.get('*', (req, res, next) => {
