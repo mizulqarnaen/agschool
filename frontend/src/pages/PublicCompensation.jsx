@@ -10,17 +10,23 @@ import {
 import api from '../services/api';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 
 export const PublicCompensation = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  // Active Tab state: 'tunggakan' (default), 'kompensasi', 'home'
-  const [activeTab, setActiveTab] = useState('tunggakan');
+  // Active Tab state synced with URL ?tab= (defaults to 'tunggakan')
+  const paramTab = searchParams.get('tab');
+  const activeTab = paramTab === 'kompensasi' ? 'kompensasi' : 'tunggakan';
+
+  const setActiveTab = (tabKey) => {
+    setSearchParams({ tab: tabKey });
+  };
 
   // Arrears Data State (Tab 1)
   const [arrearsRecords, setArrearsRecords] = useState([]);
