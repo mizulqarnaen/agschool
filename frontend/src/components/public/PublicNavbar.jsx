@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../common/LanguageSelector';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { useTheme } from '../../context/ThemeContext';
-import { AlertCircle, ShieldCheck, Trophy } from 'lucide-react';
+import { AlertCircle, ShieldCheck, Trophy, Menu, X } from 'lucide-react';
 
 export const PublicNavbar = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isDark = theme === 'dark';
 
@@ -56,12 +57,12 @@ export const PublicNavbar = () => {
           </div>
         </Link>
 
-        {/* 3 CENTER NAVIGATION TABS */}
-        <nav className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl border bg-slate-900/60 border-slate-800/80">
+        {/* Desktop Navigation Tabs (Hidden on Mobile) */}
+        <nav className="hidden md:flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl border bg-slate-900/60 border-slate-800/80">
           {/* Tab 1: Data Tunggakan (Default) */}
           <Link
             to="/compensation?tab=tunggakan"
-            className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
               isTunggakanActive
                 ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
                 : isDark
@@ -76,7 +77,7 @@ export const PublicNavbar = () => {
           {/* Tab 2: Kompensasi AGCL */}
           <Link
             to="/compensation?tab=kompensasi"
-            className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
               isKompensasiActive
                 ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
                 : isDark
@@ -91,7 +92,7 @@ export const PublicNavbar = () => {
           {/* Tab 3: Home / Events */}
           <Link
             to="/events"
-            className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
               isHomeActive
                 ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30'
                 : isDark
@@ -104,15 +105,98 @@ export const PublicNavbar = () => {
           </Link>
         </nav>
 
-        {/* Right Ultra-Minimal Controls (Theme & Language only) */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Theme Switcher Button (Icon Only) */}
-          <ThemeToggle iconOnly={true} />
+        {/* Right Controls & Mobile Hamburger Toggle */}
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden sm:flex items-center gap-2">
+            <ThemeToggle iconOnly={true} />
+            <LanguageSelector variant="toggle" />
+          </div>
 
-          {/* Language Selector Button (ID / EN Toggle) */}
-          <LanguageSelector variant="toggle" />
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`p-2 rounded-xl border transition-all md:hidden ${
+              isDark
+                ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
+                : 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
+            }`}
+            aria-label="Toggle Navigation Menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5 text-rose-400" /> : <Menu className="w-5 h-5 text-cyan-400" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu Drawer */}
+      {mobileMenuOpen && (
+        <div className={`md:hidden border-b px-4 py-4 space-y-3 transition-all ${
+          isDark ? 'bg-slate-950/95 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+        }`}>
+          <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
+            Navigasi Portal Publik
+          </div>
+
+          <div className="space-y-2">
+            <Link
+              to="/compensation?tab=tunggakan"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`w-full p-3 rounded-2xl text-xs font-extrabold flex items-center justify-between transition-all ${
+                isTunggakanActive
+                  ? 'bg-rose-600 text-white shadow-md'
+                  : isDark ? 'bg-slate-900 text-slate-300 border border-slate-800' : 'bg-slate-100 text-slate-800'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400" />
+                <span>1. Data Tunggakan</span>
+              </div>
+              {isTunggakanActive && <span className="text-[10px] uppercase font-black bg-rose-800 px-2 py-0.5 rounded-full">Aktif</span>}
+            </Link>
+
+            <Link
+              to="/compensation?tab=kompensasi"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`w-full p-3 rounded-2xl text-xs font-extrabold flex items-center justify-between transition-all ${
+                isKompensasiActive
+                  ? 'bg-cyan-600 text-white shadow-md'
+                  : isDark ? 'bg-slate-900 text-slate-300 border border-slate-800' : 'bg-slate-100 text-slate-800'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                <span>2. Kompensasi AGCL</span>
+              </div>
+              {isKompensasiActive && <span className="text-[10px] uppercase font-black bg-cyan-800 px-2 py-0.5 rounded-full">Aktif</span>}
+            </Link>
+
+            <Link
+              to="/events"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`w-full p-3 rounded-2xl text-xs font-extrabold flex items-center justify-between transition-all ${
+                isHomeActive
+                  ? 'bg-amber-600 text-white shadow-md'
+                  : isDark ? 'bg-slate-900 text-slate-300 border border-slate-800' : 'bg-slate-100 text-slate-800'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-amber-400" />
+                <span>3. Home (Event & Turnamen)</span>
+              </div>
+              {isHomeActive && <span className="text-[10px] uppercase font-black bg-amber-800 px-2 py-0.5 rounded-full">Aktif</span>}
+            </Link>
+          </div>
+
+          {/* Controls row for mobile */}
+          <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-400">Pengaturan Tema & Bahasa</span>
+            <div className="flex items-center gap-2">
+              <ThemeToggle iconOnly={true} />
+              <LanguageSelector variant="toggle" />
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
