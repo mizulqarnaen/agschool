@@ -469,12 +469,6 @@ export const PublicCompensation = () => {
                         {record.currency || 'IDR'} {Number(record.amount || 0).toLocaleString()}
                       </div>
                     </div>
-
-                    {record.rekening && (
-                      <div className="text-xs text-slate-400 font-medium">
-                        Rekening: <span className="text-slate-200">{record.rekening}</span>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
