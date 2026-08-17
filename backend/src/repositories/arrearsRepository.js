@@ -1,3 +1,6 @@
+import { JsonRepository } from './baseRepository.js';
+import { memberRepository } from './memberRepository.js';
+
 function extractMemberRoleString(m) {
   if (!m) return 'Player';
   if (m.entity_type === 'player' || m.type === 'player') {
