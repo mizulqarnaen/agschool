@@ -15,10 +15,23 @@ export const getPublicArrears = (req, res) => {
     const startIndex = (pageNum - 1) * limitNum;
     const paginatedRecords = allRecords.slice(startIndex, startIndex + limitNum);
 
+    // Strip sensitive private fields for public API response
+    const publicSanitizedRecords = paginatedRecords.map(record => {
+      const {
+        discord_username,
+        roblox_username,
+        created_at,
+        updated_at,
+        deleted_at,
+        ...safeRecord
+      } = record;
+      return safeRecord;
+    });
+
     res.json({
       success: true,
       data: {
-        records: paginatedRecords,
+        records: publicSanitizedRecords,
         stats,
         pagination: {
           current_page: pageNum,

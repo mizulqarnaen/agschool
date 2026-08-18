@@ -57,6 +57,20 @@ export const getPublicCompensations = async (req, res) => {
     const startIndex = (pageNum - 1) * limitNum;
     const paginatedRecords = allRecords.slice(startIndex, startIndex + limitNum);
 
+    // Strip sensitive private fields for public API response
+    const publicSanitizedRecords = paginatedRecords.map(record => {
+      const {
+        rekening,
+        created_at,
+        tiktok_username,
+        avatar_url,
+        bank_name,
+        bank_account_number,
+        ...safeRecord
+      } = record;
+      return safeRecord;
+    });
+
     return res.json({
       success: true,
       data: {
@@ -74,7 +88,7 @@ export const getPublicCompensations = async (req, res) => {
           total_items: totalRecipients,
           limit: limitNum
         },
-        records: paginatedRecords
+        records: publicSanitizedRecords
       }
     });
   } catch (error) {
