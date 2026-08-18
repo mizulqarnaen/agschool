@@ -16,6 +16,7 @@ export const PublicCompensation = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
