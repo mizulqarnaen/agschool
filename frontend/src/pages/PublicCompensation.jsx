@@ -17,12 +17,10 @@ export const PublicCompensation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
-  // Active Tab state synced with URL ?tab= (defaults to 'tunggakan')
+  // Active Tab state synced with URL (defaults to 'kompensasi', 'tunggakan' accessible via ?tab=tunggakan or /arrears)
   const paramTab = searchParams.get('tab');
-  const activeTab = paramTab === 'kompensasi' ? 'kompensasi' : 'tunggakan';
+  const isArrearsRoute = location.pathname === '/arrears' || paramTab === 'tunggakan';
+  const activeTab = isArrearsRoute ? 'tunggakan' : 'kompensasi';
 
   const setActiveTab = (tabKey) => {
     setSearchParams({ tab: tabKey });

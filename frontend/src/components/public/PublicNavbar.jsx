@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../common/LanguageSelector';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { useTheme } from '../../context/ThemeContext';
-import { AlertCircle, ShieldCheck, Trophy, Menu, X } from 'lucide-react';
+import { ShieldCheck, Trophy, Menu, X } from 'lucide-react';
 
 export const PublicNavbar = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isDark = theme === 'dark';
 
-  // Determine current active tab
-  const currentTab = searchParams.get('tab');
-  const isHomeActive = location.pathname === '/events';
-  const isKompensasiActive = location.pathname === '/compensation' && currentTab === 'kompensasi';
-  const isTunggakanActive = !isHomeActive && !isKompensasiActive;
+  // Determine current active navigation item (Home vs Kompensasi AGCL)
+  const isKompensasiActive = location.pathname.startsWith('/compensation') || location.pathname.startsWith('/arrears');
+  const isHomeActive = !isKompensasiActive;
 
   return (
     <header className={`sticky top-0 z-40 w-full transition-colors duration-300 border-b backdrop-blur-md ${
@@ -57,42 +54,12 @@ export const PublicNavbar = () => {
           </div>
         </Link>
 
-        {/* Desktop Navigation Tabs (Hidden on Mobile) */}
+        {/* Desktop Navigation Tabs (2 Items: Home & Kompensasi AGCL) */}
         <nav className="hidden md:flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl border bg-slate-900/60 border-slate-800/80">
-          {/* Tab 1: Data Tunggakan (Default) */}
+          {/* Item 1: Home */}
           <Link
-            to="/compensation?tab=tunggakan"
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
-              isTunggakanActive
-                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
-                : isDark
-                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-            <span>Data Tunggakan</span>
-          </Link>
-
-          {/* Tab 2: Kompensasi AGCL */}
-          <Link
-            to="/compensation?tab=kompensasi"
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
-              isKompensasiActive
-                ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
-                : isDark
-                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span>Kompensasi AGCL</span>
-          </Link>
-
-          {/* Tab 3: Home / Events */}
-          <Link
-            to="/events"
-            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
+            to="/"
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
               isHomeActive
                 ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30'
                 : isDark
@@ -102,6 +69,21 @@ export const PublicNavbar = () => {
           >
             <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span>Home</span>
+          </Link>
+
+          {/* Item 2: Kompensasi AGCL */}
+          <Link
+            to="/compensation"
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
+              isKompensasiActive
+                ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
+                : isDark
+                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <span>Kompensasi AGCL</span>
           </Link>
         </nav>
 
@@ -139,23 +121,23 @@ export const PublicNavbar = () => {
 
           <div className="space-y-2">
             <Link
-              to="/compensation?tab=tunggakan"
+              to="/"
               onClick={() => setMobileMenuOpen(false)}
               className={`w-full p-3 rounded-2xl text-xs font-extrabold flex items-center justify-between transition-all ${
-                isTunggakanActive
-                  ? 'bg-rose-600 text-white shadow-md'
+                isHomeActive
+                  ? 'bg-amber-600 text-white shadow-md'
                   : isDark ? 'bg-slate-900 text-slate-300 border border-slate-800' : 'bg-slate-100 text-slate-800'
               }`}
             >
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-rose-400" />
-                <span>1. Data Tunggakan</span>
+                <Trophy className="w-4 h-4 text-amber-400" />
+                <span>1. Home (Event & Turnamen)</span>
               </div>
-              {isTunggakanActive && <span className="text-[10px] uppercase font-black bg-rose-800 px-2 py-0.5 rounded-full">Aktif</span>}
+              {isHomeActive && <span className="text-[10px] uppercase font-black bg-amber-800 px-2 py-0.5 rounded-full">Aktif</span>}
             </Link>
 
             <Link
-              to="/compensation?tab=kompensasi"
+              to="/compensation"
               onClick={() => setMobileMenuOpen(false)}
               className={`w-full p-3 rounded-2xl text-xs font-extrabold flex items-center justify-between transition-all ${
                 isKompensasiActive
@@ -168,22 +150,6 @@ export const PublicNavbar = () => {
                 <span>2. Kompensasi AGCL</span>
               </div>
               {isKompensasiActive && <span className="text-[10px] uppercase font-black bg-cyan-800 px-2 py-0.5 rounded-full">Aktif</span>}
-            </Link>
-
-            <Link
-              to="/events"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`w-full p-3 rounded-2xl text-xs font-extrabold flex items-center justify-between transition-all ${
-                isHomeActive
-                  ? 'bg-amber-600 text-white shadow-md'
-                  : isDark ? 'bg-slate-900 text-slate-300 border border-slate-800' : 'bg-slate-100 text-slate-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-amber-400" />
-                <span>3. Home (Event & Turnamen)</span>
-              </div>
-              {isHomeActive && <span className="text-[10px] uppercase font-black bg-amber-800 px-2 py-0.5 rounded-full">Aktif</span>}
             </Link>
           </div>
 
